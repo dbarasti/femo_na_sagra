@@ -134,7 +134,7 @@ router.post("/cassa", function(request, res, next){
 });
 
 router.get("/orders", function(req, res, next){
-    Ordine.find({giorno: giorno})
+    Ordine.find({giorno: giorno, visibility: true})
     .sort({ priority: "descending", createdAt: "ascending", id: "ascending" })
     .exec(function(err, ordini){
         if(err){return next(err); }

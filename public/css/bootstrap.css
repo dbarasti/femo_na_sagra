@@ -31,7 +31,10 @@ summary {
 .text, .pull-left{
   font-size: 2em;
   line-height: 30%;
+}
 
+.numero-ordine{
+  font-size: 1em;
 }
 
 .nome_ordine{
@@ -40,7 +43,7 @@ summary {
 
 .ora_ordinazione{
 
-  font-size: 1.5em;
+  font-size: 1em;
 }
 
 .asporto{
@@ -2725,7 +2728,7 @@ input[type="search"] {
 .checkbox-inline {
   position: relative;
   display: inline-block;
-  padding-left: 20px;
+  padding-left: 10px;
   margin-bottom: 0;
   font-weight: normal;
   vertical-align: middle;
@@ -2734,7 +2737,7 @@ input[type="search"] {
 .radio-inline + .radio-inline,
 .checkbox-inline + .checkbox-inline {
   margin-top: 0;
-  margin-left: 10px;
+  margin-left: 5px;
 }
 input[type="radio"][disabled],
 input[type="checkbox"][disabled],
