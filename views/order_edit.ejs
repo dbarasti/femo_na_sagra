@@ -1,0 +1,125 @@
+<% include _header %> 
+   <h2> 
+      CASSA
+   </h2>
+   <h3 style="color:blue">Modalità modifica</h3>
+   <form method="post" role="form">   
+      <div class="panel panel-default">
+         <div class="panel-heading">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" placeholder="Nome dell'ordine" />
+            <br/>
+            <br/>
+            <div class="checkbox">
+               <label><input name="priorità" type="checkbox" value="priorità">Priorità</label>
+            </div>
+         </div>
+      </div>
+            
+      <br/>
+    
+      <div class="panel panel-default">
+         <div class="panel-heading">
+            <h3>CONDIMENTO PRINCIPALE:</h3>  
+            <fieldset>
+               <div class="checkbox">
+                  <label><input name="carne" id="carne1" type="radio" onclick ="carneClicked()" value="Salsiccia"> Salsiccia</label>
+               </div>
+               <div class="checkbox">
+                  <label><input name="carne" id="carne2" type="radio" onclick="carneClicked()" value="Hamburger"> Hamburger</label>
+               </div>
+               <div class="text pulled-center">
+                  <label><input name="double" id="double" type="checkbox" value="Double" onclick="doubleClicked()"> Double</label>
+                  <script>
+                     function doubleClicked() {
+                        if(document.getElementById("double").checked )
+                           document.getElementById("prezzo").innerHTML = "9 EURO";
+                        else
+                        //if(!document.getElementById("double").checked )
+                           document.getElementById("prezzo").innerHTML = "7 EURO";
+                     }
+                  </script>
+                  <script>
+                     function carneClicked() {
+                        if(document.getElementById("double").checked )
+                           document.getElementById("prezzo").innerHTML = "9 EURO";
+                        else
+                        //if(!document.getElementById("double").checked )
+                           document.getElementById("prezzo").innerHTML = "7 EURO";
+                     }
+                  </script>
+               </div> 
+            </fieldset>
+         <br/>
+         </div>
+      </div>
+         
+      <br/>
+      
+      <div class="panel panel-default">
+         <div class="panel-heading">
+            <h3>FARCITURA:</h3>   
+            <div class="checkbox">
+               <label><input name="verdura1" type="checkbox" value="Formaggio">Formaggio</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="verdura2" type="checkbox" value="Zucchine">Zucchine</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="verdura3" type="checkbox" value="Peperoni">Peperoni</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="verdura4" type="checkbox" value="Melanzane">Melanzane</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="verdura5" type="checkbox" value="Cipolle">Cipolle</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="verdura6" type="checkbox" value="Pomodori">Pomodori</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="verdura7" type="checkbox" value="Insalata">Insalata</label>
+            </div>
+         </div>
+      </div>      
+      <br/>
+      <br/>
+      <div class="panel panel-default">
+         <div class="panel-heading">
+            <h3>SALSE:</h3>   
+            <div class="checkbox">
+               <label><input name="salsa1" type="checkbox" value="Ketchup">Ketchup</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="salsa2" type="checkbox" value="Maionese">Maionese</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="salsa3" type="checkbox" value="BBQ">BBQ</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="salsa4" type="checkbox" value="Senape">Senape</label>
+            </div>
+         </div>
+      </div>      
+      <br/>
+   <div class="panel-default">
+      <div class="panel panel-heading">
+         <label for="prezzo">Prezzo:</label>
+         <div id="prezzo">
+            5 EURO
+         </div>
+      </div>
+   </div>
+   <br/>
+   <center>
+      <input type="submit" value="Concludi modifica" class="btn btn-primary"> 
+      <div class="text pull-right">
+         <a href="/cassa/" class="btn btn-raised btn-danger"> Annulla modifica </a>
+      </div>
+
+   </center>
+
+<script>
+
+<% include _footer %>
+

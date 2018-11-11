@@ -1,0 +1,64 @@
+<% include _header %>
+
+<h2>
+	Benvenuto nella pagina di amministrazione!
+</h2>
+
+<% if (giorno == 0) { %>
+    <div class="alert alert-danger" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        Seleziona un giorno prima di iniziare
+    </div>
+<% } else{ %>  
+</br>
+<div class="panel panel-default">
+    <div class="panel-heading">
+    	<% incassos.forEach(function(incasso) { %>
+            <center>
+    		    Totale parziale giorno <%= incasso.id %> PANINI:
+    		     <%= incasso.parziale %>€
+            </center>
+    	<% }) %>
+    </div>
+</div>
+<% }%>  
+<div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">mostra/elimina:
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+    	<li class="disabled"><a href="/admin/orders/">mostra tutti gli ordini</a></li>
+    	<li class="divider"></li>
+        <li><a href="/admin/orders/1">mostra ordini 25/05</a></li>
+    	<li><a href="/admin/orders/2">mostra ordini 26/05</a></li>
+    	<li><a href="/admin/orders/3">mostra ordini 27/05</a></li>
+    	<li><a href="/admin/orders/4">mostra ordini 1/06</a></li>
+    	<li><a href="/admin/orders/5">mostra ordini 2/06</a></li>
+    	<li><a href="/admin/orders/6">mostra ordini 3/06</a></li>  
+    	<li class="divider"></li>
+        <li><a href="/admin/report">mostra report giornate</a></li>
+        <li><a href="/admin/report/carne">mostra report carne</a></li>
+        <li class="divider"></li>
+    	<li><a href="/admin/deleteall/all"onclick="return confirm('Sicuro di voler eliminare gli ordini?');"><font color="red">ELIMINA TUTTI GLI ORDINI</font></a></li>
+        <li><a href="/admin/deleteall/panini"onclick="return confirm('Sicuro di voler eliminare i panini?');"><font color="red">ELIMINA TUTTI I PANINI</font></a></li>
+        <li><a href="/admin/deleteall/bevande"onclick="return confirm('Sicuro di voler eliminare le bevande?');"><font color="red">ELIMINA TUTTE LE BEVANDE</font></a></li>
+    </ul>
+</div>
+</br>
+
+<div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Selezione giorno:
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+    	<li><a href="/admin/giorno/1">25/05/2018</a></li>
+    	<li><a href="/admin/giorno/2">26/05/2018</a></li>
+    	<li><a href="/admin/giorno/3">27/05/2018</a></li>
+    	<li><a href="/admin/giorno/4">1/06/2018</a></li>
+    	<li><a href="/admin/giorno/5">2/06/2018</a></li>
+    	<li><a href="/admin/giorno/6">3/06/2018</a></li>
+    </ul>
+</div>
+
+<% include _footer %>
+
+

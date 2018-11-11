@@ -1,0 +1,12 @@
+<% include _header %>
+<h1><small class="text-muted">Report carne</small></h1>
+<div class="row">
+  <div class="col-sm">
+    <h4> Totale vendite Hamburger: <%= count_hamburger %> <a class="badge badge-success"><%= count_hamburger / count_tot * 100 %> %</a> <h4>
+    <h4> Totale vendite Salsicce: <%= count_salsiccia %> <a class="badge badge-success"><%= count_salsiccia / count_tot * 100 %> %</a><h4>
+    <h4> Totale vendite: <%= count_tot %><h4>
+</div>
+  </div>
+
+
+<% include _footer %>	

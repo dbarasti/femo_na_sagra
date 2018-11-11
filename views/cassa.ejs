@@ -1,0 +1,267 @@
+<% include _header %> 
+   <script src="/js/cassa.js"></script>
+</script>
+
+   <h2> 
+      CASSA
+   </h2>
+   
+   <div class="panel panel-info">
+      <div class="panel-footer">
+      <center>
+               Totale parziale giorno <%= incasso.id %> PANINI:
+              <%= incasso.parziale %>€
+      </center>
+      </div>
+      <div class="panel-footer">
+      <center>
+               Totale parziale giorno <%= bevande.id %> BEVANDE:
+              <%= bevande.totale %>€
+      </center>
+      </div>
+   </div>
+
+   <form method="post" role="form">   
+      <div class="panel panel-default">
+         <div class="panel-heading">
+            <label for="id">NUMERO ORDINE:</label>
+            <input type="text" maxlenght="15" id="id" name="_id" placeholder="Numero ordine" required="required"  value="<%= lastOrderID+1 %>"/>
+               Ultimo ordine: <%= lastOrderID %> 
+            <br/>
+            <br/>
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" placeholder="Nome dell'ordine" />
+            <br/>
+            <br/>
+            <div class="checkbox">
+               <label><input name="priorità" id="priorità" type="checkbox" value="priorità">Priorità (per ordini STAFF inserire 0(zero) in numero ordine e selezionare questa casella)</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="asporto" type="checkbox" value="asporto"> Asporto </label>
+            </div>
+         </div>
+         <div class="panel-heading">
+            <fieldset>
+               <div class="checkbox">
+                  <label><input name="defaultOrder" id="cannavacciuolo" type="checkbox" value="Cannavacciuolo" onclick="cannavacciuoloClicked()">Antonino Cannavacciuolo </label>
+                  <label><input name="defaultOrder" id="borghese" type="checkbox" value="Borghese" onclick="borgheseClicked()">Alessandro Borghese </label>
+                  <label><input name="defaultOrder" id="ramsey" type="checkbox" value="Ramsey" onclick="ramseyClicked()">Gordon Ramsey</label>
+                  <label><input name="defaultOrder" id="baby" type="checkbox" value="Baby" onclick="babyClicked()">Baby Burger</label>
+               </div>
+            </fieldset>
+         </div>
+      </div>
+    
+
+      <div class="panel panel-default">
+         <div class="panel-heading">
+            <h3 class="panel-title">
+               Condimento principale 
+            </h3>
+         </div>
+         <div class="panel-body">   
+            <fieldset>
+               <div class="checkbox">
+                  <label><input name="carne" id="carne1" type="radio" onclick ="carneClicked()" value="Salsiccia"> Salsiccia</label>
+               </div>
+               <div class="checkbox">
+                  <label><input name="carne" id="carne2" type="radio" onclick="carneClicked()" value="Hamburger"> Hamburger</label>
+               </div>
+               <div class="checkbox">
+                  <label><input name="double" id="double" type="checkbox" value="Double" onclick="doubleClicked()"> Double</label>
+               </div> 
+            </fieldset>
+         <br/>
+         </div>
+      </div>
+      
+      <div class="panel panel-default">
+         <div class="panel-heading">
+            <h3 class="panel-title">
+               Farcitura
+            </h3>   
+         </div>
+         <div class="panel-body">
+            <div class="checkbox">
+               <label><input name="verdura1" id="verdura1" type="checkbox" value="Formaggio" onclick="farcituraClicked()">Formaggio</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="verdura2" id="verdura2" type="checkbox" value="Zucchine" onclick="farcituraClicked()">Zucchine</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="verdura3" id="verdura3" type="checkbox" value="Peperoni" onclick="farcituraClicked()">Peperoni</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="verdura4" id="verdura4" type="checkbox" value="Melanzane" onclick="farcituraClicked()">Melanzane</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="verdura5" id="verdura5" type="checkbox" value="Cipolle" onclick="farcituraClicked()">Cipolle</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="verdura6" id="verdura6" type="checkbox" value="Pomodori" onclick="farcituraClicked()">Pomodori</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="verdura7" id="verdura7" type="checkbox" value="Insalata" onclick="farcituraClicked()">Insalata</label>
+            </div>
+         </div>
+      </div>      
+      <div class="panel panel-default">
+         <div class="panel-heading">
+            <h3 class="panel-title">
+               Salse
+            </h3>  
+         </div>
+         <div class="panel-body">
+            <div class="checkbox">
+               <label><input name="salsa1" id="salsa1" type="checkbox" value="Ketchup">Ketchup</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="salsa2" id="salsa2" type="checkbox" value="Maionese">Maionese</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="salsa3" id="salsa3" type="checkbox" value="BBQ">BBQ</label>
+            </div>
+            <div class="checkbox">
+               <label><input name="salsa4" id="salsa4" type="checkbox" value="Senape">Senape</label>
+            </div>
+         </div>
+      </div>  
+
+      <div class="panel panel-default">
+         <div class="panel-heading">
+         <h3>
+            Conto Panino
+         </h3>
+         </div>
+         <div class="panel-body">
+            <div id="prezzo">
+               0 EURO
+            </div>
+            <input type="hidden" id="totalePanino" name="totalePanino" value="0">
+         </div>
+      </div>
+
+      <div class="panel panel-default">
+         <div class="panel-heading">
+            <h3>BEVANDE</h3>   
+         </div>
+         <div class="panel-body">
+            <div class="checkbox">
+               
+               <label><input name="bevanda1" id="bevanda1" type="checkbox" value="Artigianale" onclick="bevandaClicked('bevanda1', 5)">Birra Artigianale In Bottiglia</label>
+
+               <span class="dropup"> 
+                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   <span id="dropdown1">0</span>
+                   <span class="caret"></span>
+                 </button>
+                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                   <li id="bevanda11"><a onclick="dropClicked('dropdown1', 'bevanda11', 5)">1</a></li>
+                   <li id="bevanda12"><a onclick="dropClicked('dropdown1', 'bevanda12', 5)">2</a></li>
+                   <li id="bevanda13"><a onclick="dropClicked('dropdown1', 'bevanda13', 5)">3</a></li>
+                   <li id="bevanda14"><a onclick="dropClicked('dropdown1', 'bevanda14', 5)">4</a></li>
+                 </ul>
+               </span>
+
+               <label><input name="bevanda2" id="bevanda2" type="checkbox" value="BiondaSpina" onclick="bevandaClicked('bevanda2', 3)">Birra bionda alla spina</label>
+               <span class="dropup"> 
+                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   <span id="dropdown2">0</span>
+                   <span class="caret"></span>
+                 </button>
+                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                   <li id="bevanda21"><a onclick="dropClicked('dropdown2', 'bevanda21', 3)">1</a></li>
+                   <li id="bevanda22"><a onclick="dropClicked('dropdown2', 'bevanda22', 3)">2</a></li>
+                   <li id="bevanda23"><a onclick="dropClicked('dropdown2', 'bevanda23', 3)">3</a></li>
+                   <li id="bevanda24"><a onclick="dropClicked('dropdown2', 'bevanda24', 3)">4</a></li>
+                 </ul>
+               </span>
+
+
+               <label><input name="bevanda3" id="bevanda3" type="checkbox" value="RossaSpina" onclick="bevandaClicked('bevanda3', 3.5)">Birra rossa alla spina</label>  
+               <span class="dropup"> 
+                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   <span id="dropdown3">0</span>
+                   <span class="caret"></span>
+                 </button>
+                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                   <li id="bevanda31"><a onclick="dropClicked('dropdown3', 'bevanda31', 3.5)">1</a></li>
+                   <li id="bevanda32"><a onclick="dropClicked('dropdown3', 'bevanda32', 3.5)">2</a></li>
+                   <li id="bevanda33"><a onclick="dropClicked('dropdown3', 'bevanda33', 3.5)">3</a></li>
+                   <li id="bevanda34"><a onclick="dropClicked('dropdown3', 'bevanda34', 3.5)">4</a></li>
+                 </ul>
+               </span>
+            </div>
+            <div class="checkbox">
+               <label><input name="bevanda4" id="bevanda4" type="checkbox" value="CocaSpina" onclick="bevandaClicked('bevanda4', 2)">CocaCola alla spina</label>
+               <span class="dropdown">
+                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                   <span id="dropdown4">0</span>
+                   <span class="caret"></span>
+                 </button>
+                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu4">
+                   <li id="bevanda41"><a onclick="dropClicked('dropdown4', 'bevanda41', 2)">1</a></li>
+                   <li id="bevanda42"><a onclick="dropClicked('dropdown4', 'bevanda42', 2)">2</a></li>
+                   <li id="bevanda43"><a onclick="dropClicked('dropdown4', 'bevanda43', 2)">3</a></li>
+                   <li id="bevanda44"><a onclick="dropClicked('dropdown4', 'bevanda44', 2)">4</a></li>
+                 </ul>
+               </span>
+
+
+               <label><input name="bevanda5" id="bevanda5" type="checkbox" value="Acqua" onclick="bevandaClicked('bevanda5', 1)">Acqua Minerale in Bottiglia</label>
+               <span class="dropdown">
+                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                   <span id="dropdown5">0</span>
+                   <span class="caret"></span>
+                 </button>
+                 <ul class="dropdown-menu" aria-labelledby="dropdown5">
+                   <li id="bevanda51"><a onclick="dropClicked('dropdown5', 'bevanda51', 1)">1</a></li>
+                   <li id="bevanda52"><a onclick="dropClicked('dropdown5', 'bevanda52', 1)">2</a></li>
+                   <li id="bevanda53"><a onclick="dropClicked('dropdown5', 'bevanda53', 1)">3</a></li>
+                   <li id="bevanda54"><a onclick="dropClicked('dropdown5', 'bevanda54', 1)">4</a></li>
+                 </ul>
+               </span>
+
+            </div>
+            <div class="panel panel-default">
+               <div class="panel-heading">
+               <h3 class="panel-title">
+                  Conto Bevande
+               </h3>
+               </div>
+               <div class="panel-body">
+                  <div id="prezzoBevande">
+                     0 EURO
+                  </div>
+                  <input type="hidden" id="totaleBevande" name="totaleBevande" value="0">
+               </div>
+            </div>
+
+         </div>
+      </div>  
+
+      <div class="panel panel-default">
+         <div class="panel-heading">
+         <h3>
+            Totale Ordine
+         </h3>
+         </div>
+         <div class="panel-body">
+            <div id="totale">
+               0 EURO
+            </div>
+         </div>
+      </div>
+
+
+
+      <center>
+         <input type="submit" value="Invia ordine" class="btn btn-primary"> 
+         <div class="text pull-right">
+            <a href="/cassa/" class="btn btn-raised btn-danger"> Annulla ordine </a>
+         </div>
+      </center>
+
+
+<% include _footer %>
+

@@ -1,0 +1,17 @@
+
+TO DO 
+-possibilità di scegliere l'ordine di visualizzazione degli ordini in "amministrazione": decrescente, crescente
+-Assolutamente da sistemare la modalità modifica, che deve essere per ora disabilitata(disabled on html)
+-Unire i file di admin_orders e admin_orders_all (PER ORA DISABILITATO ADMIN_ORDERS_ALL)
+-risolvere bug relativo a selezione/deselezione panini.
+-Ordinazioni per staff non devono essere conteggiate negli altri ordini!!
+-sistemare il css delle pagine
+DOING
+
+
+DONE
+-gestione eliminazione ordini bar da schermata admin
+-anzichè "scoprire" il prezzo del panino, creare input fake(hidden) e prendere da li il valore. 
+-se l'ordine non contiene panino(tot = 0), non creare entry nel db
+-possibilità di scegliere cosa eliminare dal db (solo panini o solo bevande o tutto)
+-sistemato il css della pagina cucina.ejs

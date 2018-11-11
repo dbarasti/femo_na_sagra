@@ -1,0 +1,78 @@
+<% include _header %>
+
+<h1>Ordini bevande giornata <%= incassos[0].id %> </h1> 
+
+<span class="pull-left">
+<span class="btn-group">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Tipo Ordine <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <li><a href="/admin/orders/<%= incassos[0].id %>">Panini</a></li>
+  </ul>
+</span>
+</span>
+
+
+</br>
+</br>
+
+<% ordini.forEach(function(ordine) { %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <div class="text pull-right">
+      <% if (!ordine.visibility) { %>
+        <a href='/drinks/restore/<%= ordine.uid %>' class="btn btn-info"> Ripristina </a> 
+      <% } %>
+      <a href='/drinks/<%= ordine.uid %>/delete' class="btn btn-raised btn-danger"> Elimina </a>
+      </div>
+      <div class="text pull-left">
+      NOME:
+      <%= ordine.nome %>
+      </div>
+      <center>
+      ORA ORDINAZIONE:
+      <%=moment(ordine.createdAt).format('MM/DD/YYYY HH:mm:ss')%>
+      </center>
+      </br>
+      <div class="text pull-right">
+        PREZZO:
+      <%= ordine.prezzo %>€
+      </div>
+      <div class="text">
+        NUMERO ORDINE:
+        <%= ordine.id %>
+      </div>
+      <center>
+        <font color="red">
+          <div class="text ">
+            <% if (ordine.priority) { %>
+              ORDINE CON PRIORITÀ
+            <% } %>
+          </div>
+        </font>
+      </center>
+    </div>
+    <div class="panel-body">
+        <font size="6">
+          <% if(ordine.BA > 0) {%>
+            <%= ordine.BA %>x BIRRA ART. 
+          <% } %>  
+          <% if(ordine.BB > 0) {%>
+            <%= ordine.BB %>x BIRRA Bionda spina
+          <% } %>
+          <% if(ordine.BR > 0) {%>
+            <%= ordine.BR %>x BIRRA Rossa spina. 
+          <% } %>
+          <% if(ordine.CC > 0) {%>
+            <%= ordine.CC %>x CocaCola 
+          <% } %>
+          <% if(ordine.AQ >0) {%>
+            <%= ordine.AQ %>x Acqua          
+          <% } %>
+        </font>
+      </div>
+  </div>
+<% }) %>
+
+<% include _footer %>

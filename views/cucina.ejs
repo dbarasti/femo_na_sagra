@@ -1,0 +1,145 @@
+<% include _header %>
+
+<h1>Cucina</h1>
+
+<div class="pull-right">
+<a href='/orders/undo' class="btn btn-raised btn-warning">
+  <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+  UNDO
+</a>
+</div>  
+  
+</br>
+</br>
+
+  <% var count = 0; %>
+  <% ordini.forEach(function(ordine) { %>
+
+    <% if(ordine.visibility) { %>   
+      <% count++; %>
+      <% if(ordine.id % 2 != 0) { %> 
+        <div class="panel panel-primary">
+      <% } %>
+
+      <% if(ordine.id % 2 == 0) { %>
+        <div class="panel panel-info">
+      <% } %>
+
+      <div class="panel-heading">
+        <div class="text-muted pull-right">
+          <a href='/orders/<%= ordine.uid %>/<%= ordine.giorno %>/remove' class="btn btn-raised btn-danger">
+            <i class="icon-user icon-white"></i>
+            COMPLETATO
+          </a>
+        </div>
+        <% if(ordine.nome) { %>
+          <div class="text pull-left nome_ordine">
+              NOME:
+              <%= ordine.nome %>
+          </div>
+        <% }  %>
+        <center class="ora_ordinazione">
+        ORA ORDINAZIONE:
+        <%=moment(ordine.createdAt).format('HH:mm:ss')%>
+        </center>
+        <br/>
+        <div class="text pull-left">
+            NUMERO ORDINE
+            <% if(ordine.asporto) { %>  
+            <span class="asporto">
+              PER ASPORTO
+            </span>
+            <% } %>
+            :
+            <%= ordine.id %>
+        </div>
+        <br/>
+        <br/>
+        <center>
+            <div class="text priorità">
+              <% if (ordine.priority) { %>
+                ORDINE CON PRIORITÀ
+                <span class="staff">
+                <% if (ordine.id == 0) { %>
+                  PER STAFF
+                <% } %>
+                </span>
+              <% } %>
+            </div>
+        </center>
+      </div>
+      <div class="panel-body ingredienti">
+          <span class="carne">
+          <% if (ordine.carne) { %>
+            <% if (ordine.double){ %>
+              Double
+            <% } %>
+            <%= ordine.carne %>
+          <% } %>
+          </span>
+          <span class="verdura">
+          <% if (ordine.verdura1) { %>
+            <%= ordine.verdura1 %>
+          <% } %>            
+          <% if (ordine.verdura2) { %>
+            <%= ordine.verdura2 %>
+          <% } %>
+          <% if (ordine.verdura3) { %>
+            <%= ordine.verdura3 %>
+          <% } %>
+          <% if (ordine.verdura4) { %>
+            <%= ordine.verdura4 %>
+          <% } %>
+          <% if (ordine.verdura5) { %>
+            <%= ordine.verdura5 %>
+          <% } %>
+          <% if (ordine.verdura6) { %>
+            <%= ordine.verdura6 %>
+          <% } %>            
+          <% if (ordine.verdura7) { %>
+            <%= ordine.verdura7 %>
+          <% } %>
+          </span>
+          <span class="salsa">
+            <% if (ordine.salsa1) { %>
+            <%= ordine.salsa1 %>
+          <% } %>
+          <% if (ordine.salsa2) { %>
+            <%= ordine.salsa2 %>
+          <% } %>
+          <% if (ordine.salsa3) { %>
+            <%= ordine.salsa3 %>
+          <% } %>
+          <% if (ordine.salsa4) { %>
+            <%= ordine.salsa4 %>
+          <% } %>
+          </span>   
+      </div>
+    </div>
+
+    <% } %>
+
+  <% }) %>
+
+
+  <% if(count == 0) { %> 
+  
+    </br>
+    <div class="alert alert-success" role="alert">
+    <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span>
+    Non ci sono ordini da completare!
+    </div>
+
+  <% } %>
+
+<% var prog = ((ordini.length - count)/ordini.length) * 100; %>
+
+<div class="progress">
+  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= prog %>%;">
+    <span class="sr-only">60% Complete</span>
+  </div>
+</div>
+
+<% include _footer %>
+<meta http-equiv="refresh" content="15" >
