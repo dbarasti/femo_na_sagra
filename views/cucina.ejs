@@ -3,10 +3,10 @@
 <h1>Cucina</h1>
 
 <div class="pull-right">
-<a href='/orders/undo' class="btn btn-raised btn-warning">
-  <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
-  UNDO
-</a>
+  <a href='/orders/undo' class="btn btn-raised btn-warning">
+    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+    UNDO
+  </a>
 </div>  
   
 </br>
@@ -26,24 +26,30 @@
       <% } %>
 
       <div class="panel-heading">
-        <div class="text-muted pull-right">
+        <div class="pull-right">
           <a href='/orders/<%= ordine.uid %>/<%= ordine.giorno %>/remove' class="btn btn-raised btn-danger">
             <i class="icon-user icon-white"></i>
             COMPLETATO
           </a>
         </div>
+        <!--
         <% if(ordine.nome) { %>
-          <div class="text pull-left nome_ordine">
+          <div class="pull-left nome_ordine">
+            <p>
               NOME:
               <%= ordine.nome %>
+            </p>
           </div>
         <% }  %>
+        -->
         <center class="ora_ordinazione">
-        ORA ORDINAZIONE:
-        <%=moment(ordine.createdAt).format('HH:mm:ss')%>
+          <p>
+            ORA ORDINAZIONE: <%=moment(ordine.createdAt).format('HH:mm')%>
+          </p>
         </center>
         <br/>
-        <div class="text pull-left">
+        <div class="pull-left numero-ordine">
+          <p>
             NUMERO ORDINE
             <% if(ordine.asporto) { %>  
             <span class="asporto">
@@ -52,22 +58,26 @@
             <% } %>
             :
             <%= ordine.id %>
+          </p>
         </div>
         <br/>
         <br/>
-        <center>
+        
             <div class="text priorità">
-              <% if (ordine.priority) { %>
-                ORDINE CON PRIORITÀ
+              <p>
+                <% if (ordine.priority) { %>
+                  ORDINE CON PRIORITÀ
                 <span class="staff">
                 <% if (ordine.id == 0) { %>
                   PER STAFF
                 <% } %>
                 </span>
-              <% } %>
+                <% } %>
+              </p>
             </div>
-        </center>
+     
       </div>
+
       <div class="panel-body ingredienti">
           <span class="carne">
           <% if (ordine.carne) { %>
