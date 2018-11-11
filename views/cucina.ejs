@@ -1,6 +1,8 @@
 <% include _header %>
 
-<h1>Cucina</h1>
+<div class="page-header">
+    <h1>Cucina</h1>
+</div>
 
 <div class="pull-right">
   <a href='/orders/undo' class="btn btn-raised btn-warning">
@@ -9,10 +11,8 @@
   </a>
 </div>  
   
-</br>
-</br>
 
-<div class="row">
+<div class="row orders-block">
   <% ordini.forEach((ordine)=>{ %>   
     <div class="col-md-6">
       <% if(ordine.id % 2 != 0) { %> 
@@ -30,22 +30,13 @@
             COMPLETATO
           </a>
         </div>
-        <!--
-        <% if(ordine.nome) { %>
-          <div class="pull-left nome_ordine">
-            <p>
-              NOME:
-              <%= ordine.nome %>
-            </p>
-          </div>
-        <% }  %>
-        -->
+        
         <div class="ora_ordinazione">
           <p>
             ORA ORDINAZIONE: <%=moment(ordine.createdAt).format('HH:mm')%>
           </p>
         </div>
-        <div class="pull-left numero-ordine">
+        <div class="numero-ordine">
           <p>
             NUMERO ORDINE
             <% if(ordine.asporto) { %>  
@@ -57,21 +48,18 @@
             <%= ordine.id %>
           </p>
         </div>
-        <br/>
-        <br/>
-        
-            <div class="text priorità">
-              <p>
-                <% if (ordine.priority) { %>
-                  ORDINE CON PRIORITÀ
-                <span class="staff">
-                <% if (ordine.id == 0) { %>
-                  PER STAFF
-                <% } %>
-                </span>
-                <% } %>
-              </p>
-            </div>
+        <div class="text priorità">
+          <p>
+            <% if (ordine.priority) { %>
+              ORDINE CON PRIORITÀ
+            <span class="staff">
+            <% if (ordine.id == 0) { %>
+              PER STAFF
+            <% } %>
+            </span>
+            <% } %>
+          </p>
+        </div>
      
       </div>
 
@@ -125,6 +113,7 @@
       </div>
     </div>
   <% }) %>
+
 </div>
 
 <% include _footer %>

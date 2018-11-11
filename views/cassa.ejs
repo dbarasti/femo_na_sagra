@@ -1,20 +1,20 @@
 <% include _header %> 
 <script src="/js/cassa.js"></script>
-<h2> 
-   CASSA
-</h2>
-<div class="panel panel-info">
-   <div class="panel-footer">
-      <center>
-         Totale parziale giorno <%= incasso.id %> PANINI: <%= incasso.parziale %>€
-      </center>
-   </div>
-   <div class="panel-footer">
-      <center>
-         Totale parziale giorno <%= bevande.id %> BEVANDE: <%= bevande.totale %>€
-      </center>
-   </div>
+<div class="page-header">
+  <h1>Cassa</h1>
 </div>
+
+<ul class="list-group">
+  <li class="list-group-item">
+    <span class="badge"><%= incasso.parziale %>€</span>
+    Totale parziale giorno <%= incasso.id %> PANINI
+  </li>
+  <li class="list-group-item">
+    <span class="badge"><%= bevande.totale %>€</span>
+    Totale parziale giorno <%= bevande.id %> BEVANDE
+  </li>
+</ul>
+
 <form method="post" role="form">
    <div class="panel panel-default">
       <div class="panel-heading">
@@ -28,7 +28,7 @@
           <input class="form-control" type="text" id="nome" name="nome" placeholder="Nome cliente" />
         </div>
         <div class="checkbox">
-          <label><input name="priorità" id="priorità" type="checkbox" value="priorità">Priorità (per ordini STAFF inserire 0(zero) in numero ordine e selezionare questa casella)</label>
+          <label><input name="priorità" id="priorità" type="checkbox" value="priorità">Priorità (per ordini STAFF inserire 0 (zero) in numero ordine e selezionare questa casella)</label>
         </div>
         <div class="checkbox">
           <label><input name="asporto" type="checkbox" value="asporto"> Asporto </label>

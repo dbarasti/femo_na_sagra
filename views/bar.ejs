@@ -1,22 +1,21 @@
 <% include _header %>
 
-<h1>BAR</h1>
+<div class="page-header">
+  <h1>Bar</h1>
+</div>
 
-<div class="text-muted pull-right">
+<div class="pull-right">
 <a href='/bar/undo' class="btn btn-raised btn-warning">
   <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
   UNDO
 </a>
 </div>  
+
+
+<div class="row orders-block">
   
-</br>
-</br>
-
-  <% var count = 0; %>
   <% ordini.forEach(function(ordine) { %>
-
-    <% if(ordine.visibility) { %>   
-      <% count++; %>
+    <div class="col-md-6">
       <% if(ordine.id % 2 != 0) { %> 
         <div class="panel panel-primary">
       <% } %>
@@ -26,46 +25,44 @@
       <% } %>
 
       <div class="panel-heading">
-        <div class="text-muted pull-right">
-          <a href='/bar/<%= ordine.uid %>/<%= ordine.giorno %>/remove' class="btn btn-raised btn-danger">
+        <div class="pull-right">
+          <a href='/bar/<%= ordine.uid %>/<%= ordine.giorno %>/remove' class="btn-sm btn-raised btn-danger">
             <i class="icon-user icon-white"></i>
             COMPLETATO
           </a>
         </div>
-        <div class="text pull-left">
-          <font size="5">
-            NOME:
-            <%= ordine.nome %>
-          </font>
+
+        <div class="ora_ordinazione">
+          <p>
+            ORA ORDINAZIONE: <%=moment(ordine.createdAt).format('HH:mm')%>
+          </p>
         </div>
-        <center>
-        ORA ORDINAZIONE:
-        <%=moment(ordine.createdAt).format('HH:mm:ss')%>
-        </center>
-        <br/>
-        <div class="text pull-left">
-          <font size="5">
+        <div class="numero-ordine">
+          <p>
             NUMERO ORDINE
+            <% if(ordine.asporto) { %>  
+            <span class="asporto">
+              PER ASPORTO
+            </span>
+            <% } %>
+            :
             <%= ordine.id %>
-          </font>
+          </p>
         </div>
-        <br/>
-        <br/>
-        <center>
-          <font color="red">
-            <div class="text ">
-              <% if (ordine.priority) { %>
-                ORDINE CON PRIORITÀ
-                <% if (ordine.id == 0) { %>
-                  PER STAFF
-                <% } %>
-              <% } %>
-            </div>
-          </font>
-        </center>
+        <div class="text priorità">
+          <p>
+            <% if (ordine.priority) { %>
+              ORDINE CON PRIORITÀ
+            <span class="staff">
+            <% if (ordine.id == 0) { %>
+              PER STAFF
+            <% } %>
+            </span>
+            <% } %>
+          </p>
+        </div>
       </div>
-      <div class="panel-body">
-        <font size="6">
+      <div class="panel-body ingredienti">
           <% if(ordine.BA > 0) {%>
             <%= ordine.BA %>x BIRRA ART. 
           <% } %>  
@@ -81,33 +78,10 @@
           <% if(ordine.AQ >0) {%>
             <%= ordine.AQ %>x Acqua          
           <% } %>
-        </font>
       </div>
     </div>
-
-    <% } %>
-
-  <% }) %>
-
-
-  <% if(count == 0) { %> 
-  
-    </br>
-    <div class="alert alert-success" role="alert">
-    <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
-    <span class="sr-only">Error:</span>
-    Non ci sono ordini bar da completare!
-    </div>
-
-  <% } %>
-
-<% var prog = ((ordini.length - count)/ordini.length) * 100; %>
-
-<div class="progress">
-  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= prog %>%;">
-    <span class="sr-only">60% Complete</span>
   </div>
+  <% }) %>
 </div>
-
 <% include _footer %>
 <meta http-equiv="refresh" content="15" >

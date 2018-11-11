@@ -53,7 +53,7 @@ router.get("/cassa", function(req,res){
 
 router.post("/cassa", function(request, res, next){
     //print json doc
-    console.log(request.body);
+    //console.log(request.body);
 
     var prezzo_panino=parseFloat(request.body.totalePanino);
 
@@ -168,7 +168,7 @@ router.get("/orders/undo", function(req, res){
 
 //GESIONE BAR
 router.get("/bar", function(req, res, next){
-    Bar.find({giorno: giorno})
+    Bar.find({giorno: giorno, visibility: true})
     .sort({ priority: "descending", createdAt: "ascending", id: "ascending" })
     .exec(function(err, bar){
         if(err){return next(err); }

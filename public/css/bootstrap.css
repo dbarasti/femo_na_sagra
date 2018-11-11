@@ -28,13 +28,17 @@ summary {
   display: block;
 }
 
+.orders-block{
+  margin-top: 7%;
+}
+
 .text, .pull-left{
   font-size: 2em;
   line-height: 30%;
 }
 
 .numero-ordine{
-  font-size: 1em;
+  font-size: 1.5em;
 }
 
 .nome_ordine{
@@ -43,7 +47,7 @@ summary {
 
 .ora_ordinazione{
 
-  font-size: 1em;
+  font-size: 1.2em;
 }
 
 .asporto{

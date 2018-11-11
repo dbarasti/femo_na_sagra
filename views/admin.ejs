@@ -1,8 +1,8 @@
 <% include _header %>
 
-<h2>
-	Benvenuto nella pagina di amministrazione!
-</h2>
+<div class="page-header">
+    <h1>Gestione Ordini <small>Visualizza e elimina le ordinazioni</small></h1>
+</div>
 
 <% if (giorno == 0) { %>
     <div class="alert alert-danger" role="alert">
@@ -12,16 +12,15 @@
     </div>
 <% } else{ %>  
 </br>
-<div class="panel panel-default">
-    <div class="panel-heading">
-    	<% incassos.forEach(function(incasso) { %>
-            <center>
-    		    Totale parziale giorno <%= incasso.id %> PANINI:
-    		     <%= incasso.parziale %>€
-            </center>
-    	<% }) %>
-    </div>
-</div>
+
+<ul class="list-group">
+  <li class="list-group-item">
+    <span class="badge"><%= incassos[0].parziale %>€</span>
+    Totale parziale giorno <%= incassos[0].id %> PANINI
+  </li>
+</ul>
+
+
 <% }%>  
 <div class="dropdown">
     <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">mostra/elimina:
