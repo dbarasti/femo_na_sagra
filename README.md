@@ -17,7 +17,7 @@ You just need a couple of things:
 
 ### Installation
 
-Now jump into the project folder and run on you terminal
+Now jump into the project folder and run on your terminal
 
 ```
 npm install
