@@ -31,7 +31,7 @@ mongoose.connect("mongodb://heroku_55rqs31t:alfunmd16dnnisd4rf0398fp5d@ds155934.
 //mongoose.connect("mongodb://heroku_55rqs31t:alfunmd16dnnisd4rf0398fp5d@ds155934.mlab.com:55934/heroku_55rqs31t?useMongoClient");
 
 // DA RIPRISTINARE!
-//app.use(wwwhisper());
+app.use(wwwhisper());
 
 app.set("port", process.env.PORT || 8000);
 
