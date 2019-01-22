@@ -1,4 +1,4 @@
-function clearAll(totalePanino) {
+function clearAll() {
    document.getElementById("prezzo").innerHTML = "0 EURO";
    document.getElementById("double").checked = false;
    document.getElementById("carne1").checked = false;
@@ -17,6 +17,7 @@ function clearAll(totalePanino) {
 }
 function setTotale(prezzo) {
    var current = parseFloat(document.getElementById('totale').innerHTML);
+   console.log(prezzo);
    current += prezzo;
    document.getElementById('totale').innerHTML = current.toString() + ' EURO';
 }
@@ -29,7 +30,7 @@ function cannavacciuoloClicked() {
       cannavacciuoloUnchecked();
 }
 function cannavacciuoloChecked(){
-   document.getElementById('totale').innerHTML = (parseFloat(document.getElementById('totale').innerHTML) + 7).toString() + ' EURO'
+   setTotale(7-parseFloat(document.getElementById('prezzo').innerHTML))
    document.getElementById("prezzo").innerHTML = "7 EURO";
    //aggiorno input fittizio
    document.getElementById("totalePanino").value = "7";
@@ -42,8 +43,8 @@ function cannavacciuoloChecked(){
 }
 
 function cannavacciuoloUnchecked(){
-   setTotale(0-7);
-   clearAll(parseFloat(document.getElementById("prezzo").innerHTML));
+   setTotale(0-parseFloat(document.getElementById("prezzo").innerHTML));
+   clearAll();
    document.getElementById("totalePanino").value = "0";
 }
 
@@ -54,7 +55,7 @@ function borgheseClicked() {
       borgheseUnchecked();
 }
 function borgheseChecked(){
-   setTotale(7);
+   setTotale(7-parseFloat(document.getElementById('prezzo').innerHTML))
    document.getElementById("prezzo").innerHTML = "7 EURO";
    document.getElementById("totalePanino").value = "7";
    document.getElementById("carne2").checked = true;
@@ -65,8 +66,8 @@ function borgheseChecked(){
 }
 
 function borgheseUnchecked(){
-   setTotale(0-7);
-   clearAll(parseFloat(document.getElementById("prezzo").innerHTML));
+   setTotale(0-parseFloat(document.getElementById("prezzo").innerHTML));
+   clearAll();
    document.getElementById("totalePanino").value = "0";
 }
 
@@ -77,7 +78,7 @@ function ramseyClicked() {
       ramseyUnchecked();
 }
 function ramseyChecked(){
-   setTotale(9);
+   setTotale(9-parseFloat(document.getElementById('prezzo').innerHTML))
    document.getElementById("prezzo").innerHTML = "9 EURO";
    document.getElementById("totalePanino").value = "9";
    document.getElementById("carne2").checked = true;
@@ -91,8 +92,8 @@ function ramseyChecked(){
 }
 
 function ramseyUnchecked(){
-   setTotale(0-9);
-   clearAll(parseFloat(document.getElementById("prezzo").innerHTML));
+   setTotale(0-parseFloat(document.getElementById("prezzo").innerHTML));
+   clearAll();
    document.getElementById("totalePanino").value = "0";
 }
 
@@ -103,13 +104,13 @@ function babyClicked() {
       babyUnchecked();
 }
 function babyChecked() {
-   setTotale(4-parseFloat(document.getElementById("prezzo").innerHTML));
-   document.getElementById("totalePanino").value = "4";
+   setTotale(4-parseFloat(document.getElementById('prezzo').innerHTML))
    document.getElementById("prezzo").innerHTML = "4 EURO";
+   document.getElementById("totalePanino").value = "4";
    document.getElementById("carne2").checked = true;
 }
 function babyUnchecked() {
-   setTotale(0-4);
+   setTotale(0-parseFloat(document.getElementById("prezzo").innerHTML));
    document.getElementById("totalePanino").value = "0";
    clearAll();
 }

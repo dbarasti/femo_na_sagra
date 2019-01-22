@@ -95,24 +95,26 @@ router.post("/cassa", (request, res, next)=>{
     }
 
     if(parseFloat(request.body.totaleBevande) != 0){
-        
-        if(!(request.body._id == 0 && request.body.priorità)){
-            Bevande.findOne({ id: giorno }, (err, doc)=>{
-                doc.totale = +doc.totale + parseFloat(request.body.totaleBevande);
-                if(request.body.bevanda1)
-                    doc.BA += parseInt(request.body.bevanda1);
-                if(request.body.bevanda2)
-                    doc.BB += parseInt(request.body.bevanda2);
-                if(request.body.bevanda3)
-                    doc.BR += parseInt(request.body.bevanda3);
-                if(request.body.bevanda4)
-                    doc.CC += parseInt(request.body.bevanda4);
-                if(request.body.bevanda5)
-                    doc.AQ += parseInt(request.body.bevanda5);
-                doc.save();
-            });
+        //evito di conteggiare le bevande per staff
+        if(request.body.priorità == 'priorità' && request.body._id == 0){
+            prezzo_panino = 0.0;
         }
-
+        
+        Bevande.findOne({ id: giorno }, (err, doc)=>{
+            doc.totale = +doc.totale + parseFloat(request.body.totaleBevande);
+            if(request.body.bevanda1)
+                doc.BA += parseInt(request.body.bevanda1);
+            if(request.body.bevanda2)
+                doc.BB += parseInt(request.body.bevanda2);
+            if(request.body.bevanda3)
+                doc.BR += parseInt(request.body.bevanda3);
+            if(request.body.bevanda4)
+                doc.CC += parseInt(request.body.bevanda4);
+            if(request.body.bevanda5)
+                doc.AQ += parseInt(request.body.bevanda5);
+            doc.save();
+        });
+        
         var newBar = new Bar({
             uid: yeast(),
             id: request.body._id,
@@ -130,9 +132,6 @@ router.post("/cassa", (request, res, next)=>{
         });
         newBar.save();    
     }
-
-
-
     setTimeout(()=>{res.redirect("/cassa");}, 1000); 
 });
 
