@@ -13,7 +13,7 @@ var giorno = 0;
 var ordini_completati = [];
 var ordini_completati_bar = [];
 
-router.use(function(req, res, next){
+router.use((req, res, next)=>{
 	res.locals.currentUser = req.Ordine;
 	res.locals.currentIncasso = req.incasso;
     	res.locals.currentBevande = req.Bevande;
@@ -23,22 +23,22 @@ router.use(function(req, res, next){
 	next();
 });
 
-router.get("/", function(req,res){          
+router.get("/", (req,res)=>{          
 	res.render("homepage");
 });
 
 
-router.get("/cassa", function(req,res){
-    Incasso.findOne({ id: giorno }, function (err, incasso){
+router.get("/cassa", (req,res)=>{
+    Incasso.findOne({ id: giorno }, (err, incasso)=>{
         if(giorno == 0){
             returnToCassa = true;
             res.render("admin", {incassos: incasso, giorno: giorno});
         }
         else{
-            Bevande.findOne({id: giorno}, function(err, bevande) {
+            Bevande.findOne({id: giorno}, (err, bevande)=> {
                 Ordine.findOne({giorno: giorno})
                 .sort({createdAt: "descending"})
-                .exec(function(err, order) { 
+                .exec((err, order)=>{ 
                     if(order){
                         res.render("cassa", {incasso: incasso, bevande: bevande, lastOrderID: order.id });
                     }
@@ -51,7 +51,7 @@ router.get("/cassa", function(req,res){
     });  
 });
 
-router.post("/cassa", function(request, res, next){
+router.post("/cassa", (request, res, next)=>{
     //print json doc
     //console.log(request.body);
 
@@ -85,7 +85,7 @@ router.post("/cassa", function(request, res, next){
         });
         newOrder.save();
 
-        Incasso.findOne({ id: giorno }, function (err, doc){
+        Incasso.findOne({ id: giorno }, (err, doc)=>{
             doc.parziale = +doc.parziale + +prezzo_panino;
             doc.save();
         });
@@ -94,7 +94,7 @@ router.post("/cassa", function(request, res, next){
     if(parseFloat(request.body.totaleBevande) != 0){
         
         if(!(request.body._id == 0 && request.body.priorità)){
-            Bevande.findOne({ id: giorno }, function (err, doc){
+            Bevande.findOne({ id: giorno }, (err, doc)=>{
                 doc.totale = +doc.totale + parseFloat(request.body.totaleBevande);
                 if(request.body.bevanda1)
                     doc.BA += parseInt(request.body.bevanda1);
@@ -130,20 +130,20 @@ router.post("/cassa", function(request, res, next){
 
 
 
-    setTimeout(function() {res.redirect("/cassa");}, 1000); 
+    setTimeout(()=>{res.redirect("/cassa");}, 1000); 
 });
 
-router.get("/orders", function(req, res, next){
+router.get("/orders", (req, res, next)=>{
     Ordine.find({giorno: giorno, visibility: true})
     .sort({ priority: "descending", createdAt: "ascending", id: "ascending" })
-    .exec(function(err, ordini){
+    .exec((err, ordini)=>{
         if(err){return next(err); }
         res.render("cucina", {ordini: ordini,  moment: moment});
     });
 });
 
-router.get("/orders/:uid/:giorno/remove", function(req, res, next) {
-    Ordine.findOne({ uid: req.params.uid, giorno: req.params.giorno }, function (err, doc){
+router.get("/orders/:uid/:giorno/remove", (req, res, next)=> {
+    Ordine.findOne({ uid: req.params.uid, giorno: req.params.giorno }, (err, doc)=>{
     doc.visibility = false;
     doc.save();
     var order = doc;
@@ -153,31 +153,31 @@ router.get("/orders/:uid/:giorno/remove", function(req, res, next) {
     }); 
 });
 
-router.get("/orders/undo", function(req, res){
+router.get("/orders/undo", (req, res)=>{
     if(ordini_completati.length != 0){
         var undo = ordini_completati.pop();
-        Ordine.findOne({ uid: undo.uid }, function (err, doc){
+        Ordine.findOne({ uid: undo.uid }, (err, doc)=>{
             doc.visibility = true;
             doc.save();
         })
     }
     //res.redirect("/orders");
-    setTimeout(function() {res.redirect("/orders");}, 400); 
+    setTimeout(()=>{res.redirect("/orders");}, 400); 
 
 })
 
 //GESIONE BAR
-router.get("/bar", function(req, res, next){
+router.get("/bar", (req, res, next)=>{
     Bar.find({giorno: giorno, visibility: true})
     .sort({ priority: "descending", createdAt: "ascending", id: "ascending" })
-    .exec(function(err, bar){
+    .exec((err, bar)=>{
         if(err){return next(err); }
         res.render("bar", {ordini: bar,  moment: moment});
     });
 });
 
-router.get("/bar/:uid/:giorno/remove", function(req, res, next) {
-    Bar.findOne({ uid: req.params.uid, giorno: req.params.giorno }, function (err, doc){
+router.get("/bar/:uid/:giorno/remove", (req, res, next)=> {
+    Bar.findOne({ uid: req.params.uid, giorno: req.params.giorno }, (err, doc)=>{
     doc.visibility = false;
     doc.save();
     var bar = doc;
@@ -187,35 +187,35 @@ router.get("/bar/:uid/:giorno/remove", function(req, res, next) {
     }); 
 });
 
-router.get("/bar/undo", function(req, res){
+router.get("/bar/undo", (req, res)=>{
     if(ordini_completati_bar.length != 0){
         var undo = ordini_completati_bar.pop();
-        Bar.findOne({ uid: undo.uid }, function (err, doc){
+        Bar.findOne({ uid: undo.uid }, (err, doc)=>{
             doc.visibility = true;
             doc.save();
         })
     }
     //res.redirect("/orders");
-    setTimeout(function() {res.redirect("/bar");}, 400); 
+    setTimeout(()=>{res.redirect("/bar");}, 400); 
 
 })
 
 
-router.get("/admin", function(req, res, next){
+router.get("/admin", (req, res, next)=>{
     Incasso.find({id: giorno })
-    .exec(function(err, incassos){
+    .exec((err, incassos)=>{
         if(err){return next(err); }
         res.render("admin", {incassos: incassos, giorno: giorno});
     });
 });
 
-router.get("/admin/giorno/:giorno", function(req, res, next){ //select the day
+router.get("/admin/giorno/:giorno", (req, res, next)=>{ //select the day
     if(giorno != req.params.giorno){ 
         giorno = req.params.giorno;
         ordini_completati = [];
     }
 
-    Bevande.findOne({ id: giorno }, function (err, doc){
+    Bevande.findOne({ id: giorno }, (err, doc)=>{
         if(!doc){
             for(var i = 1; i<=6; i+=1){
                 var newBevande = new Bevande({
@@ -226,7 +226,7 @@ router.get("/admin/giorno/:giorno", function(req, res, next){ //select the day
         }
     });  
 
-    Incasso.findOne({ id: giorno }, function (err, doc){
+    Incasso.findOne({ id: giorno }, (err, doc)=>{
         if(!doc){
             for(var i = 1; i<=6; i+=1){
                 var newIncasso = new Incasso({
@@ -247,10 +247,10 @@ router.get("/admin/giorno/:giorno", function(req, res, next){ //select the day
 
 });
 
-router.get("/admin/orders", function(req, res, next){ //mostra tutti gli ordini
+router.get("/admin/orders", (req, res, next)=>{ //mostra tutti gli ordini
     Ordine.find()
     .sort({ createdAt: "ascending", id: "ascending" })
-    .exec(function(err, ordini){
+    .exec((err, ordini)=>{
         if(err){return next(err); }
         res.render("admin_orders_all", {ordini: ordini, moment: moment});
     });
@@ -258,51 +258,51 @@ router.get("/admin/orders", function(req, res, next){ //mostra tutti gli ordini
 
 
 
-router.get("/admin/orders/:day", function(req, res, next){ //mostra solo una giornata
+router.get("/admin/orders/:day", (req, res, next)=>{ //mostra solo una giornata
     Ordine.find( { giorno: req.params.day } )
     .sort({ createdAt: "descending", id: "descending" })
-    .exec(function(err, ordini){
+    .exec((err, ordini)=>{
         if(err){return next(err); }
-        Incasso.find({ id: req.params.day }, function (err, incassos){
+        Incasso.find({ id: req.params.day }, (err, incassos)=>{
         res.render("admin_orders", { ordini: ordini, incassos: incassos, moment: moment});
         });  
     });
 }); 
  
-router.get("/admin/drinks/:day", function(req, res, next){ //mostra tutti gli ordini
+router.get("/admin/drinks/:day", (req, res, next)=>{ //mostra tutti gli ordini
     Bar.find( { giorno: req.params.day } )
     .sort({ createdAt: "descending", id: "descending" })
-    .exec(function(err, ordini){
+    .exec((err, ordini)=>{
         if(err){return next(err); }
-        Bevande.find({ id: req.params.day }, function (err, incassos){
+        Bevande.find({ id: req.params.day }, (err, incassos)=>{
         res.render("admin_drinks", { ordini: ordini, incassos: incassos, moment: moment});
         });  
     });
 });
 
-router.get("/admin/report", function(req, res, next){
+router.get("/admin/report", (req, res, next)=>{
     if(giorno == 0)
         res.redirect('back');
     Incasso.find()
     .sort({ id: "ascending" })
-    .exec(function(err, incassi){
+    .exec((err, incassi)=>{
         if(err){return next(err); }
-        Bevande.find().sort({id: "ascending"}).exec(function(err, bevande){
+        Bevande.find().sort({id: "ascending"}).exec((err, bevande)=>{
             if(err){return next(err)}
             res.render("report", {incassi: incassi, bevande: bevande});
         })
     });
 })
 
-router.get("/admin/report/carne", function(req, res, next){   //ordini per tipo di carne
+router.get("/admin/report/carne", (req, res, next)=>{   //ordini per tipo di carne
     if (giorno == 0) {res.redirect('back');}
     Incasso.find()
     .sort({ id: "ascending" })
-    .exec(function(err, incassi){
+    .exec((err, incassi)=>{
         if(err){return next(err); }
-        Ordine.count({carne: 'Hamburger'}, function(err, count_hamburger) {
-            Ordine.count({carne: 'Salsiccia'}, function(err, count_salsiccia) {
-                Ordine.count({}, function(err, count_tot) {
+        Ordine.count({carne: 'Hamburger'}, (err, count_hamburger)=>{
+            Ordine.count({carne: 'Salsiccia'}, (err, count_salsiccia)=>{
+                Ordine.count({}, (err, count_tot)=>{
                     res.render("report_carne", { count_hamburger: count_hamburger, count_salsiccia: count_salsiccia, count_tot: count_tot });
                 });
             });
@@ -310,22 +310,22 @@ router.get("/admin/report/carne", function(req, res, next){   //ordini per tipo 
     });
 })
 
-router.get("/orders/:uid/delete", function(req, res, next) {  //elimina l'ordine selezionato dal DB
-    Ordine.findOne({ uid: req.params.uid }, function (err, order){ //forse req.params.giorno inutile?
-        Incasso.findOne({ id: order.giorno }, function (err, incasso){
+router.get("/orders/:uid/delete", (req, res, next)=>{  //elimina l'ordine selezionato dal DB
+    Ordine.findOne({ uid: req.params.uid }, (err, order)=>{ //forse req.params.giorno inutile?
+        Incasso.findOne({ id: order.giorno }, (err, incasso)=>{
             incasso.parziale = +incasso.parziale - +order.prezzo;
             incasso.save();
         });
-        order.remove(function(err,removed) {
+        order.remove((err,removed)=>{
         if(err){return next(err); }
         });
         res.redirect('back'); 
     }); 
 });
 
-router.get("/drinks/:uid/delete", function(req, res, next) {  //elimina l'ordine selezionato dal DB
-    Bar.findOne({ uid: req.params.uid }, function (err, order){ 
-        Bevande.findOne({ id: order.giorno }, function (err, incasso){
+router.get("/drinks/:uid/delete", (req, res, next)=>{  //elimina l'ordine selezionato dal DB
+    Bar.findOne({ uid: req.params.uid }, (err, order)=>{ 
+        Bevande.findOne({ id: order.giorno }, (err, incasso)=>{
             incasso.totale -= +order.prezzo;
             incasso.BA -= order.BA;
             incasso.BB -= order.BB;
@@ -334,35 +334,35 @@ router.get("/drinks/:uid/delete", function(req, res, next) {  //elimina l'ordine
             incasso.AQ -= order.AQ;
             incasso.save();
         });
-        order.remove(function(err,removed) {
+        order.remove((err,removed)=>{
         if(err){return next(err); }
         });
         res.redirect('back'); 
     }); 
 });
 
-router.get("/orders/restore/:uid", function(req, res, next) {  //segna nuovamente l'ordine come non completo
-    Ordine.findOne({ uid: req.params.uid }, function (err, doc){
+router.get("/orders/restore/:uid", (req, res, next)=>{  //segna nuovamente l'ordine come non completo
+    Ordine.findOne({ uid: req.params.uid },  (err, doc)=>{
         doc.visibility = true;
         doc.save();
-        setTimeout(function() {res.redirect('back');}, 500); 
+        setTimeout(()=>{res.redirect('back');}, 500); 
     }); 
 });
 
-router.get("/drinks/restore/:uid", function(req, res, next) {  //segna nuovamente l'ordine come non completo
-    Bar.findOne({ uid: req.params.uid }, function (err, doc){
+router.get("/drinks/restore/:uid", (req, res, next)=>{  //segna nuovamente l'ordine come non completo
+    Bar.findOne({ uid: req.params.uid }, (err, doc)=>{
         doc.visibility = true;
         doc.save();
-        setTimeout(function() {res.redirect('back');}, 500); 
+        setTimeout(()=>{res.redirect('back');}, 500); 
     }); 
 });
 
-router.get("/orders/edit/:uid", function(req, res, next) {  
+router.get("/orders/edit/:uid", (req, res, next)=>{  
     res.render("order_edit");
 });
 
-router.post("/orders/edit/:uid", function(request, res, next) {  
-    Ordine.findOne({ uid: request.params.uid }, function (err, order){        
+router.post("/orders/edit/:uid", (request, res, next)=>{  
+    Ordine.findOne({ uid: request.params.uid }, (err, order)=>{        
         order.nome = request.body.nome,
         order.priority = request.body.priorità,
         order.carne = request.body.carne,
@@ -387,7 +387,7 @@ router.post("/orders/edit/:uid", function(request, res, next) {
         if(!request.body.carne)
             new_prezzo_panino = 5;
         if(old_prezzo_panino != new_prezzo_panino){
-            Incasso.findOne({ id: order.giorno }, function (err, incasso){
+            Incasso.findOne({ id: order.giorno }, (err, incasso)=>{
                 incasso.parziale = +incasso.parziale - old_prezzo_panino;
                 incasso.parziale = +incasso.parziale + new_prezzo_panino;
                 incasso.save();
@@ -399,24 +399,24 @@ router.post("/orders/edit/:uid", function(request, res, next) {
     }); 
 });
 
-router.get("/admin/deleteall/:what", function(req, res, next){ //elimina tutti gli ordini dal DB
+router.get("/admin/deleteall/:what", (req, res, next)=>{ //elimina tutti gli ordini dal DB
     
     if(req.params.what == "all" || req.params.what =="panini"){
-        Ordine.remove(function(err,removed) {
+        Ordine.remove((err,removed)=>{
         if(err){return next(err); }
         });
         
-        Incasso.remove(function(err,removed) {
+        Incasso.remove((err,removed)=>{
         if(err){return next(err); }
         });
     }
     
     if(req.params.what == "all" || req.params.what =="bevande"){
-        Bevande.remove(function(err,removed) {
+        Bevande.remove((err,removed)=>{
         if(err){return next(err); }
         });
         
-        Bar.remove(function(err,removed) {
+        Bar.remove((err,removed)=>{
         if(err){return next(err); }
         });
     }
@@ -425,7 +425,7 @@ router.get("/admin/deleteall/:what", function(req, res, next){ //elimina tutti g
     res.render("deletedeverything");
 });
 
-router.use(function(request, response){
+router.use((request, response)=>{
     response.status(404).render("404");
 });
 
