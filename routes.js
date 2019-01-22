@@ -16,7 +16,7 @@ var ordini_completati_bar = [];
 router.use((req, res, next)=>{
 	res.locals.currentUser = req.Ordine;
 	res.locals.currentIncasso = req.incasso;
-    	res.locals.currentBevande = req.Bevande;
+    res.locals.currentBevande = req.Bevande;
     res.locals.currentBar = req.Bar;
 	res.locals.errors = req.flash("error");
 	res.locals.infos = req.flash("info");
@@ -30,12 +30,14 @@ router.get("/", (req,res)=>{
 
 router.get("/cassa", (req,res)=>{
     Incasso.findOne({ id: giorno }, (err, incasso)=>{
+        //se non è settato il giorno, rimanda alla schermata admin per la selezione
         if(giorno == 0){
             returnToCassa = true;
             res.render("admin", {incassos: incasso, giorno: giorno});
         }
         else{
             Bevande.findOne({id: giorno}, (err, bevande)=> {
+                //cerco l'id dell'ultimo ordine eseguito
                 Ordine.findOne({giorno: giorno})
                 .sort({createdAt: "descending"})
                 .exec((err, order)=>{ 
@@ -52,12 +54,13 @@ router.get("/cassa", (req,res)=>{
 });
 
 router.post("/cassa", (request, res, next)=>{
-    //print json doc
-    //console.log(request.body);
-
     var prezzo_panino=parseFloat(request.body.totalePanino);
 
     if(prezzo_panino != 0){
+        //evito di conteggiare i panini per staff
+        if(request.body.priorità == 'priorità' && request.body._id == 0){
+            prezzo_panino = 0.0;
+        }
 
         var newOrder = new Ordine({
             uid: yeast(),
