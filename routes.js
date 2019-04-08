@@ -4,7 +4,7 @@ var router = express.Router();
 var moment = require('moment');
 var yeast = require("yeast");
 var Ordine = require("./models/ordine");
-var Incasso = require("./models/incasso")
+var Incasso = require("./models/incasso");
 var Bevande = require("./models/bevande");
 var Bar = require("./models/bar");
 
@@ -103,11 +103,11 @@ router.post("/cassa", (request, res, next)=>{
         Bevande.findOne({ id: giorno }, (err, doc)=>{
             doc.totale = +doc.totale + parseFloat(request.body.totaleBevande);
             if(request.body.bevanda1)
-                doc.BA += parseInt(request.body.bevanda1);
+                doc.BAB += parseInt(request.body.bevanda1);
             if(request.body.bevanda2)
                 doc.BB += parseInt(request.body.bevanda2);
             if(request.body.bevanda3)
-                doc.BR += parseInt(request.body.bevanda3);
+                doc.BAR += parseInt(request.body.bevanda3);
             if(request.body.bevanda4)
                 doc.CC += parseInt(request.body.bevanda4);
             if(request.body.bevanda5)
@@ -122,9 +122,9 @@ router.post("/cassa", (request, res, next)=>{
             giorno: giorno,
             prezzo: parseFloat(request.body.totaleBevande),
             priority: request.body.priorità,
-            BA: request.body.bevanda1,
+            BAB: request.body.bevanda1,
             BB: request.body.bevanda2,
-            BR: request.body.bevanda3,
+            BAR: request.body.bevanda3,
             CC: request.body.bevanda4,
             AQ: request.body.bevanda5,
             createdAt: moment(),
@@ -329,9 +329,9 @@ router.get("/drinks/:uid/delete", (req, res, next)=>{  //elimina l'ordine selezi
     Bar.findOne({ uid: req.params.uid }, (err, order)=>{ 
         Bevande.findOne({ id: order.giorno }, (err, incasso)=>{
             incasso.totale -= +order.prezzo;
-            incasso.BA -= order.BA;
+            incasso.BAB -= order.BAB;
             incasso.BB -= order.BB;
-            incasso.BR -= order.BR;
+            incasso.BAR -= order.BAR;
             incasso.CC -= order.CC;
             incasso.AQ -= order.AQ;
             incasso.save();
