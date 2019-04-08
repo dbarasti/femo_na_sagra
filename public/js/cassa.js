@@ -5,8 +5,13 @@
  * input with id="totalePanino"
  * div with id="prezzoPanino"*/
 
+const PANINO_CANNAVACCIUOLO = "cannavacciuolo";
+const PANINO_BORGHESE = "borghese";
+const PANINO_RAMSEY = "ramsey";
+const PANINO_BABY = "baby";
+
 function clearAll() {
-   document.getElementById("prezzoPanino").innerHTML = "0 EURO";
+   getPaninoDivElement().innerHTML = "0 EURO";
    document.getElementById("double").checked = false;
    document.getElementById("carne1").checked = false;
    document.getElementById("carne2").checked = false;
@@ -23,183 +28,197 @@ function clearAll() {
    document.getElementById("salsa4").checked = false;         
 }
 
-function setTotale(prezzo) {
-   let current = parseFloat(document.getElementById('totale').innerHTML);
-   //console.log(prezzo);
-   current += prezzo;
-   document.getElementById('totale').innerHTML = current.toString() + ' EURO';
+function getBevandeInputElement(){
+   return document.getElementById('totaleBevande');
+}
+function getBevandeDivElement(){
+   return document.getElementById('prezzoBevande');
 }
 
+function getPaninoInputElement(){
+   return document.getElementById('totalePanino');
+}
+
+function getPaninoDivElement(){
+   return document.getElementById('prezzoPanino');
+}
+
+function getTotaleDivElement(){
+   return document.getElementById('totale');
+}
+
+function updateTotal(){
+   getTotaleDivElement().innerHTML = (parseFloat(getBevandeInputElement().value) + parseFloat(getPaninoInputElement().value)).toString() + ' EURO';
+}
+
+function checkBoxWithId(id){
+   document.getElementById(id).checked = true;
+}
+
+function isCheckboxWithIdActive(id){
+   return document.getElementById(id).checked == true;
+}
 
 function cannavacciuoloClicked() {
-   if(document.getElementById("cannavacciuolo").checked == true)
+   if(isCheckboxWithIdActive(PANINO_CANNAVACCIUOLO))
       cannavacciuoloChecked();
    else
       cannavacciuoloUnchecked();
 }
 function cannavacciuoloChecked(){
-   setTotale(7-parseFloat(document.getElementById('prezzoPanino').innerHTML));
-   document.getElementById("prezzoPanino").innerHTML = "7 EURO";
-   //aggiorno input fittizio
-   document.getElementById("totalePanino").value = "7";
-   document.getElementById("carne1").checked = true;
-   document.getElementById("verdura1").checked = true;
-   document.getElementById("verdura5").checked = true;
-   document.getElementById("verdura3").checked = true;
-   document.getElementById("verdura2").checked = true;
-   document.getElementById("salsa4").checked = true;
+   clearAll();
+   getPaninoDivElement().innerHTML = "7 EURO";
+   getPaninoInputElement().value = "7";
+   checkBoxWithId("carne1");
+   checkBoxWithId("verdura1");
+   checkBoxWithId("verdura5");
+   checkBoxWithId("verdura3");
+   checkBoxWithId("verdura2");
+   checkBoxWithId("salsa4");
+   updateTotal();
 }
 
 function cannavacciuoloUnchecked(){
-   setTotale(0-parseFloat(document.getElementById("prezzoPanino").innerHTML));
    clearAll();
-   document.getElementById("totalePanino").value = "0";
+   getPaninoInputElement().value = "0";
+   updateTotal();
 }
 
 function borgheseClicked() {
-   if(document.getElementById("borghese").checked == true)
+   if(isCheckboxWithIdActive(PANINO_BORGHESE))
       borgheseChecked();
    else
       borgheseUnchecked();
 }
 function borgheseChecked(){
-   setTotale(7-parseFloat(document.getElementById('prezzoPanino').innerHTML));
-   document.getElementById("prezzoPanino").innerHTML = "7 EURO";
-   document.getElementById("totalePanino").value = "7";
-   document.getElementById("carne2").checked = true;
-   document.getElementById("verdura1").checked = true;
-   document.getElementById("verdura3").checked = true;
-   document.getElementById("verdura4").checked = true;
-   document.getElementById("salsa3").checked = true;
+   clearAll();
+   getPaninoDivElement().innerHTML = "7 EURO";
+   getPaninoInputElement().value = "7";
+   checkBoxWithId("carne2");
+   checkBoxWithId("verdura1");
+   checkBoxWithId("verdura3");
+   checkBoxWithId("verdura4");
+   checkBoxWithId("salsa3");
+   updateTotal();
 }
 
 function borgheseUnchecked(){
-   setTotale(0-parseFloat(document.getElementById("prezzoPanino").innerHTML));
    clearAll();
-   document.getElementById("totalePanino").value = "0";
+   getPaninoInputElement().value = "0";
+   updateTotal();
 }
 
 function ramseyClicked() {
-   if(document.getElementById("ramsey").checked == true)
+   if(isCheckboxWithIdActive(PANINO_RAMSEY))
       ramseyChecked();
    else
       ramseyUnchecked();
 }
 function ramseyChecked(){
-   setTotale(9-parseFloat(document.getElementById('prezzoPanino').innerHTML));
-   document.getElementById("prezzoPanino").innerHTML = "9 EURO";
-   document.getElementById("totalePanino").value = "9";
-   document.getElementById("carne2").checked = true;
-   document.getElementById("double").checked = true;
-   document.getElementById("verdura1").checked = true;
-   document.getElementById("verdura5").checked = true;
-   document.getElementById("verdura6").checked = true;
-   document.getElementById("verdura7").checked = true;
-   document.getElementById("salsa3").checked = true;
-   document.getElementById("salsa3").checked = true;
+   clearAll();
+   getPaninoDivElement().innerHTML = "9 EURO";
+   getPaninoInputElement().value = "9";
+   checkBoxWithId("carne2");
+   checkBoxWithId("double");
+   checkBoxWithId("verdura1");
+   checkBoxWithId("verdura5");
+   checkBoxWithId("verdura6");
+   checkBoxWithId("verdura7");
+   checkBoxWithId("salsa1");
+   checkBoxWithId("salsa2");
+   updateTotal();
 }
 
 function ramseyUnchecked(){
-   setTotale(0-parseFloat(document.getElementById("prezzoPanino").innerHTML));
    clearAll();
-   document.getElementById("totalePanino").value = "0";
+   getPaninoInputElement().value = "0";
+   updateTotal();
 }
 
 function babyClicked() {
-   if(document.getElementById("baby").checked == true)
+   if(isCheckboxWithIdActive(PANINO_BABY))
       babyChecked();
    else
       babyUnchecked();
 }
 function babyChecked() {
-   let currentBurgerTotal = parseFloat(document.getElementById('prezzoPanino').innerHTML);
-   setTotale(4-currentBurgerTotal);
-   document.getElementById("prezzoPanino").innerHTML = "4 EURO";
-   document.getElementById("totalePanino").value = "4";
-   document.getElementById("carne2").checked = true;
+   clearAll();
+   getPaninoDivElement().innerHTML = "5 EURO";
+   getPaninoInputElement().value = "5";
+   checkBoxWithId("carne2");
 }
 function babyUnchecked() {
-   let currentBurgerTotal = parseFloat(document.getElementById('prezzoPanino').innerHTML);
-   setTotale(0-currentBurgerTotal);
-   document.getElementById("totalePanino").value = "0";
    clearAll();
+   getPaninoInputElement().value = "0";
+   updateTotal();
 }
 
 function doubleClicked() {
-   if(document.getElementById("double").checked == true){
-      if(document.getElementById("carne1").checked == false && document.getElementById("carne2").checked == false){
+   if(isCheckboxWithIdActive("double")){
+      if(!isCheckboxWithIdActive("carne1") && !isCheckboxWithIdActive("carne2")){
          document.getElementById("double").checked = false;
       }
       else{
-         setTotale(9-parseFloat(document.getElementById("prezzoPanino").innerHTML));
-         document.getElementById("prezzoPanino").innerHTML = "9 EURO";
-         document.getElementById("totalePanino").value = "9";
+         getPaninoDivElement().innerHTML = "9 EURO";
+         getPaninoInputElement().value = "9";
+         updateTotal()
       }
 
    }
    else{
-      setTotale(7 - parseFloat(document.getElementById("prezzoPanino").innerHTML));
-      document.getElementById("prezzoPanino").innerHTML = "7 EURO";
-      document.getElementById("totalePanino").value = "7";
+      getPaninoDivElement().innerHTML = "7 EURO";
+      getPaninoInputElement().value = "7";
+      updateTotal();
    }
 }
 
 function carneClicked() {
-   if(document.getElementById("baby").checked == true)
+   if(isCheckboxWithIdActive("baby"))
       return;
-   if(document.getElementById("double").checked == true){
-      setTotale(9-parseFloat(document.getElementById("prezzoPanino").innerHTML));
-      document.getElementById("prezzoPanino").innerHTML = "9 EURO";
-      document.getElementById("totalePanino").value = "9";
+   if(isCheckboxWithIdActive("double")){
+      getPaninoDivElement().innerHTML = "9 EURO";
+      getPaninoInputElement().value = "9";
+      updateTotal()
    }
    else{
-      setTotale(7-parseFloat(document.getElementById("prezzoPanino").innerHTML));
-      document.getElementById("prezzoPanino").innerHTML = "7 EURO";
-      document.getElementById("totalePanino").value = "7";
+      getPaninoDivElement().innerHTML = "7 EURO";
+      getPaninoInputElement().value = "7";
+      updateTotal()
    }
 }
 
 function farcituraClicked(){
-   if(document.getElementById("carne1").checked == false && document.getElementById("carne2").checked == false)
-      if(parseFloat(document.getElementById("prezzoPanino").innerHTML) == 5)
+   if(!isCheckboxWithIdActive("carne1") && !isCheckboxWithIdActive("carne2"))
+      if(parseFloat(getPaninoDivElement().innerHTML) == 5)
          return;
       else{
-         setTotale(5-parseFloat(document.getElementById("prezzoPanino").innerHTML));
-         document.getElementById("prezzoPanino").innerHTML = "5 EURO";
-         document.getElementById("totalePanino").value = "5";
+         getPaninoDivElement().innerHTML = "5 EURO";
+         getPaninoInputElement().value = "5";
+         updateTotal()
       }
    else{
-      if(document.getElementById("baby").checked == true){
-         setTotale(7-parseFloat(document.getElementById("prezzoPanino").innerHTML));
+      if(isCheckboxWithIdActive("baby")){
          document.getElementById("baby").checked = false;
-         document.getElementById("prezzoPanino").innerHTML = "7 EURO";
-         document.getElementById("totalePanino").value = "7";
+         getPaninoDivElement().innerHTML = "7 EURO";
+         getPaninoInputElement().value = "7";
+         updateTotal()
       }
    }
       
 }
-
-
-
 
 /*
 * bevande checkbox clicked*/
 function bevandaClicked(bevanda, prezzo) {
 
    //controllo se il checkbox è stato selezionato
-   if(document.getElementById(bevanda).checked == 1){
-      //aggiornamento totale bevande
+   if(isCheckboxWithIdActive(bevanda)){
       let currentBevandaTotal = parseFloat(document.getElementById('prezzoBevande').innerHTML);
       let updatedBevandeTotal = currentBevandaTotal + prezzo;
-      document.getElementById('prezzoBevande').innerHTML = updatedBevandeTotal.toString() + ' EURO';
-      document.getElementById('totaleBevande').value = updatedBevandeTotal;
-      //aggiornamento conto totale
-      setTotale(prezzo);
-
-      //aggiornamento drop menu
+      getBevandeDivElement().innerHTML = updatedBevandeTotal.toString() + ' EURO';
+      getBevandeInputElement().value = updatedBevandeTotal;
+      updateTotal();
       document.getElementById("dropdown"+bevanda.charAt(bevanda.length-1)).innerHTML =  "1"; //setto il testo del dropdown menù
-         //disabilito l'item 
-      //document.getElementById("it1").classList.add('disabled');
       document.getElementById(bevanda+"1").classList.toggle('disabled'); //bevanda+"1" indica il primo elemento del dropdown della bevanda
       
       //metto in coda a bevanda la quantità selezionata (O ALMENO CI PROVO)
@@ -210,37 +229,25 @@ function bevandaClicked(bevanda, prezzo) {
    else{
       //calcolo valore da sottrarre
       let quantita = parseInt(document.getElementById("dropdown"+bevanda.charAt(bevanda.length-1)).innerHTML);
-
       //aggiornamento totale bevande
       let value = parseFloat(document.getElementById('prezzoBevande').innerHTML);
       value = value - prezzo*quantita;
-      document.getElementById('prezzoBevande').innerHTML = value.toString() + ' EURO';
-      
-      //aggiorno input fittizio
-      document.getElementById('totaleBevande').value = value;
-
-      //aggiornamento totale
-      setTotale(0-prezzo*quantita);
-
-      
+      getBevandeDivElement().innerHTML = value.toString() + ' EURO';
+      getBevandeInputElement().value = value;
+      updateTotal();
       //riabilito la entry
       let dropdown = "dropdown" + bevanda.charAt(bevanda.length-1);
       document.getElementById(bevanda+document.getElementById(dropdown).innerHTML).classList.toggle('disabled');
-      
       //aggiorno drop menu
       document.getElementById('dropdown'+bevanda.charAt( bevanda.length-1)).innerHTML = 0;
-
-
    }
-         
 }
 
 
 function dropClicked(dropdown, bevanda, prezzo) {
  
    let quantita = bevanda.charAt(dropdown.length-1);  //ultimo carattere di bevanda
-  
-   if(document.getElementById("bevanda"+bevanda.charAt(dropdown.length-2)).checked == true){
+   if(isCheckboxWithIdActive("bevanda"+bevanda.charAt(dropdown.length-2))){
       let quantita_old = parseInt(document.getElementById(dropdown).innerHTML);
       let dropNum = dropdown.charAt(dropdown.length-1);
       //disabilito entry selezionata
@@ -249,22 +256,15 @@ function dropClicked(dropdown, bevanda, prezzo) {
       document.getElementById("bevanda"+dropNum+quantita_old.toString()).classList.toggle('disabled');
       //aggiorno testo del dropdown menu
       document.getElementById(dropdown).innerHTML = quantita;
-      
-      //ORA AGGIORNO I CONTI
-
       let valore_old = quantita_old*prezzo;
       let diff = quantita*prezzo - valore_old;
-      setTotale(diff);
-
-      let value = parseFloat(document.getElementById('prezzoBevande').innerHTML);
+      let value = parseFloat(getBevandeDivElement().innerHTML);
       value = value + diff;
-      document.getElementById('prezzoBevande').innerHTML = value.toString() + ' EURO';
-   
-         //aggiorno input fittizzio
-      document.getElementById('totaleBevande').value = value;
-
+      getBevandeDivElement().innerHTML = value.toString() + ' EURO';
+      getBevandeInputElement().value = value;
+      updateTotal();
       //metto in coda a bevanda la quantità selezionata (O ALMENO CI PROVO)
-      document.getElementById(bevanda.slice(0,-1)).value = quantita;    
+      document.getElementById(bevanda.slice(0,-1)).value = quantita;
    }
    else{
       document.getElementById("bevanda"+bevanda.charAt(dropdown.length-2)).checked = true;
@@ -272,17 +272,11 @@ function dropClicked(dropdown, bevanda, prezzo) {
       //disabilito la entry selezionata
       document.getElementById(bevanda).classList.toggle('disabled');
 
-      //ORA AGGIORNO I CONTI
-         //aggiorno totale ordine
-      setTotale(prezzo*quantita);
-         //aggiorno conto bevande
-      let value = parseFloat(document.getElementById('prezzoBevande').innerHTML);
+      let value = parseFloat(getBevandeDivElement().innerHTML);
       value = value + prezzo*quantita;
-      document.getElementById('prezzoBevande').innerHTML = value.toString() + ' EURO';
-
-         //aggiorno input fittizzio
-      document.getElementById('totaleBevande').value = value;
-
+      getBevandeDivElement().innerHTML = value.toString() + ' EURO';
+      getBevandeInputElement().value = value;
+      updateTotal();
       //metto nel valore di 'bevanda' la quantità selezionata (O ALMENO CI PROVO)
       document.getElementById(bevanda.slice(0,-1)).value = quantita;  
    }
