@@ -146,6 +146,7 @@ function babyChecked() {
    getPaninoDivElement().innerHTML = "5 EURO";
    getPaninoInputElement().value = "5";
    checkBoxWithId("carne2");
+   updateTotal();
 }
 function babyUnchecked() {
    clearAll();
