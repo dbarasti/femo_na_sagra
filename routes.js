@@ -2,12 +2,14 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var router = express.Router();
 var moment = require('moment');
+var fs = require('fs');
 var yeast = require("yeast");
-var Ordine = require("./models/ordine");
-var Incasso = require("./models/incasso");
-var Bevande = require("./models/bevande");
-var Bar = require("./models/bar");
+var Ordine = require("./models/burger_order");
+var Incasso = require("./models/burger_stats");
+var Bevande = require("./models/beverages_stats");
+var Bar = require("./models/beverages_order");
 
+let config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 var returnToCassa = false;         //used to go back to /cassa if needed
 var giorno = 0;
 var ordini_completati = [];
@@ -42,10 +44,10 @@ router.get("/cassa", (req,res)=>{
                 .sort({createdAt: "descending"})
                 .exec((err, order)=>{ 
                     if(order){
-                        res.render("cassa", {incasso: incasso, bevande: bevande, lastOrderID: order.id });
+                        res.render("cassa", {incasso: incasso, bevande: bevande, lastOrderID: order.id, config: config });
                     }
                     else
-                        res.render("cassa", {incasso: incasso, bevande:bevande, lastOrderID: -1});
+                        res.render("cassa", {incasso: incasso, bevande:bevande, lastOrderID: -1, config: config});
                 });
             })
         }       
@@ -54,6 +56,7 @@ router.get("/cassa", (req,res)=>{
 });
 
 router.post("/cassa", (request, res, next)=>{
+    console.log(request.body);
     var prezzo_panino=parseFloat(request.body.totalePanino);
 
     if(prezzo_panino != 0){

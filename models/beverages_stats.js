@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 
-var BevandeSchema = mongoose.Schema({
+var beveragesStatsSchema = mongoose.Schema({
   id: Number,	//giorno
   BAB: {type: Number, default:0}, //birra artigianale bianca alla spina
   BB: {type: Number, default:0},	//birra bionda alla spina
@@ -10,7 +10,7 @@ var BevandeSchema = mongoose.Schema({
   totale: {type: Number, default:0}
 });
 
-var Bevande = mongoose.model("Bevande", BevandeSchema);
+var Beverages_stats = mongoose.model("Bevande", beveragesStatsSchema);
 
-module.exports = Bevande;
+module.exports = Beverages_stats;
 

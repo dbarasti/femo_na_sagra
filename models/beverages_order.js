@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 var moment = require('moment');
-var barSchema = mongoose.Schema({
+var beveragesOrderSchema = mongoose.Schema({
   uid: { type: String },
   id: { type: Number}, //required: true
   nome: { type: String}, //required: true
@@ -17,7 +17,7 @@ var barSchema = mongoose.Schema({
 
 });
 
-var Bar = mongoose.model("Bar", barSchema);
+var Beverages_order = mongoose.model("Bar", beveragesOrderSchema);
 
-module.exports = Bar;
+module.exports = Beverages_order;
 

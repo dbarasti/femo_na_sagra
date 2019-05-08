@@ -5,10 +5,10 @@ var mongoose = require("mongoose");
 var session = require("express-session");
 var flash = require("connect-flash");
 var path = require("path");
-var Ordine = require("./models/ordine");
-var Incasso = require("./models/incasso")
-var Bevande = require("./models/bevande");
-var Bar = require("./models/bar");
+var Ordine = require("./models/burger_order");
+var Incasso = require("./models/burger_stats")
+var Bevande = require("./models/beverages_stats");
+var Bar = require("./models/beverages_order");
 
 var routes = require("./routes");
 
