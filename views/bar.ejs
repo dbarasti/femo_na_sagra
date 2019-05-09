@@ -5,66 +5,65 @@
 </div>
 
 <div class="pull-right">
-<a href='/bar/undo' class="btn btn-raised btn-warning">
-  <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
-  UNDO
-</a>
-</div>  
-
+  <a href='/bar/undo' class="btn btn-raised btn-warning">
+    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> UNDO
+  </a>
+</div>
+<br/>
 
 <div class="row orders-block">
-  <% ordini.forEach(function(ordine) { %>
-    <div class="col-md-6">
-      <% if(ordine.id % 2 != 0) { %> 
-        <div class="panel panel-primary">
+  <% orders.forEach(function(ordine) { %>
+  <div class="col-md-6">
+    <% if(ordine.actualOrder.id % 2 != 0) { %>
+    <div class="panel panel-primary">
       <% } %>
 
-      <% if(ordine.id % 2 == 0) { %>
-        <div class="panel panel-info">
-      <% } %>
+      <% if(ordine.actualOrder.id % 2 == 0) { %>
+      <div class="panel panel-info">
+        <% } %>
 
-      <div class="panel-heading">
-        <div class="pull-right">
-          <a href='/bar/<%= ordine.uid %>/<%= ordine.giorno %>/remove' class="btn-sm btn-raised btn-danger">
-            <i class="icon-user icon-white"></i>
-            COMPLETATO
-          </a>
-        </div>
+        <div class="panel-heading">
+          <div class="pull-right">
+            <a href='/bar/<%= ordine.uid %>/remove' class="btn-sm btn-raised btn-danger">
+              <i class="icon-user icon-white"></i> COMPLETATO
+            </a>
+          </div>
 
-        <div class="ora_ordinazione">
-          <p>
-            ORA ORDINAZIONE: <%=moment(ordine.createdAt).format('HH:mm')%>
-          </p>
-        </div>
-        <div class="numero-ordine">
-          <p>
-            NUMERO ORDINE
-            <% if(ordine.asporto) { %>  
-            <span class="asporto">
+          <div class="ora_ordinazione">
+            <p>
+              ORA ORDINAZIONE:
+              <%=moment(ordine.createdAt).format('HH:mm')%>
+            </p>
+          </div>
+          <div class="numero-ordine">
+            <p>
+              NUMERO ORDINE
+              <% if(ordine.asporto) { %>
+                <span class="asporto">
               PER ASPORTO
             </span>
-            <% } %>
-            :
-            <%= ordine.id %>
-          </p>
+              <% } %>
+              :
+              <%= ordine.actualOrder.id %>
+            </p>
+          </div>
+          <div class="text priorità">
+            <p>
+              <% if (ordine.priority) { %>
+                ORDINE CON PRIORITÀ
+                <span class="staff">
+                  <% if (ordine.actualOrder.id == 0) { %>
+                    PER STAFF
+                  <% } %>
+                </span>
+              <% } %>
+            </p>
+          </div>
         </div>
-        <div class="text priorità">
-          <p>
-            <% if (ordine.priority) { %>
-              ORDINE CON PRIORITÀ
-            <span class="staff">
-            <% if (ordine.id == 0) { %>
-              PER STAFF
-            <% } %>
-            </span>
-            <% } %>
-          </p>
-        </div>
-      </div>
-      <div class="panel-body ingredienti">
+        <div class="panel-body ingredienti">
           <% if(ordine.BAB > 0) {%>
             <%= ordine.BAB %>x BIRRA Bianca ART.
-          <% } %>  
+          <% } %>
           <% if(ordine.BB > 0) {%>
             <%= ordine.BB %>x BIRRA Bionda
           <% } %>
@@ -72,16 +71,16 @@
             <%= ordine.BAR %>x BIRRA Rossa ART.
           <% } %>
           <% if(ordine.CC > 0) {%>
-            <%= ordine.CC %>x CocaCola 
+            <%= ordine.CC %>x CocaCola
           <% } %>
           <% if(ordine.AQ >0) {%>
-            <%= ordine.AQ %>x Acqua          
+            <%= ordine.AQ %>x Acqua
           <% } %>
+        </div>
       </div>
     </div>
+    <% }) %>
   </div>
-  <% }) %>
-</div>
 </div>
 <% include _footer %>
-  <meta http-equiv="refresh" content="15" >
+<meta http-equiv="refresh" content="15">

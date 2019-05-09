@@ -1,15 +1,13 @@
-var mongoose = require("mongoose");
-var moment = require('moment');
-var burgerOrderSchema = mongoose.Schema({
-  uid: { type: String },
-  id: { type: Number}, //AKA GIORNO todo refactor name
-  giorno: Number,
-  prezzo: {type: Number}, //required: true
-  priority: String,
+let mongoose = require("mongoose");
+let moment = require('moment');
+let burgerOrderSchema = mongoose.Schema({
+  uid: String,
+  day: Number,
+  prezzo: Number,
   createdAt: { type: Date, default: moment() },
-  visibility: { type: Boolean },
-  order: JSON
-
+  visibility: Boolean,
+  staff: {type: Boolean, default: false},
+  actualOrder: JSON
 });
 
 var Burger_order = mongoose.model("Burger_order", burgerOrderSchema);

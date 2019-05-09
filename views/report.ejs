@@ -4,7 +4,7 @@
   <div class="col-sm">
     <% incassi.forEach(function(incasso) { %>
 		<h3> giorno numero <%= incasso.id %> <h3>
-	 	<h4> totale vendite panini: <%= incasso.parziale %>€ <h4>
+	 	<h4> totale vendite panini: <%= incasso.total %>€ <h4>
 	 	<h4> totale vendite bevande: <%= bevande[incasso.id-1].totale %>€ <h4>
 	 	<ul>
 	 		<li><h5> totale vendite Birre Bianche Artigianali alla spina: <%= bevande[incasso.id-1].BAB %> <h5></li>

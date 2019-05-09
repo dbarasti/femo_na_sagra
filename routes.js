@@ -1,432 +1,339 @@
-var express = require("express");
-var bodyParser = require("body-parser");
-var router = express.Router();
-var moment = require('moment');
-var fs = require('fs');
-var yeast = require("yeast");
-var Ordine = require("./models/burger_order");
-var Incasso = require("./models/burger_stats");
-var Bevande = require("./models/beverages_stats");
-var Bar = require("./models/beverages_order");
+let express = require("express");
+let router = express.Router();
+let moment = require('moment');
+let fs = require('fs');
+let yeast = require("yeast");
+let BurgerOrder = require("./models/burger_order");
+let BurgerStats = require("./models/burger_stats");
+let BeveragesStats = require("./models/beverages_stats");
+let BeveragesOrder = require("./models/beverages_order");
 
 let config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
-var returnToCassa = false;         //used to go back to /cassa if needed
-var giorno = 0;
-var ordini_completati = [];
-var ordini_completati_bar = [];
+let returnToCassa = false;
+let currentDay = 0;
+let ordini_completati = [];
+let ordini_completati_bar = [];
 
 router.use((req, res, next)=>{
-	res.locals.currentUser = req.Ordine;
-	res.locals.currentIncasso = req.incasso;
+    res.locals.currentUser = req.Ordine;
+    res.locals.currentIncasso = req.incasso;
     res.locals.currentBevande = req.Bevande;
     res.locals.currentBar = req.Bar;
-	res.locals.errors = req.flash("error");
-	res.locals.infos = req.flash("info");
-	next();
+    res.locals.errors = req.flash("error");
+    res.locals.infos = req.flash("info");
+    next();
 });
+
 
 router.get("/", (req,res)=>{          
 	res.render("homepage");
 });
 
-
 router.get("/cassa", (req,res)=>{
-    Incasso.findOne({ id: giorno }, (err, incasso)=>{
-        //se non è settato il giorno, rimanda alla schermata admin per la selezione
-        if(giorno == 0){
+    BurgerStats.findOne({ day: currentDay }, (err, burgerStats)=>{
+        if(currentDay === 0){
             returnToCassa = true;
-            res.render("admin", {incassos: incasso, giorno: giorno});
+            res.render("admin", {burgerStats: burgerStats, day: currentDay});
         }
         else{
-            Bevande.findOne({id: giorno}, (err, bevande)=> {
-                //cerco l'id dell'ultimo ordine eseguito
-                Ordine.findOne({giorno: giorno})
+            BeveragesStats.findOne({day: currentDay}, (err, beveragesStats)=> {
+                BurgerOrder.findOne({day: currentDay})
                 .sort({createdAt: "descending"})
-                .exec((err, order)=>{ 
-                    if(order){
-                        res.render("cassa", {incasso: incasso, bevande: bevande, lastOrderID: order.id, config: config });
+                .exec((err, burgerOrder)=>{
+                    if(burgerOrder){
+                        res.render("cassa", {burgerStats: burgerStats, beveragesStats: beveragesStats, lastOrderID: burgerOrder.actualOrder.id, config: config });
                     }
                     else
-                        res.render("cassa", {incasso: incasso, bevande:bevande, lastOrderID: -1, config: config});
+                        res.render("cassa", {burgerStats: burgerStats, beveragesStats:beveragesStats, lastOrderID: -1, config: config});
                 });
             })
-        }       
-
+        }
     });  
 });
 
-router.post("/cassa", (request, res, next)=>{
-    console.log(request.body);
-    var prezzo_panino=parseFloat(request.body.totalePanino);
+router.post("/cassa", (req, res)=>{
 
-    if(prezzo_panino != 0){
-        //evito di conteggiare i panini per staff
-        if(request.body.priorità == 'priorità' && request.body._id == 0){
-            prezzo_panino = 0.0;
-        }
+    let requestBody = req.body;
+    //let burgerPrice = calculateBurgerPrice(requestBody) ALSO CHECK IF STAFF ORDER
+    //let beveragesPrice = calculateBeveragesPrice(requestBody) ALSO HAS TO CHECK IF STAFF ORDER
+    let burgerPrice = parseFloat(requestBody.totalePanino);
+    let beveragesPrice = parseFloat(requestBody.totaleBevande);
 
-        var newOrder = new Ordine({
+    if(burgerPrice !== 0){
+        console.log(req.body);
+        let newBurgerOrder = new BurgerOrder({
             uid: yeast(),
-            id: request.body._id,
-            nome: request.body.nome,
-            giorno: giorno,
-            prezzo: prezzo_panino,
-            priority: request.body.priorità,
+            day: currentDay,
+            prezzo: burgerPrice,
             createdAt: moment(),
-            carne: request.body.carne,
-            double: request.body.double,
-            verdura1: request.body.verdura1,
-            verdura2: request.body.verdura2,
-            verdura3: request.body.verdura3,
-            verdura4: request.body.verdura4,
-            verdura5: request.body.verdura5,
-            verdura6: request.body.verdura6,
-            verdura7: request.body.verdura7,
-            salsa1: request.body.salsa1,
-            salsa2: request.body.salsa2,
-            salsa3: request.body.salsa3,
-            salsa4: request.body.salsa4,
             visibility: true,
-            asporto: request.body.asporto
+            actualOrder: requestBody
         });
-        newOrder.save();
+        newBurgerOrder.save();
 
-        Incasso.findOne({ id: giorno }, (err, doc)=>{
-            doc.parziale = +doc.parziale + +prezzo_panino;
+        BurgerStats.findOne({ day: currentDay }, (err, doc)=>{
+            doc.total = +doc.total + +burgerPrice;
             doc.save();
         });
     }
-
-    if(parseFloat(request.body.totaleBevande) != 0){
-        //evito di conteggiare le bevande per staff
-        if(request.body.priorità == 'priorità' && request.body._id == 0){
-            prezzo_panino = 0.0;
-        }
-        
-        Bevande.findOne({ id: giorno }, (err, doc)=>{
-            doc.totale = +doc.totale + parseFloat(request.body.totaleBevande);
-            if(request.body.bevanda1)
-                doc.BAB += parseInt(request.body.bevanda1);
-            if(request.body.bevanda2)
-                doc.BB += parseInt(request.body.bevanda2);
-            if(request.body.bevanda3)
-                doc.BAR += parseInt(request.body.bevanda3);
-            if(request.body.bevanda4)
-                doc.CC += parseInt(request.body.bevanda4);
-            if(request.body.bevanda5)
-                doc.AQ += parseInt(request.body.bevanda5);
+    if(beveragesPrice !== 0){
+        BeveragesStats.findOne({ day: currentDay }, (err, doc)=>{
+            doc.totale = +doc.totale + parseFloat(req.body.totaleBevande);
+            if(req.body.bevanda1)
+                doc.BAB += parseInt(req.body.bevanda1);
+            if(req.body.bevanda2)
+                doc.BB += parseInt(req.body.bevanda2);
+            if(req.body.bevanda3)
+                doc.BAR += parseInt(req.body.bevanda3);
+            if(req.body.bevanda4)
+                doc.CC += parseInt(req.body.bevanda4);
+            if(req.body.bevanda5)
+                doc.AQ += parseInt(req.body.bevanda5);
             doc.save();
         });
-        
-        var newBar = new Bar({
+        let newBeveragesOrder = new BeveragesOrder({
             uid: yeast(),
-            id: request.body._id,
-            nome: request.body.nome,
-            giorno: giorno,
-            prezzo: parseFloat(request.body.totaleBevande),
-            priority: request.body.priorità,
-            BAB: request.body.bevanda1,
-            BB: request.body.bevanda2,
-            BAR: request.body.bevanda3,
-            CC: request.body.bevanda4,
-            AQ: request.body.bevanda5,
-            createdAt: moment(),
-            visibility: true
+            day: currentDay,
+            prezzo: beveragesPrice,
+            visibility: true,
+            actualOrder: requestBody
         });
-        newBar.save();    
+        newBeveragesOrder.save();
     }
     setTimeout(()=>{res.redirect("/cassa");}, 1000); 
 });
 
 router.get("/orders", (req, res, next)=>{
-    Ordine.find({giorno: giorno, visibility: true})
-    .sort({ priority: "descending", createdAt: "ascending", id: "ascending" })
-    .exec((err, ordini)=>{
+    BurgerOrder.find({day: currentDay, visibility: true})
+    .sort({ priority: "descending", createdAt: "ascending" })
+    .exec((err, burgerOrders)=>{
         if(err){return next(err); }
-        res.render("cucina", {ordini: ordini,  moment: moment});
+        res.render("cucina", {orders: burgerOrders,  moment: moment});
     });
 });
 
-router.get("/orders/:uid/:giorno/remove", (req, res, next)=> {
-    Ordine.findOne({ uid: req.params.uid, giorno: req.params.giorno }, (err, doc)=>{
-    doc.visibility = false;
-    doc.save();
-    var order = doc;
-    ordini_completati.push(order);
+router.get("/orders/:uid/remove", (req, res)=> {
+    BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
+    burgerOrder.visibility = false;
+    burgerOrder.save();
+    ordini_completati.push(burgerOrder.uid);
     res.redirect("/orders");
-    //setTimeout(function() {res.redirect("/orders");}, 500); 
     }); 
 });
 
 router.get("/orders/undo", (req, res)=>{
-    if(ordini_completati.length != 0){
-        var undo = ordini_completati.pop();
-        Ordine.findOne({ uid: undo.uid }, (err, doc)=>{
-            doc.visibility = true;
-            doc.save();
+    if(ordini_completati.length !== 0){
+        let uidOfOrderToUndo = ordini_completati.pop();
+        BurgerOrder.findOne({ uid: uidOfOrderToUndo }, (err, burgerOrder)=>{
+            burgerOrder.visibility = true;
+            burgerOrder.save();
         })
     }
-    //res.redirect("/orders");
-    setTimeout(()=>{res.redirect("/orders");}, 400); 
-
-})
+    setTimeout(()=>{res.redirect("/orders");}, 400);
+});
 
 //GESIONE BAR
 router.get("/bar", (req, res, next)=>{
-    Bar.find({giorno: giorno, visibility: true})
-    .sort({ priority: "descending", createdAt: "ascending", id: "ascending" })
-    .exec((err, bar)=>{
+    BeveragesOrder.find({day: currentDay, visibility: true})
+    .sort({ priority: "descending", createdAt: "ascending" })
+    .exec((err, barOrders)=>{
         if(err){return next(err); }
-        res.render("bar", {ordini: bar,  moment: moment});
+        res.render("bar", {orders: barOrders,  moment: moment});
     });
 });
 
-router.get("/bar/:uid/:giorno/remove", (req, res, next)=> {
-    Bar.findOne({ uid: req.params.uid, giorno: req.params.giorno }, (err, doc)=>{
-    doc.visibility = false;
-    doc.save();
-    var bar = doc;
-    ordini_completati_bar.push(bar);
+router.get("/bar/:uid/remove", (req, res)=> {
+    BeveragesOrder.findOne({ uid: req.params.uid }, (err, beveragesOrder)=>{
+    beveragesOrder.visibility = false;
+    beveragesOrder.save();
+    ordini_completati_bar.push(beveragesOrder.uid);
     res.redirect("/bar");
-    //setTimeout(function() {res.redirect("/orders");}, 500); 
     }); 
 });
 
 router.get("/bar/undo", (req, res)=>{
-    if(ordini_completati_bar.length != 0){
-        var undo = ordini_completati_bar.pop();
-        Bar.findOne({ uid: undo.uid }, (err, doc)=>{
-            doc.visibility = true;
-            doc.save();
+    if(ordini_completati_bar.length !== 0){
+        let uidOfOrderToUndo = ordini_completati_bar.pop();
+        BeveragesOrder.findOne({ uid: uidOfOrderToUndo }, (err, beveragesOrder)=>{
+            beveragesOrder.visibility = true;
+            beveragesOrder.save();
         })
     }
-    //res.redirect("/orders");
-    setTimeout(()=>{res.redirect("/bar");}, 400); 
-
-})
+    setTimeout(()=>{res.redirect("/bar");}, 400);
+});
 
 
 router.get("/admin", (req, res, next)=>{
-    Incasso.find({id: giorno })
-    .exec((err, incassos)=>{
+    BurgerStats.findOne({day: currentDay }, (err, burgerStats)=>{
         if(err){return next(err); }
-        res.render("admin", {incassos: incassos, giorno: giorno});
+        res.render("admin", {burgerStats: burgerStats, day: currentDay});
     });
 });
 
-router.get("/admin/giorno/:giorno", (req, res, next)=>{ //select the day
-    if(giorno != req.params.giorno){ 
-        giorno = req.params.giorno;
+router.get("/admin/giorno/:giorno", (req, res)=>{
+    if(currentDay !== req.params.giorno){
+        currentDay = req.params.giorno;
         ordini_completati = [];
     }
 
-    Bevande.findOne({ id: giorno }, (err, doc)=>{
+    BeveragesStats.findOne({ day: currentDay }, (err, doc)=>{
         if(!doc){
-            for(var i = 1; i<=6; i+=1){
-                var newBevande = new Bevande({
-                id: i
-                });
-                newBevande.save();
-            }
+            let newBeveragesStats = new BeveragesStats({
+                day: currentDay
+            });
+            newBeveragesStats.save();
         }
-    });  
+    });
 
-    Incasso.findOne({ id: giorno }, (err, doc)=>{
+    BurgerStats.findOne({ day: currentDay }, (err, doc)=>{
         if(!doc){
-            for(var i = 1; i<=6; i+=1){
-                var newIncasso = new Incasso({
-                id: i,
-                parziale: 0
-                });
-                newIncasso.save();
-            }
+            let newBurgerStats = new BurgerStats({
+                day: currentDay
+            });
+            newBurgerStats.save();
         }
-        if(returnToCassa == true){
+        if(returnToCassa === true){
             returnToCassa = false;
             res.redirect("/cassa");
         }
-        else
+        else {
             res.redirect("/admin");
-    });  
-
-
+        }
 });
 
-router.get("/admin/orders", (req, res, next)=>{ //mostra tutti gli ordini
-    Ordine.find()
-    .sort({ createdAt: "ascending", id: "ascending" })
-    .exec((err, ordini)=>{
+router.get("/admin/orders", (req, res, next)=>{
+    BurgerOrder.find()
+    .sort({ createdAt: "ascending" })
+    .exec((err, burgerOrders)=>{
         if(err){return next(err); }
-        res.render("admin_orders_all", {ordini: ordini, moment: moment});
+        res.render("admin_orders_all", {orders: burgerOrders, moment: moment});
     });
 });
 
 
 
-router.get("/admin/orders/:day", (req, res, next)=>{ //mostra solo una giornata
-    Ordine.find( { giorno: req.params.day } )
-    .sort({ createdAt: "descending", id: "descending" })
-    .exec((err, ordini)=>{
+router.get("/admin/orders/:day", (req, res, next)=>{
+    BurgerOrder.find( { day: req.params.day } )
+    .sort({ createdAt: "descending" })
+    .exec((err, burgerOrders)=>{
         if(err){return next(err); }
-        Incasso.find({ id: req.params.day }, (err, incassos)=>{
-        res.render("admin_orders", { ordini: ordini, incassos: incassos, moment: moment});
-        });  
+        BurgerStats.find({ day: req.params.day }, (err, burgerStats)=>{
+        res.render("admin_orders", { orders: burgerOrders, stats: burgerStats, moment: moment});
+        });
     });
-}); 
- 
-router.get("/admin/drinks/:day", (req, res, next)=>{ //mostra tutti gli ordini
-    Bar.find( { giorno: req.params.day } )
-    .sort({ createdAt: "descending", id: "descending" })
-    .exec((err, ordini)=>{
+});
+
+router.get("/admin/drinks/:day", (req, res, next)=>{ //mostra tutti gli orders
+    BeveragesOrder.find( { day: req.params.day } )
+    .sort({ createdAt: "descending" })
+    .exec((err, beveragesOrders)=>{
         if(err){return next(err); }
-        Bevande.find({ id: req.params.day }, (err, incassos)=>{
-        res.render("admin_drinks", { ordini: ordini, incassos: incassos, moment: moment});
-        });  
+        BeveragesStats.find({ day: req.params.day }, (err, beveragesStats)=>{
+        res.render("admin_drinks", { orders: beveragesOrders, stats: beveragesStats, moment: moment});
+        });
     });
 });
 
 router.get("/admin/report", (req, res, next)=>{
-    if(giorno == 0)
+    if(currentDay === 0)
         res.redirect('back');
-    Incasso.find()
-    .sort({ id: "ascending" })
-    .exec((err, incassi)=>{
+    BurgerStats.find()
+    .sort({ day: "ascending" })
+    .exec((err, burgerStats)=>{
         if(err){return next(err); }
-        Bevande.find().sort({id: "ascending"}).exec((err, bevande)=>{
+        BeveragesStats.find().sort({day: "ascending"}).exec((err, bevande)=>{
             if(err){return next(err)}
-            res.render("report", {incassi: incassi, bevande: bevande});
+            res.render("report", {burgerStats: burgerStats, beveragesStats: bevande});
         })
     });
-})
+});
 
-router.get("/admin/report/carne", (req, res, next)=>{   //ordini per tipo di carne
-    if (giorno == 0) {res.redirect('back');}
-    Incasso.find()
-    .sort({ id: "ascending" })
-    .exec((err, incassi)=>{
-        if(err){return next(err); }
-        Ordine.count({carne: 'Hamburger'}, (err, count_hamburger)=>{
-            Ordine.count({carne: 'Salsiccia'}, (err, count_salsiccia)=>{
-                Ordine.count({}, (err, count_tot)=>{
+router.get("/admin/report/carne", (req, res)=>{
+    if (currentDay === 0) {res.redirect('back');}
+        BurgerOrder.count({carne: 'Hamburger'}, (err, count_hamburger)=>{
+            BurgerOrder.count({carne: 'Salsiccia'}, (err, count_salsiccia)=>{
+                BurgerOrder.count({}, (err, count_tot)=>{
                     res.render("report_carne", { count_hamburger: count_hamburger, count_salsiccia: count_salsiccia, count_tot: count_tot });
                 });
             });
         });
     });
-})
+});
 
-router.get("/orders/:uid/delete", (req, res, next)=>{  //elimina l'ordine selezionato dal DB
-    Ordine.findOne({ uid: req.params.uid }, (err, order)=>{ //forse req.params.giorno inutile?
-        Incasso.findOne({ id: order.giorno }, (err, incasso)=>{
-            incasso.parziale = +incasso.parziale - +order.prezzo;
-            incasso.save();
+router.get("/orders/:uid/delete", (req, res, next)=>{
+    BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
+        BurgerStats.findOne({ day: burgerOrder.day }, (err, burgerStats)=>{
+            burgerStats.total = +burgerStats.total - +burgerOrder.prezzo;
+            burgerStats.save();
         });
-        order.remove((err,removed)=>{
+        burgerOrder.remove((err)=>{
         if(err){return next(err); }
         });
-        res.redirect('back'); 
-    }); 
+        res.redirect('back');
+    });
 });
 
-router.get("/drinks/:uid/delete", (req, res, next)=>{  //elimina l'ordine selezionato dal DB
-    Bar.findOne({ uid: req.params.uid }, (err, order)=>{ 
-        Bevande.findOne({ id: order.giorno }, (err, incasso)=>{
-            incasso.totale -= +order.prezzo;
-            incasso.BAB -= order.BAB;
-            incasso.BB -= order.BB;
-            incasso.BAR -= order.BAR;
-            incasso.CC -= order.CC;
-            incasso.AQ -= order.AQ;
-            incasso.save();
+router.get("/drinks/:uid/delete", (req, res, next)=>{
+    BeveragesOrder.findOne({ uid: req.params.uid }, (err, beveragesOrder)=>{
+        BeveragesStats.findOne({ day: beveragesOrder.day }, (err, beveragesStats)=>{
+            beveragesStats.totale -= +beveragesOrder.prezzo;
+            beveragesStats.BAB -= beveragesOrder.BAB;
+            beveragesStats.BB -= beveragesOrder.BB;
+            beveragesStats.BAR -= beveragesOrder.BAR;
+            beveragesStats.CC -= beveragesOrder.CC;
+            beveragesStats.AQ -= beveragesOrder.AQ;
+            beveragesStats.save();
         });
-        order.remove((err,removed)=>{
+        beveragesOrder.remove((err)=>{
         if(err){return next(err); }
         });
-        res.redirect('back'); 
-    }); 
+        res.redirect('back');
+    });
 });
 
-router.get("/orders/restore/:uid", (req, res, next)=>{  //segna nuovamente l'ordine come non completo
-    Ordine.findOne({ uid: req.params.uid },  (err, doc)=>{
+router.get("/orders/restore/:uid", (req, res)=>{
+    BurgerOrder.findOne({ uid: req.params.uid },  (err, doc)=>{
         doc.visibility = true;
         doc.save();
-        setTimeout(()=>{res.redirect('back');}, 500); 
-    }); 
+        setTimeout(()=>{res.redirect('back');}, 500);
+    });
 });
 
-router.get("/drinks/restore/:uid", (req, res, next)=>{  //segna nuovamente l'ordine come non completo
-    Bar.findOne({ uid: req.params.uid }, (err, doc)=>{
+router.get("/drinks/restore/:uid", (req, res)=>{
+    BeveragesOrder.findOne({ uid: req.params.uid }, (err, doc)=>{
         doc.visibility = true;
         doc.save();
-        setTimeout(()=>{res.redirect('back');}, 500); 
-    }); 
+        setTimeout(()=>{res.redirect('back');}, 500);
+    });
 });
 
-router.get("/orders/edit/:uid", (req, res, next)=>{  
+router.get("/orders/edit/:uid", (req, res)=>{
     res.render("order_edit");
 });
 
-router.post("/orders/edit/:uid", (request, res, next)=>{  
-    Ordine.findOne({ uid: request.params.uid }, (err, order)=>{        
-        order.nome = request.body.nome,
-        order.priority = request.body.priorità,
-        order.carne = request.body.carne,
-        order.double = request.body.double,
-        order.verdura1 = request.body.verdura1,
-        order.verdura2 = request.body.verdura2,
-        order.verdura3 = request.body.verdura3,
-        order.verdura4 = request.body.verdura4,
-        order.verdura5 = request.body.verdura5,
-        order.verdura6 = request.body.verdura6,
-        order.verdura7 = request.body.verdura7,
-        order.salsa1 = request.body.salsa1,
-        order.salsa2 = request.body.salsa2,
-        order.salsa3 = request.body.salsa3,
-        order.salsa4 = request.body.salsa4
-        var new_prezzo_panino;
-        var old_prezzo_panino = order.prezzo;
-        if(request.body.double == "Double")
-            new_prezzo_panino = 9;
-        else
-            new_prezzo_panino = 7;
-        if(!request.body.carne)
-            new_prezzo_panino = 5;
-        if(old_prezzo_panino != new_prezzo_panino){
-            Incasso.findOne({ id: order.giorno }, (err, incasso)=>{
-                incasso.parziale = +incasso.parziale - old_prezzo_panino;
-                incasso.parziale = +incasso.parziale + new_prezzo_panino;
-                incasso.save();
-            });
-        }
-        order.prezzo = new_prezzo_panino;
-        order.save();     
-        res.redirect("/cassa");
-    }); 
-});
+router.get("/admin/deleteall/:what", (req, res, next)=>{
 
-router.get("/admin/deleteall/:what", (req, res, next)=>{ //elimina tutti gli ordini dal DB
-    
-    if(req.params.what == "all" || req.params.what =="panini"){
-        Ordine.remove((err,removed)=>{
+    if(req.params.what === "all" || req.params.what ==="panini"){
+        BurgerOrder.remove((err)=>{
         if(err){return next(err); }
         });
-        
-        Incasso.remove((err,removed)=>{
-        if(err){return next(err); }
-        });
-    }
-    
-    if(req.params.what == "all" || req.params.what =="bevande"){
-        Bevande.remove((err,removed)=>{
-        if(err){return next(err); }
-        });
-        
-        Bar.remove((err,removed)=>{
+
+        BurgerStats.remove((err)=>{
         if(err){return next(err); }
         });
     }
-    
-    giorno = 0;
+
+    if(req.params.what === "all" || req.params.what ==="beveragesStats"){
+        BeveragesStats.remove((err)=>{
+        if(err){return next(err); }
+        });
+
+        BeveragesOrder.remove((err)=>{
+        if(err){return next(err); }
+        });
+    }
+
+    currentDay = 0;
     res.render("deletedeverything");
 });
 

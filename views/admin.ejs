@@ -4,19 +4,19 @@
     <h1>Gestione Ordini <small>Visualizza e elimina le ordinazioni</small></h1>
 </div>
 
-<% if (giorno == 0) { %>
+<% if (day == 0) { %>
     <div class="alert alert-danger" role="alert">
         <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
         <span class="sr-only">Error:</span>
         Seleziona un giorno prima di iniziare
     </div>
 <% } else{ %>  
-</br>
+<br/>
 
 <ul class="list-group">
   <li class="list-group-item">
-    <span class="badge"><%= incassos[0].parziale %>€</span>
-    Totale parziale giorno <%= incassos[0].id %> PANINI
+    <span class="badge"><%= burgerStats.total %>€</span>
+    Totale parziale giorno <%= burgerStats.day %> PANINI
   </li>
 </ul>
 
@@ -38,12 +38,12 @@
         <li><a href="/admin/report">mostra report giornate</a></li>
         <li><a href="/admin/report/carne">mostra report carne</a></li>
         <li class="divider"></li>
-    	<li><a href="/admin/deleteall/all"onclick="return confirm('Sicuro di voler eliminare gli ordini?');"><font color="red">ELIMINA TUTTI GLI ORDINI</font></a></li>
+    	<li><a href="/admin/deleteall/all"onclick="return confirm('Sicuro di voler eliminare gli orders?');"><font color="red">ELIMINA TUTTI GLI ORDINI</font></a></li>
         <li><a href="/admin/deleteall/panini"onclick="return confirm('Sicuro di voler eliminare i panini?');"><font color="red">ELIMINA TUTTI I PANINI</font></a></li>
-        <li><a href="/admin/deleteall/bevande"onclick="return confirm('Sicuro di voler eliminare le bevande?');"><font color="red">ELIMINA TUTTE LE BEVANDE</font></a></li>
+        <li><a href="/admin/deleteall/bevande"onclick="return confirm('Sicuro di voler eliminare le beveragesStats?');"><font color="red">ELIMINA TUTTE LE BEVANDE</font></a></li>
     </ul>
 </div>
-</br>
+<br/>
 
 <div class="dropdown">
     <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Selezione giorno:

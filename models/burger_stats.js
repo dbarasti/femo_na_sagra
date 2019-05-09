@@ -1,11 +1,11 @@
-var mongoose = require("mongoose");
+let mongoose = require("mongoose");
 
-var burgerStatsSchema = mongoose.Schema({
-  id: Number, //giorno
-  parziale: Number
+let burgerStatsSchema = mongoose.Schema({
+  day: Number, //giorno
+  total: {type: Number, default:0}
 });
 
-var Burger_stats = mongoose.model("Incasso", burgerStatsSchema);
+let Burger_stats = mongoose.model("Burger_stats", burgerStatsSchema);
 
 module.exports = Burger_stats;
 

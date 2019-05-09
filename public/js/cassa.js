@@ -9,23 +9,76 @@ const PANINO_CANNAVACCIUOLO = "cannavacciuolo";
 const PANINO_BORGHESE = "borghese";
 const PANINO_RAMSEY = "ramsey";
 const PANINO_BABY = "baby";
+const config = {
+   "ingredients":[
+      {
+         "primary":[
+            "Hamburger",
+            "Salsiccia"
+         ],
+         "secondary":[
+            "Formaggio",
+            "Zucchine",
+            "Peperoni",
+            "Melanzane",
+            "Cipolla",
+            "Insalata",
+            "Pomodoro"
+         ],
+         "sauces":[
+            "Ketchup",
+            "Senape",
+            "Maionese",
+            "BBQ"
+         ]
+      }
+   ],
+   "burgers": [
+      {
+         "Cannavacciuolo": [
+            "Salsiccia","Formaggio", "Cipolla", "Peperoni", "Zucchine", "Senape"
+         ],
+         "Borghese": [
+            "Hamburger","Formaggio", "Peperoni", "Melanzane", "BBQ"
+         ],
+         "Ramsey": [
+            "Hamburger", "Double", "Formaggio", "Cipolla", "Insalata", "Pomodoro", "Ketchup", "Maionese"
+         ]
+      }
+   ],
+   "beverages": [
+      {
+         "beers": [
+            {
+               "microbrew": [
+                  "Bianca Artigianale", "Rossa Artigianale"
+               ],
+               "barrel": [
+                  "Bionda Forst"
+               ]
+            }
+         ],
+         "no_alcohol": [
+            "CocaCola", "Acqua Naturale", "Acqua Frizzante"
+         ]
+      }
+   ]
+};
+
+
 
 function clearAll() {
    getPaninoDivElement().innerHTML = "0 EURO";
-   document.getElementById("double").checked = false;
-   document.getElementById("carne1").checked = false;
-   document.getElementById("carne2").checked = false;
-   document.getElementById("verdura1").checked = false;
-   document.getElementById("verdura2").checked = false;
-   document.getElementById("verdura3").checked = false;
-   document.getElementById("verdura4").checked = false;
-   document.getElementById("verdura5").checked = false;
-   document.getElementById("verdura6").checked = false;
-   document.getElementById("verdura7").checked = false;
-   document.getElementById("salsa1").checked = false;  
-   document.getElementById("salsa2").checked = false;  
-   document.getElementById("salsa3").checked = false;  
-   document.getElementById("salsa4").checked = false;         
+   document.getElementById("Double").checked = false;
+   config.ingredients[0].primary.forEach((ingredient)=>{
+      document.getElementById(ingredient).checked = false;
+   });
+   config.ingredients[0].secondary.forEach((ingredient)=>{
+      document.getElementById(ingredient).checked = false;
+   });
+   config.ingredients[0].sauces.forEach((ingredient)=>{
+      document.getElementById(ingredient).checked = false;
+   });
 }
 
 function getBevandeInputElement(){
@@ -56,7 +109,7 @@ function checkBoxWithId(id){
 }
 
 function isCheckboxWithIdActive(id){
-   return document.getElementById(id).checked == true;
+   return document.getElementById(id).checked === true;
 }
 
 function cannavacciuoloClicked() {
@@ -65,16 +118,14 @@ function cannavacciuoloClicked() {
    else
       cannavacciuoloUnchecked();
 }
+
 function cannavacciuoloChecked(){
    clearAll();
    getPaninoDivElement().innerHTML = "7 EURO";
    getPaninoInputElement().value = "7";
-   checkBoxWithId("carne1");
-   checkBoxWithId("verdura1");
-   checkBoxWithId("verdura5");
-   checkBoxWithId("verdura3");
-   checkBoxWithId("verdura2");
-   checkBoxWithId("salsa4");
+   config.burgers[0].Cannavacciuolo.forEach((ingredient)=>{
+      checkBoxWithId(ingredient);
+   });
    updateTotal();
 }
 
@@ -94,11 +145,9 @@ function borgheseChecked(){
    clearAll();
    getPaninoDivElement().innerHTML = "7 EURO";
    getPaninoInputElement().value = "7";
-   checkBoxWithId("carne2");
-   checkBoxWithId("verdura1");
-   checkBoxWithId("verdura3");
-   checkBoxWithId("verdura4");
-   checkBoxWithId("salsa3");
+   config.burgers[0].Borghese.forEach((ingredient)=>{
+      checkBoxWithId(ingredient);
+   });
    updateTotal();
 }
 
@@ -118,14 +167,9 @@ function ramseyChecked(){
    clearAll();
    getPaninoDivElement().innerHTML = "9 EURO";
    getPaninoInputElement().value = "9";
-   checkBoxWithId("carne2");
-   checkBoxWithId("double");
-   checkBoxWithId("verdura1");
-   checkBoxWithId("verdura5");
-   checkBoxWithId("verdura6");
-   checkBoxWithId("verdura7");
-   checkBoxWithId("salsa1");
-   checkBoxWithId("salsa2");
+   config.burgers[0].Ramsey.forEach((ingredient)=>{
+      checkBoxWithId(ingredient);
+   });
    updateTotal();
 }
 
@@ -145,7 +189,7 @@ function babyChecked() {
    clearAll();
    getPaninoDivElement().innerHTML = "5 EURO";
    getPaninoInputElement().value = "5";
-   checkBoxWithId("carne2");
+   checkBoxWithId("Hamburger");
    updateTotal();
 }
 function babyUnchecked() {
@@ -155,9 +199,9 @@ function babyUnchecked() {
 }
 
 function doubleClicked() {
-   if(isCheckboxWithIdActive("double")){
-      if(!isCheckboxWithIdActive("carne1") && !isCheckboxWithIdActive("carne2")){
-         document.getElementById("double").checked = false;
+   if(isCheckboxWithIdActive("Double")){
+      if(!isCheckboxWithIdActive("Hamburger") && !isCheckboxWithIdActive("Salsiccia")){
+         document.getElementById("Double").checked = false;
       }
       else{
          getPaninoDivElement().innerHTML = "9 EURO";
@@ -174,9 +218,9 @@ function doubleClicked() {
 }
 
 function carneClicked() {
-   if(isCheckboxWithIdActive("baby"))
+   if(isCheckboxWithIdActive(PANINO_BABY))
       return;
-   if(isCheckboxWithIdActive("double")){
+   if(isCheckboxWithIdActive("Double")){
       getPaninoDivElement().innerHTML = "9 EURO";
       getPaninoInputElement().value = "9";
       updateTotal()
@@ -189,8 +233,8 @@ function carneClicked() {
 }
 
 function farcituraClicked(){
-   if(!isCheckboxWithIdActive("carne1") && !isCheckboxWithIdActive("carne2"))
-      if(parseFloat(getPaninoDivElement().innerHTML) == 5)
+   if(!isCheckboxWithIdActive("Hamburger") && !isCheckboxWithIdActive("Salsiccia"))
+      if(parseFloat(getPaninoDivElement().innerHTML) === 5)
          return;
       else{
          getPaninoDivElement().innerHTML = "5 EURO";
@@ -198,8 +242,8 @@ function farcituraClicked(){
          updateTotal()
       }
    else{
-      if(isCheckboxWithIdActive("baby")){
-         document.getElementById("baby").checked = false;
+      if(isCheckboxWithIdActive(PANINO_BABY)){
+         document.getElementById(PANINO_BABY).checked = false;
          getPaninoDivElement().innerHTML = "7 EURO";
          getPaninoInputElement().value = "7";
          updateTotal()
@@ -209,7 +253,7 @@ function farcituraClicked(){
 }
 
 /*
-* bevande checkbox clicked*/
+* beveragesStats checkbox clicked*/
 function bevandaClicked(bevanda, prezzo) {
 
    //controllo se il checkbox è stato selezionato
@@ -230,7 +274,7 @@ function bevandaClicked(bevanda, prezzo) {
    else{
       //calcolo valore da sottrarre
       let quantita = parseInt(document.getElementById("dropdown"+bevanda.charAt(bevanda.length-1)).innerHTML);
-      //aggiornamento totale bevande
+      //aggiornamento totale beveragesStats
       let value = parseFloat(document.getElementById('prezzoBevande').innerHTML);
       value = value - prezzo*quantita;
       getBevandeDivElement().innerHTML = value.toString() + ' EURO';

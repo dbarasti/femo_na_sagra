@@ -6,12 +6,12 @@
 
 <ul class="list-group">
     <li class="list-group-item">
-        <span class="badge"><%= incasso.parziale %>€</span> Totale parziale giorno
-        <%= incasso.id %> PANINI
+        <span class="badge"><%= burgerStats.total %>€</span> Totale parziale giorno
+        <%= burgerStats.day %> PANINI
     </li>
     <li class="list-group-item">
-        <span class="badge"><%= bevande.totale %>€</span> Totale parziale giorno
-        <%= bevande.id %> BEVANDE
+        <span class="badge"><%= beveragesStats.total %>€</span> Totale parziale giorno
+        <%= beveragesStats.day %> BEVANDE
     </li>
 </ul>
 
@@ -20,7 +20,7 @@
         <div class="panel-heading">
             <div class="form-group">
                 <label for="id">NUMERO ORDINE</label>
-                <input type="text" maxlenght="10" id="id" name="_id" placeholder="Numero ordine" required="required" value="<%= lastOrderID+1 %>" class="form-control" />
+                <input type="text" maxlenght="10" id="id" name="id" placeholder="Numero ordine" required="required" value="<%= +lastOrderID +1 %>" class="form-control" />
                 <p>Ultimo ordine:
                     <%= lastOrderID %>
                 </p>
@@ -31,11 +31,11 @@
             </div>
             <div class="checkbox">
                 <label>
-                    <input name="priorità" id="priorità" type="checkbox" value="priorità">Priorità (per ordini STAFF inserire 0 (zero) in numero ordine e selezionare questa casella)</label>
+                    <input name="priority" id="priority" type="checkbox" value="priority">Priorità (per ordini STAFF inserire 0 (zero) in numero ordine e selezionare questa casella)</label>
             </div>
             <div class="checkbox">
                 <label>
-                    <input name="asporto" type="checkbox" value="asporto"> Asporto </label>
+                    <input name="takeaway" type="checkbox" value="Take-Away"> Asporto </label>
             </div>
         </div>
         <div class="panel-heading">
@@ -75,7 +75,7 @@
                         <%})%>
                         <div class="checkbox">
                             <label>
-                                <input name="double" id="double" type="checkbox" value="Double" onclick="doubleClicked()"> Double</label>
+                                <input name="double" id="Double" type="checkbox" value="Double" onclick="doubleClicked()"> Double</label>
                         </div>
                     </fieldset>
                     <br/>
