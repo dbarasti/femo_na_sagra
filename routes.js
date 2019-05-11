@@ -30,25 +30,21 @@ router.get("/", (req,res)=>{
 });
 
 router.get("/cassa", (req,res)=>{
-    BurgerStats.findOne({ day: currentDay }, (err, burgerStats)=>{
-        if(currentDay === 0){
-            returnToCassa = true;
-            res.render("admin", {burgerStats: burgerStats, day: currentDay});
-        }
-        else{
-            BeveragesStats.findOne({day: currentDay}, (err, beveragesStats)=> {
-                BurgerOrder.findOne({day: currentDay})
-                .sort({createdAt: "descending"})
-                .exec((err, burgerOrder)=>{
-                    if(burgerOrder){
-                        res.render("cassa", {burgerStats: burgerStats, beveragesStats: beveragesStats, lastOrderID: burgerOrder.actualOrder.id, config: config });
-                    }
-                    else
-                        res.render("cassa", {burgerStats: burgerStats, beveragesStats:beveragesStats, lastOrderID: -1, config: config});
-                });
-            })
-        }
-    });  
+    if(currentDay === 0){
+        returnToCassa = true;
+        res.render("admin", {day: currentDay});
+    }
+    else{
+        BurgerOrder.findOne({day: currentDay})
+            .sort({createdAt: "descending"})
+            .then((err, burgerOrder)=>{
+                if(burgerOrder){
+                    res.render("cassa", { lastOrderID: burgerOrder.actualOrder.id, config: config });
+                }
+                else
+                    res.render("cassa", { lastOrderID: -1, config: config });
+            });
+    }
 });
 
 router.post("/cassa", (req, res)=>{
