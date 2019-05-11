@@ -136,9 +136,49 @@
             <h3>BEVANDE</h3>
         </div>
         <div class="panel-body">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Birra artigianale
+                </div>
+                <div class="panel-body">
+                    <% config.beverages[0].birraArtigianale.forEach((beverage)=>{%>
+
+                    <%=beverage.name%>
+
+                    <%})%>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Birra Normale
+                </div>
+                <div class="panel-body">
+                    <% config.beverages[0].birraNormale.forEach((beverage)=>{%>
+
+                    <%=beverage.name%>
+
+                    <%})%>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Bevande
+                </div>
+                <div class="panel-body">
+                    <% config.beverages[0].bevande.forEach((beverage)=>{%>
+
+                    <%=beverage.name%>
+
+                    <%})%>
+                </div>
+            </div>
+
+
+            <!--
             <div class="checkbox">
                 <label>
-                    <input name="bevanda1" id="bevanda1" type="checkbox" value="Artigianale" onclick="bevandaClicked('bevanda1', 3.5)">Birra Artigianale Bianca alla spina</label>
+                    <input name="bevanda1" id="bevanda1" type="checkbox" value="Artigianale" onclick="bevandaClicked('bevanda1', 3.5)">Birra Artigianale Bianca alla spina
+                </label>
                 <span class="dropup">
                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                <span id="dropdown1">0</span>
@@ -223,6 +263,7 @@
                     <input type="hidden" id="totaleBevande" name="totaleBevande" value="0">
                 </div>
             </div>
+            -->
         </div>
     </div>
     <div class="panel panel-default">

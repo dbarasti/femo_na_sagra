@@ -37,18 +37,35 @@
   ],
   "beverages": [
     {
-      "beers": [
+      "birraArtigianale": [
         {
-          "microbrew": [
-            "Bianca Artigianale", "Rossa Artigianale"
-          ],
-          "barrel": [
-            "Bionda Forst"
-          ]
+          "name": "Bianca Artigianale",
+          "price": "3.5"
+        },
+        {
+          "name": "Rossa Artigianale",
+          "price": "3.5"
         }
       ],
-      "no_alcohol": [
-        "CocaCola", "Acqua Naturale", "Acqua Frizzante"
+      "birraNormale": [
+        {
+          "name": "Bionda Forst",
+          "price": "3"
+        }
+      ],
+      "bevande": [
+        {
+          "name": "CocaCola",
+          "price": "2.5"
+        },
+        {
+          "name": "Acqua Naturale",
+          "price": "1"
+        },
+        {
+          "name": "Acqua Frizzante",
+          "price": "1"
+        }
       ]
     }
   ]
