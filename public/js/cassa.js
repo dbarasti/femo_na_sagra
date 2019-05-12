@@ -5,18 +5,18 @@
  * input with id="totalePanino"
  * div with id="prezzoPanino"*/
 
-const PANINO_CANNAVACCIUOLO = "cannavacciuolo";
-const PANINO_BORGHESE = "borghese";
-const PANINO_RAMSEY = "ramsey";
-const PANINO_BABY = "baby";
 const config = {
    "ingredients":[
       {
-         "primary":[
+         "type": "Principale",
+         "list": [
             "Hamburger",
             "Salsiccia"
-         ],
-         "secondary":[
+         ]
+      },
+      {
+         "type": "Farcitura",
+         "list": [
             "Formaggio",
             "Zucchine",
             "Peperoni",
@@ -24,8 +24,11 @@ const config = {
             "Cipolla",
             "Insalata",
             "Pomodoro"
-         ],
-         "sauces":[
+         ]
+      },
+      {
+         "type": "Salse",
+         "list": [
             "Ketchup",
             "Senape",
             "Maionese",
@@ -33,33 +36,90 @@ const config = {
          ]
       }
    ],
-   "burgers": [
+   "defaultBurgers": [
       {
-         "Cannavacciuolo": [
-            "Salsiccia","Formaggio", "Cipolla", "Peperoni", "Zucchine", "Senape"
+         "name": "Cannavacciuolo",
+         "ingredients": [
+            "Salsiccia",
+            "Formaggio",
+            "Cipolla",
+            "Peperoni",
+            "Zucchine",
+            "Senape"
          ],
-         "Borghese": [
-            "Hamburger","Formaggio", "Peperoni", "Melanzane", "BBQ"
+         "price": "7"
+      },
+      {
+         "name": "Borghese",
+         "ingredients": [
+            "Hamburger",
+            "Formaggio",
+            "Peperoni",
+            "Melanzane",
+            "BBQ"
          ],
-         "Ramsey": [
-            "Hamburger", "Double", "Formaggio", "Cipolla", "Insalata", "Pomodoro", "Ketchup", "Maionese"
-         ]
+         "price": "7"
+      },
+      {
+         "name": "Ramsey",
+         "ingredients": [
+            "Hamburger",
+            "Double",
+            "Formaggio",
+            "Cipolla",
+            "Insalata",
+            "Pomodoro",
+            "Ketchup",
+            "Maionese"
+         ],
+         "price": "7"
+      },
+      {
+         "name": "Baby",
+         "ingredients": [
+            "Hamburger"
+         ],
+         "price": "5"
       }
    ],
    "beverages": [
       {
-         "beers": [
+         "type": "Birra Artigianale",
+         "list": [
             {
-               "microbrew": [
-                  "Bianca Artigianale", "Rossa Artigianale"
-               ],
-               "barrel": [
-                  "Bionda Forst"
-               ]
+               "name": "Bianca Artigianale",
+               "price": "3.5"
+            },
+            {
+               "name": "Rossa Artigianale",
+               "price": "3.5"
             }
-         ],
-         "no_alcohol": [
-            "CocaCola", "Acqua Naturale", "Acqua Frizzante"
+         ]
+      },
+      {
+         "type": "Birra Normale",
+         "list": [
+            {
+               "name": "Bionda Forst",
+               "price": "3"
+            }
+         ]
+      },
+      {
+         "type": "Bevande analcoliche",
+         "list": [
+            {
+               "name": "CocaCola",
+               "price": "2.5"
+            },
+            {
+               "name": "Acqua Naturale",
+               "price": "1"
+            },
+            {
+               "name": "Acqua Frizzante",
+               "price": "1"
+            }
          ]
       }
    ]
@@ -67,17 +127,13 @@ const config = {
 
 
 
-function clearAll() {
-   getPaninoDivElement().innerHTML = "0 EURO";
+function clearAllIngredients() {
+   setBurgerTotalDivHTML(0);
    document.getElementById("Double").checked = false;
-   config.ingredients[0].primary.forEach((ingredient)=>{
-      document.getElementById(ingredient).checked = false;
-   });
-   config.ingredients[0].secondary.forEach((ingredient)=>{
-      document.getElementById(ingredient).checked = false;
-   });
-   config.ingredients[0].sauces.forEach((ingredient)=>{
-      document.getElementById(ingredient).checked = false;
+   config.ingredients.forEach((ingredientType)=>{
+      ingredientType.list.forEach((ingredient)=>{
+         uncheckBoxWithId(ingredient)
+      })
    });
 }
 
@@ -101,103 +157,63 @@ function getTotaleDivElement(){
 }
 
 function updateTotal(){
-   getTotaleDivElement().innerHTML = (parseFloat(getBevandeInputElement().value) + parseFloat(getPaninoInputElement().value)).toString() + ' EURO';
+   getTotaleDivElement().innerHTML = (/*parseFloat(getBevandeDivElement().value) + */parseFloat(getPaninoDivElement().innerHTML)).toString() + ' EURO';
 }
 
 function checkBoxWithId(id){
    document.getElementById(id).checked = true;
+   console.log(document.getElementById(id).checked);
+}
+
+function uncheckBoxWithId(id){
+   document.getElementById(id).checked = false;
+}
+
+function invertBoxWithId(id) {
+   document.getElementById(id).checked = !document.getElementById(id).checked;
 }
 
 function isCheckboxWithIdActive(id){
    return document.getElementById(id).checked === true;
 }
 
-function cannavacciuoloClicked() {
-   if(isCheckboxWithIdActive(PANINO_CANNAVACCIUOLO))
-      cannavacciuoloChecked();
-   else
-      cannavacciuoloUnchecked();
+function setBurgerTotalDivHTML(value) {
+   getPaninoDivElement().innerHTML = value + " EURO";
 }
 
-function cannavacciuoloChecked(){
-   clearAll();
-   getPaninoDivElement().innerHTML = "7 EURO";
-   getPaninoInputElement().value = "7";
-   config.burgers[0].Cannavacciuolo.forEach((ingredient)=>{
+function clearDefaultBurgersExcept(burgerName) {
+   config.defaultBurgers.filter((burger)=>burger.name!==burgerName)
+       .forEach((burger)=>{
+          uncheckBoxWithId(burger.name);
+       })
+}
+
+
+function defaultBurgerClicked(defaultBurger) {
+   if(isCheckboxWithIdActive(defaultBurger.name))
+      defaultBurgerChecked(defaultBurger);
+   else
+      defaultBurgerUnchecked();
+}
+
+function defaultBurgerChecked(defaultBurger) {
+   clearAllIngredients();
+   clearDefaultBurgersExcept(defaultBurger.name);
+   setBurgerTotalDivHTML(defaultBurger.price);
+   defaultBurger.ingredients.forEach((ingredient)=>{
+      console.log(ingredient);
       checkBoxWithId(ingredient);
    });
    updateTotal();
 }
 
-function cannavacciuoloUnchecked(){
-   clearAll();
-   getPaninoInputElement().value = "0";
+function defaultBurgerUnchecked() {
+   clearAllIngredients();
+   setBurgerTotalDivHTML("0");
    updateTotal();
 }
 
-function borgheseClicked() {
-   if(isCheckboxWithIdActive(PANINO_BORGHESE))
-      borgheseChecked();
-   else
-      borgheseUnchecked();
-}
-function borgheseChecked(){
-   clearAll();
-   getPaninoDivElement().innerHTML = "7 EURO";
-   getPaninoInputElement().value = "7";
-   config.burgers[0].Borghese.forEach((ingredient)=>{
-      checkBoxWithId(ingredient);
-   });
-   updateTotal();
-}
-
-function borgheseUnchecked(){
-   clearAll();
-   getPaninoInputElement().value = "0";
-   updateTotal();
-}
-
-function ramseyClicked() {
-   if(isCheckboxWithIdActive(PANINO_RAMSEY))
-      ramseyChecked();
-   else
-      ramseyUnchecked();
-}
-function ramseyChecked(){
-   clearAll();
-   getPaninoDivElement().innerHTML = "9 EURO";
-   getPaninoInputElement().value = "9";
-   config.burgers[0].Ramsey.forEach((ingredient)=>{
-      checkBoxWithId(ingredient);
-   });
-   updateTotal();
-}
-
-function ramseyUnchecked(){
-   clearAll();
-   getPaninoInputElement().value = "0";
-   updateTotal();
-}
-
-function babyClicked() {
-   if(isCheckboxWithIdActive(PANINO_BABY))
-      babyChecked();
-   else
-      babyUnchecked();
-}
-function babyChecked() {
-   clearAll();
-   getPaninoDivElement().innerHTML = "5 EURO";
-   getPaninoInputElement().value = "5";
-   checkBoxWithId("Hamburger");
-   updateTotal();
-}
-function babyUnchecked() {
-   clearAll();
-   getPaninoInputElement().value = "0";
-   updateTotal();
-}
-
+/*
 function doubleClicked() {
    if(isCheckboxWithIdActive("Double")){
       if(!isCheckboxWithIdActive("Hamburger") && !isCheckboxWithIdActive("Salsiccia")){
@@ -251,9 +267,10 @@ function farcituraClicked(){
    }
       
 }
-
+*/
 /*
 * beveragesStats checkbox clicked*/
+/*
 function bevandaClicked(bevanda, prezzo) {
 
    //controllo se il checkbox è stato selezionato
@@ -326,3 +343,6 @@ function dropClicked(dropdown, bevanda, prezzo) {
       document.getElementById(bevanda.slice(0,-1)).value = quantita;  
    }
 }
+
+
+ */

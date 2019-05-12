@@ -54,7 +54,7 @@ app.use(routes);
 
 app.listen(app.get("port"), function(){
 	console.log("server started on port " + app.get("port"));
-})
+});
 
 /*
 app.listen(("3000"), function(){

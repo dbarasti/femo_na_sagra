@@ -1,11 +1,15 @@
 {
   "ingredients":[
     {
-      "primary":[
+      "type": "Principale",
+      "list": [
         "Hamburger",
         "Salsiccia"
-      ],
-      "secondary":[
+      ]
+    },
+    {
+      "type": "Farcitura",
+      "list": [
         "Formaggio",
         "Zucchine",
         "Peperoni",
@@ -13,8 +17,11 @@
         "Cipolla",
         "Insalata",
         "Pomodoro"
-      ],
-      "sauces":[
+      ]
+    },
+    {
+      "type": "Salse",
+      "list": [
         "Ketchup",
         "Senape",
         "Maionese",
@@ -22,22 +29,56 @@
       ]
     }
   ],
-  "burgers": [
+  "defaultBurgers": [
     {
-      "Cannavacciuolo": [
-        "Salsiccia","Formaggio", "Cipolla", "Peperoni", "Zucchine", "Senape"
+      "name": "Cannavacciuolo",
+      "ingredients": [
+        "Salsiccia",
+        "Formaggio",
+        "Cipolla",
+        "Peperoni",
+        "Zucchine",
+        "Senape"
       ],
-      "Borghese": [
-        "Hamburger","Formaggio", "Peperoni", "Melanzane", "BBQ"
+      "price": "7"
+    },
+    {
+      "name": "Borghese",
+      "ingredients": [
+        "Hamburger",
+        "Formaggio",
+        "Peperoni",
+        "Melanzane",
+        "BBQ"
       ],
-      "Ramsey": [
-        "Hamburger", "Double", "Formaggio", "Cipolla", "Insalata", "Pomodoro", "Ketchup", "Maionese"
-      ]
+      "price": "7"
+    },
+    {
+      "name": "Ramsey",
+      "ingredients": [
+        "Hamburger",
+        "Double",
+        "Formaggio",
+        "Cipolla",
+        "Insalata",
+        "Pomodoro",
+        "Ketchup",
+        "Maionese"
+      ],
+      "price": "7"
+    },
+    {
+      "name": "Baby",
+      "ingredients": [
+        "Hamburger"
+      ],
+      "price": "5"
     }
   ],
   "beverages": [
     {
-      "birraArtigianale": [
+      "type": "Birra Artigianale",
+      "list": [
         {
           "name": "Bianca Artigianale",
           "price": "3.5"
@@ -46,14 +87,20 @@
           "name": "Rossa Artigianale",
           "price": "3.5"
         }
-      ],
-      "birraNormale": [
+      ]
+    },
+    {
+      "type": "Birra Normale",
+      "list": [
         {
           "name": "Bionda Forst",
           "price": "3"
         }
-      ],
-      "bevande": [
+      ]
+    },
+    {
+      "type": "Bevande analcoliche",
+      "list": [
         {
           "name": "CocaCola",
           "price": "2.5"
