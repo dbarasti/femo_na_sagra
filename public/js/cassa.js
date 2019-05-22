@@ -6,124 +6,130 @@
  * div with id="prezzoPanino"*/
 
 const config = {
-   "ingredients":[
-      {
-         "type": "Principale",
-         "list": [
-            "Hamburger",
-            "Salsiccia"
-         ]
-      },
-      {
-         "type": "Farcitura",
-         "list": [
-            "Formaggio",
-            "Zucchine",
-            "Peperoni",
-            "Melanzane",
-            "Cipolla",
-            "Insalata",
-            "Pomodoro"
-         ]
-      },
-      {
-         "type": "Salse",
-         "list": [
-            "Ketchup",
-            "Senape",
-            "Maionese",
-            "BBQ"
-         ]
-      }
-   ],
-   "defaultBurgers": [
-      {
-         "name": "Cannavacciuolo",
-         "ingredients": [
-            "Salsiccia",
-            "Formaggio",
-            "Cipolla",
-            "Peperoni",
-            "Zucchine",
-            "Senape"
-         ],
-         "price": "7"
-      },
-      {
-         "name": "Borghese",
-         "ingredients": [
-            "Hamburger",
-            "Formaggio",
-            "Peperoni",
-            "Melanzane",
-            "BBQ"
-         ],
-         "price": "7"
-      },
-      {
-         "name": "Ramsey",
-         "ingredients": [
-            "Hamburger",
-            "Double",
-            "Formaggio",
-            "Cipolla",
-            "Insalata",
-            "Pomodoro",
-            "Ketchup",
-            "Maionese"
-         ],
-         "price": "7"
-      },
-      {
-         "name": "Baby",
-         "ingredients": [
-            "Hamburger"
-         ],
-         "price": "5"
-      }
-   ],
-   "beverages": [
-      {
-         "type": "Birra Artigianale",
-         "list": [
-            {
-               "name": "Bianca Artigianale",
-               "price": "3.5"
-            },
-            {
-               "name": "Rossa Artigianale",
-               "price": "3.5"
-            }
-         ]
-      },
-      {
-         "type": "Birra Normale",
-         "list": [
-            {
-               "name": "Bionda Forst",
-               "price": "3"
-            }
-         ]
-      },
-      {
-         "type": "Bevande analcoliche",
-         "list": [
-            {
-               "name": "CocaCola",
-               "price": "2.5"
-            },
-            {
-               "name": "Acqua Naturale",
-               "price": "1"
-            },
-            {
-               "name": "Acqua Frizzante",
-               "price": "1"
-            }
-         ]
-      }
-   ]
-};
+       "ingredients":[
+          {
+             "type": "Principale",
+             "list": [
+                "Hamburger",
+                "Salsiccia"
+             ]
+          },
+          {
+             "type": "Farcitura",
+             "list": [
+                "Formaggio",
+                "Zucchine",
+                "Peperoni",
+                "Melanzane",
+                "Cipolla",
+                "Insalata",
+                "Pomodoro"
+             ]
+          },
+          {
+             "type": "Salse",
+             "list": [
+                "Ketchup",
+                "Senape",
+                "Maionese",
+                "BBQ"
+             ]
+          }
+       ],
+       "defaultBurgers": [
+          {
+             "name": "Cannavacciuolo",
+             "ingredients": [
+                "Salsiccia",
+                "Formaggio",
+                "Cipolla",
+                "Peperoni",
+                "Zucchine",
+                "Senape"
+             ],
+             "price": "7"
+          },
+          {
+             "name": "Borghese",
+             "ingredients": [
+                "Hamburger",
+                "Formaggio",
+                "Peperoni",
+                "Melanzane",
+                "BBQ"
+             ],
+             "price": "7"
+          },
+          {
+             "name": "Ramsey",
+             "ingredients": [
+                "Hamburger",
+                "Double",
+                "Formaggio",
+                "Cipolla",
+                "Insalata",
+                "Pomodoro",
+                "Ketchup",
+                "Maionese"
+             ],
+             "price": "9"
+          },
+          {
+             "name": "Baby",
+             "ingredients": [
+                "Hamburger"
+             ],
+             "price": "5"
+          }
+       ],
+       "beverages": [
+          {
+             "type": "Birra Artigianale",
+             "list": [
+                {
+                   "name": "Bianca Artigianale",
+                   "price": "3.5"
+                },
+                {
+                   "name": "Rossa Artigianale",
+                   "price": "3.5"
+                }
+             ]
+          },
+          {
+             "type": "Birra Normale",
+             "list": [
+                {
+                   "name": "Bionda Forst",
+                   "price": "3"
+                }
+             ]
+          },
+          {
+             "type": "Bevande analcoliche",
+             "list": [
+                {
+                   "name": "CocaCola",
+                   "price": "2.5"
+                },
+                {
+                   "name": "Acqua Naturale",
+                   "price": "1"
+                },
+                {
+                   "name": "Acqua Frizzante",
+                   "price": "1"
+                }
+             ]
+          }
+       ],
+       "extra": [
+          {
+             "name": "Patatine fritte",
+             "price": "2.5"
+          }
+       ]
+    };
 
 
 
@@ -213,7 +219,7 @@ function defaultBurgerUnchecked() {
    updateTotal();
 }
 
-/*
+
 function doubleClicked() {
    if(isCheckboxWithIdActive("Double")){
       if(!isCheckboxWithIdActive("Hamburger") && !isCheckboxWithIdActive("Salsiccia")){
@@ -221,53 +227,44 @@ function doubleClicked() {
       }
       else{
          getPaninoDivElement().innerHTML = "9 EURO";
-         getPaninoInputElement().value = "9";
          updateTotal()
       }
-
-   }
-   else{
+   }  else{
       getPaninoDivElement().innerHTML = "7 EURO";
-      getPaninoInputElement().value = "7";
       updateTotal();
    }
 }
 
-function carneClicked() {
-   if(isCheckboxWithIdActive(PANINO_BABY))
+function primaryClicked() {
+   if(isCheckboxWithIdActive("Baby"))
       return;
    if(isCheckboxWithIdActive("Double")){
       getPaninoDivElement().innerHTML = "9 EURO";
-      getPaninoInputElement().value = "9";
       updateTotal()
    }
    else{
       getPaninoDivElement().innerHTML = "7 EURO";
-      getPaninoInputElement().value = "7";
       updateTotal()
    }
 }
 
-function farcituraClicked(){
+function secondaryClicked(){
    if(!isCheckboxWithIdActive("Hamburger") && !isCheckboxWithIdActive("Salsiccia"))
       if(parseFloat(getPaninoDivElement().innerHTML) === 5)
          return;
       else{
          getPaninoDivElement().innerHTML = "5 EURO";
-         getPaninoInputElement().value = "5";
          updateTotal()
       }
    else{
-      if(isCheckboxWithIdActive(PANINO_BABY)){
-         document.getElementById(PANINO_BABY).checked = false;
+      if(isCheckboxWithIdActive("Baby")){
+         document.getElementById("Baby").checked = false;
          getPaninoDivElement().innerHTML = "7 EURO";
-         getPaninoInputElement().value = "7";
          updateTotal()
       }
    }
-      
 }
-*/
+
 /*
 * beveragesStats checkbox clicked*/
 /*

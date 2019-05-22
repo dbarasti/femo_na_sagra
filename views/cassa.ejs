@@ -55,9 +55,9 @@
                             <% ingredientType.list.forEach((ingredient)=>{ %>
                             <label>
                                 <%if(ingredientType.type == "Principale"){%>
-                                <input name="<%=ingredientType.type%>" id="<%=ingredient%>" type="radio" onclick="carneClicked()" value="<%=ingredient%>">
+                                <input name="<%=ingredientType.type%>" id="<%=ingredient%>" type="radio" onclick="primaryClicked()" value="<%=ingredient%>">
                                 <%}else{%>
-                                <input name="<%=ingredientType.type%>" id="<%=ingredient%>" type="checkbox" onclick="carneClicked()" value="<%=ingredient%>">
+                                <input name="<%=ingredientType.type%>" id="<%=ingredient%>" type="checkbox" onclick="secondaryClicked()" value="<%=ingredient%>">
                                 <%}%>
                                 <%=ingredient%>
                             </label>
@@ -87,7 +87,6 @@
             <div id="prezzoPanino">
                 0 EURO
             </div>
-            <input type="hidden" id="totalePanino" name="totalePanino" value="0">
         </div>
     </div>
     <div class="panel panel-default">
