@@ -2,6 +2,10 @@ let fs = require('fs');
 let config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 
 function calculateBurgerPrice(order) {
+		if(!order.Principale && !order.Farcitura && !order.Salse){
+				return 0;
+		}
+
 		if (order.Principale && order.double){
 			return 9;
 		}
@@ -17,11 +21,20 @@ function calculateBurgerPrice(order) {
 		}
 }
 
-function calculateBeveragesPrice(order) {
+function calculateBeveragesPrice(beverages) {
 		let total = 0;
-		order.beverages.forEach((beverage)=>{
-				total += beverage.price;
-		});
+		if (!beverages) {
+				return 0;
+		}
+		if (!Array.isArray(beverages)) {
+				let actualBeverages = JSON.parse(beverages);
+				return  actualBeverages.price;
+		}else{
+				beverages.forEach((beverage)=>{
+						let actualBeverage = JSON.parse(beverage);
+						total += Number.parseFloat(actualBeverage.price);
+				});
+		}
 		return total;
 }
 

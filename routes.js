@@ -52,9 +52,7 @@ router.post("/cassa", (req, res)=>{
     console.log(req.body);
     let requestBody = req.body;
     let burgerPrice = Calculator.calculateBurgerPrice(requestBody);
-    let beveragesPrice = Calculator.calculateBeveragesPrice(requestBody);
-    console.log(burgerPrice);
-    console.log(beveragesPrice);
+    let beveragesPrice = Calculator.calculateBeveragesPrice(requestBody.beverages);
     let newBurgerOrder = new BurgerOrder({
         uid: yeast(),
         day: currentDay,
@@ -75,60 +73,7 @@ router.post("/cassa", (req, res)=>{
     newBeveragesOrder.save();
 
     res.redirect("/cassa");
-    /*
-		let requestBody = req.body;
-		//let burgerPrice = calculateBurgerPrice(requestBody) ALSO CHECK IF STAFF ORDER
-		//let beveragesPrice = calculateBeveragesPrice(requestBody) ALSO HAS TO CHECK IF STAFF ORDER
-		let burgerPrice = parseFloat(requestBody.totalePanino);
-		let beveragesPrice = parseFloat(requestBody.totaleBevande);
-
-		if(burgerPrice !== 0){
-				console.log(req.body);
-				let newBurgerOrder = new BurgerOrder({
-						uid: yeast(),
-						day: currentDay,
-						prezzo: burgerPrice,
-						createdAt: moment(),
-						visibility: true,
-						actualOrder: requestBody
-				});
-				newBurgerOrder.save();
-
-				BurgerStats.findOne({ day: currentDay }, (err, doc)=>{
-						doc.total = +doc.total + +burgerPrice;
-						doc.save();
-				});
-		}
-		if(beveragesPrice !== 0){
-				BeveragesStats.findOne({ day: currentDay }, (err, doc)=>{
-						doc.totale = +doc.totale + parseFloat(req.body.totaleBevande);
-						if(req.body.bevanda1)
-								doc.BAB += parseInt(req.body.bevanda1);
-						if(req.body.bevanda2)
-								doc.BB += parseInt(req.body.bevanda2);
-						if(req.body.bevanda3)
-								doc.BAR += parseInt(req.body.bevanda3);
-						if(req.body.bevanda4)
-								doc.CC += parseInt(req.body.bevanda4);
-						if(req.body.bevanda5)
-								doc.AQ += parseInt(req.body.bevanda5);
-						doc.save();
-				});
-				let newBeveragesOrder = new BeveragesOrder({
-						uid: yeast(),
-						day: currentDay,
-						prezzo: beveragesPrice,
-						visibility: true,
-						actualOrder: requestBody
-				});
-				newBeveragesOrder.save();
-		}
-		setTimeout(()=>{res.redirect("/cassa");}, 1000);
-
- */
 });
-
-
 
 router.get("/orders", (req, res, next)=>{
     BurgerOrder.find({day: currentDay, visibility: true})

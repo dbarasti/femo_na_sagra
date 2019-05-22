@@ -65,7 +65,7 @@
         "Ketchup",
         "Maionese"
       ],
-      "price": "7"
+      "price": "9"
     },
     {
       "name": "Baby",
@@ -114,6 +114,12 @@
           "price": "1"
         }
       ]
+    }
+  ],
+  "extra": [
+    {
+      "name": "Patatine fritte",
+      "price": "2.5"
     }
   ]
 }
