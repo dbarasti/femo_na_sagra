@@ -6,8 +6,8 @@ let burgerOrderSchema = mongoose.Schema({
   prezzo: Number,
   createdAt: { type: Date, default: moment() },
   visibility: Boolean,
-  staff: {type: Boolean, default: false},
-  actualOrder: JSON
+  actualOrder: JSON,
+  staff: {type: Boolean, default: false}
 });
 
 var Burger_order = mongoose.model("Burger_order", burgerOrderSchema);

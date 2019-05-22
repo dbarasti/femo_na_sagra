@@ -38,5 +38,8 @@ function calculateBeveragesPrice(beverages) {
 		return total;
 }
 
+function isStaffOrder(order){
+	return !!(order.id == 0 && order.priority);
+}
 
-module.exports = {calculateBeveragesPrice, calculateBurgerPrice};
+module.exports = {calculateBeveragesPrice, calculateBurgerPrice, isStaffOrder};

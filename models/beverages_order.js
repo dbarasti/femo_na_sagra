@@ -6,7 +6,8 @@ let beveragesOrderSchema = mongoose.Schema({
   prezzo: Number, //required: true
   createdAt: { type: Date, default: moment() },
   visibility: Boolean,
-  actualOrder: JSON
+  actualOrder: JSON,
+  staff: {type: Boolean, default: false}
 });
 
 let Beverages_order = mongoose.model("Beverages_order", beveragesOrderSchema);
