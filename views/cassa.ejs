@@ -103,13 +103,25 @@
                     <div class="checkbox">
                         <% beverageType.list.forEach((beverage)=>{%>
                         <label>
-                            <input name="beverages" type="checkbox" value="<%=JSON.stringify(beverage)%>" onclick="beverageSelected(<%=JSON.stringify(beverage)%>)"><%=beverage.name%>
+                            <input name="beverages" type="checkbox" value="<%=JSON.stringify(beverage)%>" onclick="beverageClicked(<%=JSON.stringify(beverage)%>)"><%=beverage.name%>
                         </label>
                         <%})%>
                     </div>
                 </div>
             </div>
             <%})%>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Conto Bevande
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <div id="prezzoBevande">
+                        0 EURO
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

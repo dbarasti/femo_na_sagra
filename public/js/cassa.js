@@ -265,9 +265,16 @@ function secondaryClicked(){
    }
 }
 
-/*
-* beveragesStats checkbox clicked*/
-/*
+function beverageClicked(beverage) {
+   if (isCheckboxWithIdActive(beverage.name)){
+      beverageChecked(beverage);
+   }else{
+      beverageUnchecked(beverage);
+   }
+   getBevandeDivElement().innerHTML = parseFloat(getBevandeDivElement().innerHTML)
+}
+
+/* beveragesStats checkbox clicked*/
 function bevandaClicked(bevanda, prezzo) {
 
    //controllo se il checkbox è stato selezionato
@@ -340,6 +347,3 @@ function dropClicked(dropdown, bevanda, prezzo) {
       document.getElementById(bevanda.slice(0,-1)).value = quantita;  
    }
 }
-
-
- */

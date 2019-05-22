@@ -51,6 +51,8 @@ router.get("/cassa", (req,res)=>{
 router.post("/cassa", (req, res)=>{
     console.log(req.body);
     let requestBody = req.body;
+    //verificare se ordine staff con un booleano che viene salvato nei due schemi mongodb
+    // let isStaffOrder = isStaffOrder(requestBody);
     let burgerPrice = Calculator.calculateBurgerPrice(requestBody);
     let beveragesPrice = Calculator.calculateBeveragesPrice(requestBody.beverages);
     let newBurgerOrder = new BurgerOrder({
@@ -60,6 +62,7 @@ router.post("/cassa", (req, res)=>{
         createdAt: moment(),
         visibility: true,
         actualOrder: requestBody
+        //staff: isStaffOrder
     });
     newBurgerOrder.save();
 
@@ -69,6 +72,7 @@ router.post("/cassa", (req, res)=>{
         prezzo: beveragesPrice,
         visibility: true,
         actualOrder: requestBody
+        // staff: isStaffOrder
     });
     newBeveragesOrder.save();
 
