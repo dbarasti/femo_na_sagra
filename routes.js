@@ -25,7 +25,6 @@ router.use((req, res, next)=>{
     next();
 });
 
-
 router.get("/", (req,res)=>{          
 	res.render("homepage");
 });
@@ -50,8 +49,9 @@ router.get("/cassa", (req,res)=>{
 
 router.post("/cassa", (req, res)=>{
     let requestBody = req.body;
+    console.log(requestBody);
     let isStaffOrder = Calculator.isStaffOrder(requestBody);
-    console.log(isStaffOrder);
+    let isPriorityOrder = Calculator.isPriorityOrder(requestBody);
     let burgerPrice = Calculator.calculateBurgerPrice(requestBody);
     let beveragesPrice = Calculator.calculateBeveragesPrice(requestBody.beverages);
 
@@ -62,6 +62,7 @@ router.post("/cassa", (req, res)=>{
         createdAt: moment(),
         visibility: true,
         actualOrder: requestBody,
+        priority: isPriorityOrder,
         staff: isStaffOrder
     });
     newBurgerOrder.save();
@@ -72,6 +73,7 @@ router.post("/cassa", (req, res)=>{
         prezzo: beveragesPrice,
         visibility: true,
         actualOrder: requestBody,
+        priority: isPriorityOrder,
         staff: isStaffOrder
     });
     newBeveragesOrder.save();
@@ -105,7 +107,8 @@ router.get("/orders/undo", (req, res)=>{
             burgerOrder.save();
         })
     }
-    setTimeout(()=>{res.redirect("/orders");}, 400);
+    res.redirect("/orders");
+    //setTimeout(()=>{res.redirect("/orders");}, 400);
 });
 
 //GESIONE BAR
@@ -135,7 +138,8 @@ router.get("/bar/undo", (req, res)=>{
             beveragesOrder.save();
         })
     }
-    setTimeout(()=>{res.redirect("/bar");}, 400);
+    res.redirect("/orders");
+    //setTimeout(()=>{res.redirect("/bar");}, 400);
 });
 
 
@@ -146,14 +150,15 @@ router.get("/admin", (req, res, next)=>{
     });
 });
 
-router.get("/admin/giorno/:giorno", (req, res)=>{
-    if(currentDay !== req.params.giorno){
+router.get("/admin/giorno/:giorno", (req, res)=> {
+    if (currentDay !== req.params.giorno) {
         currentDay = req.params.giorno;
         ordini_completati = [];
+        ordini_completati_bar = [];
     }
 
-    BeveragesStats.findOne({ day: currentDay }, (err, doc)=>{
-        if(!doc){
+    BeveragesStats.findOne({day: currentDay}, (err, doc) => {
+        if (!doc) {
             let newBeveragesStats = new BeveragesStats({
                 day: currentDay
             });
@@ -161,20 +166,22 @@ router.get("/admin/giorno/:giorno", (req, res)=>{
         }
     });
 
-    BurgerStats.findOne({ day: currentDay }, (err, doc)=>{
-        if(!doc){
+    BurgerStats.findOne({day: currentDay}, (err, doc) => {
+        if (!doc) {
             let newBurgerStats = new BurgerStats({
                 day: currentDay
             });
             newBurgerStats.save();
         }
-        if(returnToCassa === true){
-            returnToCassa = false;
-            res.redirect("/cassa");
-        }
-        else {
-            res.redirect("/admin");
-        }
+
+    });
+    if(returnToCassa === true){
+        returnToCassa = false;
+        res.redirect("/cassa");
+    }
+    else {
+        res.redirect("/admin");
+    }
 });
 
 router.get("/admin/orders", (req, res, next)=>{
@@ -185,8 +192,6 @@ router.get("/admin/orders", (req, res, next)=>{
         res.render("admin_orders_all", {orders: burgerOrders, moment: moment});
     });
 });
-
-
 
 router.get("/admin/orders/:day", (req, res, next)=>{
     BurgerOrder.find( { day: req.params.day } )
@@ -199,7 +204,7 @@ router.get("/admin/orders/:day", (req, res, next)=>{
     });
 });
 
-router.get("/admin/drinks/:day", (req, res, next)=>{ //mostra tutti gli orders
+router.get("/admin/drinks/:day", (req, res, next)=>{
     BeveragesOrder.find( { day: req.params.day } )
     .sort({ createdAt: "descending" })
     .exec((err, beveragesOrders)=>{
@@ -226,11 +231,10 @@ router.get("/admin/report", (req, res, next)=>{
 
 router.get("/admin/report/carne", (req, res)=>{
     if (currentDay === 0) {res.redirect('back');}
-        BurgerOrder.count({carne: 'Hamburger'}, (err, count_hamburger)=>{
-            BurgerOrder.count({carne: 'Salsiccia'}, (err, count_salsiccia)=>{
-                BurgerOrder.count({}, (err, count_tot)=>{
-                    res.render("report_carne", { count_hamburger: count_hamburger, count_salsiccia: count_salsiccia, count_tot: count_tot });
-                });
+    BurgerOrder.count({carne: 'Hamburger'}, (err, count_hamburger)=>{
+        BurgerOrder.count({carne: 'Salsiccia'}, (err, count_salsiccia)=>{
+            BurgerOrder.count({}, (err, count_tot)=>{
+                res.render("report_carne", { count_hamburger: count_hamburger, count_salsiccia: count_salsiccia, count_tot: count_tot });
             });
         });
     });
@@ -281,10 +285,6 @@ router.get("/drinks/restore/:uid", (req, res)=>{
         doc.save();
         setTimeout(()=>{res.redirect('back');}, 500);
     });
-});
-
-router.get("/orders/edit/:uid", (req, res)=>{
-    res.render("order_edit");
 });
 
 router.get("/admin/deleteall/:what", (req, res, next)=>{

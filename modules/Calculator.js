@@ -42,4 +42,8 @@ function isStaffOrder(order){
 	return !!(order.id == 0 && order.priority);
 }
 
-module.exports = {calculateBeveragesPrice, calculateBurgerPrice, isStaffOrder};
+function isPriorityOrder(order){
+	return order.priority != undefined;
+}
+
+module.exports = {calculateBeveragesPrice, calculateBurgerPrice, isStaffOrder, isPriorityOrder};

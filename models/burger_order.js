@@ -7,6 +7,7 @@ let burgerOrderSchema = mongoose.Schema({
   createdAt: { type: Date, default: moment() },
   visibility: Boolean,
   actualOrder: JSON,
+  priority: {type: Boolean, default: false},
   staff: {type: Boolean, default: false}
 });
 
