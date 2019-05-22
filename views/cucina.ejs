@@ -23,7 +23,7 @@
         <div class="panel-heading">
           <div class="pull-right">
             <a href='/orders/<%= order.uid %>/remove' class="btn-sm btn-raised btn-danger">
-              <i class="icon-user icon-white"></i> COMPLETATO
+              COMPLETATO
             </a>
           </div>
 
@@ -57,30 +57,29 @@
               <% } %>
             </p>
           </div>
-
         </div>
 
         <div class="panel-body ingredienti">
           <span class="carne">
             <%=order.actualOrder.double%>
-            <%= order.actualOrder.primary %>
+            <%= order.actualOrder.Principale %>
           </span>
           <span class="verdura">
-            <%if (Array.isArray(order.actualOrder.secondary)){ %>
-              <% order.actualOrder.secondary.forEach((secondary)=>{ %>
-                <%=secondary%>
+            <%if (Array.isArray(order.actualOrder.Farcitura)){ %>
+              <% order.actualOrder.Farcitura.forEach((farcitura)=>{ %>
+                <%=farcitura%>
               <% }) %>
             <%}else{%>
-                <% order.actualOrder.secondary %>
+                <%= order.actualOrder.Farcitura %>
             <%}%>
           </span>
           <span class="salsa">
-            <%if (Array.isArray(order.actualOrder.sauces)){ %>
-              <% order.actualOrder.sauces.forEach((sauce)=>{ %>
-              <%=sauce%>
+            <%if (Array.isArray(order.actualOrder.Salse)){ %>
+              <% order.actualOrder.Salse.forEach((sauce)=>{ %>
+              <%= sauce%>
               <% }) %>
             <%}else{%>
-              <% order.actualOrder.sauces %>
+              <%= order.actualOrder.Salse %>
             <%}%>
           </span>
         </div>

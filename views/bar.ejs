@@ -12,47 +12,47 @@
 <br/>
 
 <div class="row orders-block">
-  <% orders.forEach(function(ordine) { %>
+  <% orders.forEach((order)=>{ %>
   <div class="col-md-6">
-    <% if(ordine.actualOrder.id % 2 != 0) { %>
+    <% if(order.actualOrder.id % 2 != 0) { %>
     <div class="panel panel-primary">
       <% } %>
 
-      <% if(ordine.actualOrder.id % 2 == 0) { %>
+      <% if(order.actualOrder.id % 2 == 0) { %>
       <div class="panel panel-info">
         <% } %>
 
         <div class="panel-heading">
           <div class="pull-right">
-            <a href='/bar/<%= ordine.uid %>/remove' class="btn-sm btn-raised btn-danger">
-              <i class="icon-user icon-white"></i> COMPLETATO
+            <a href='/bar/<%= order.uid %>/remove' class="btn-sm btn-raised btn-danger">
+              COMPLETATO
             </a>
           </div>
 
           <div class="ora_ordinazione">
             <p>
               ORA ORDINAZIONE:
-              <%=moment(ordine.createdAt).format('HH:mm')%>
+              <%=moment(order.createdAt).format('HH:mm')%>
             </p>
           </div>
           <div class="numero-ordine">
             <p>
               NUMERO ORDINE
-              <% if(ordine.asporto) { %>
+              <% if(order.actualOrder.takeaway) { %>
                 <span class="asporto">
-              PER ASPORTO
-            </span>
+                PER ASPORTO
+              </span>
               <% } %>
               :
-              <%= ordine.actualOrder.id %>
+              <%= order.actualOrder.id %>
             </p>
           </div>
           <div class="text priorità">
             <p>
-              <% if (ordine.priority) { %>
+              <% if (order.priority) { %>
                 ORDINE CON PRIORITÀ
                 <span class="staff">
-                  <% if (ordine.actualOrder.id == 0) { %>
+                  <% if (order.staff === true) { %>
                     PER STAFF
                   <% } %>
                 </span>
@@ -61,21 +61,16 @@
           </div>
         </div>
         <div class="panel-body ingredienti">
-          <% if(ordine.BAB > 0) {%>
-            <%= ordine.BAB %>x BIRRA Bianca ART.
-          <% } %>
-          <% if(ordine.BB > 0) {%>
-            <%= ordine.BB %>x BIRRA Bionda
-          <% } %>
-          <% if(ordine.BAR > 0) {%>
-            <%= ordine.BAR %>x BIRRA Rossa ART.
-          <% } %>
-          <% if(ordine.CC > 0) {%>
-            <%= ordine.CC %>x CocaCola
-          <% } %>
-          <% if(ordine.AQ >0) {%>
-            <%= ordine.AQ %>x Acqua
-          <% } %>
+          <%let i = 0%>
+          <%order.actualOrder.beveragesQuantities.forEach(beverageQuantity=>{%>
+          <%if (beverageQuantity != ''){%>
+            <%=beverageQuantity%>x
+            <span class="bevanda-bar">
+            <%=JSON.parse(order.actualOrder.beverages[i]).name%>
+            </span>
+            <%i++%>
+          <%}%>
+          <%})%>
         </div>
       </div>
     </div>
