@@ -14,10 +14,6 @@
                     <%= lastOrderID %>
                 </p>
             </div>
-            <div class="form-group">
-                <label for="nome">NOME</label>
-                <input class="form-control" type="text" id="nome" name="nome" placeholder="Nome cliente" />
-            </div>
             <div class="checkbox">
                 <label>
                     <input name="priority" id="priority" type="checkbox" value="priority">Priorità (per ordini STAFF inserire 0 (zero) in numero ordine e selezionare questa casella)</label>
@@ -85,7 +81,7 @@
         </div>
         <div class="panel-body">
             <div id="prezzoPanino">
-                0 EURO
+                0 €
             </div>
         </div>
     </div>
@@ -103,7 +99,7 @@
                     <div class="checkbox">
                         <% beverageType.list.forEach((beverage)=>{%>
                         <label>
-                            <input name="beverages" type="checkbox" value="<%=JSON.stringify(beverage)%>" onclick="beverageClicked(<%=JSON.stringify(beverage)%>)"><%=beverage.name%>
+                            <input name="beverages" type="checkbox" id="<%=beverage.name%>"  value="<%=JSON.stringify(beverage)%>" onclick="beverageClicked(<%=JSON.stringify(beverage)%>)"><%=beverage.name%>
                         </label>
                         <%})%>
                     </div>
@@ -118,7 +114,7 @@
                 </div>
                 <div class="panel-body">
                     <div id="prezzoBevande">
-                        0 EURO
+                        0 €
                     </div>
                 </div>
             </div>
@@ -133,7 +129,7 @@
         </div>
         <div class="panel-body">
             <div id="totale">
-                0 EURO
+                0 €
             </div>
         </div>
     </div>

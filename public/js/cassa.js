@@ -163,7 +163,7 @@ function getTotaleDivElement(){
 }
 
 function updateTotal(){
-   getTotaleDivElement().innerHTML = (/*parseFloat(getBevandeDivElement().value) + */parseFloat(getPaninoDivElement().innerHTML)).toString() + ' EURO';
+   getTotaleDivElement().innerHTML = (parseFloat(getBevandeDivElement().innerHTML) + parseFloat(getPaninoDivElement().innerHTML)).toString() + ' €';
 }
 
 function checkBoxWithId(id){
@@ -184,7 +184,7 @@ function isCheckboxWithIdActive(id){
 }
 
 function setBurgerTotalDivHTML(value) {
-   getPaninoDivElement().innerHTML = value + " EURO";
+   getPaninoDivElement().innerHTML = value + " €";
 }
 
 function clearDefaultBurgersExcept(burgerName) {
@@ -226,11 +226,11 @@ function doubleClicked() {
          document.getElementById("Double").checked = false;
       }
       else{
-         getPaninoDivElement().innerHTML = "9 EURO";
+         getPaninoDivElement().innerHTML = "9 €";
          updateTotal()
       }
    }  else{
-      getPaninoDivElement().innerHTML = "7 EURO";
+      getPaninoDivElement().innerHTML = "7 €";
       updateTotal();
    }
 }
@@ -239,11 +239,11 @@ function primaryClicked() {
    if(isCheckboxWithIdActive("Baby"))
       return;
    if(isCheckboxWithIdActive("Double")){
-      getPaninoDivElement().innerHTML = "9 EURO";
+      getPaninoDivElement().innerHTML = "9 €";
       updateTotal()
    }
    else{
-      getPaninoDivElement().innerHTML = "7 EURO";
+      getPaninoDivElement().innerHTML = "7 €";
       updateTotal()
    }
 }
@@ -253,13 +253,13 @@ function secondaryClicked(){
       if(parseFloat(getPaninoDivElement().innerHTML) === 5)
          return;
       else{
-         getPaninoDivElement().innerHTML = "5 EURO";
+         getPaninoDivElement().innerHTML = "5 €";
          updateTotal()
       }
    else{
       if(isCheckboxWithIdActive("Baby")){
          document.getElementById("Baby").checked = false;
-         getPaninoDivElement().innerHTML = "7 EURO";
+         getPaninoDivElement().innerHTML = "7 €";
          updateTotal()
       }
    }
@@ -271,7 +271,16 @@ function beverageClicked(beverage) {
    }else{
       beverageUnchecked(beverage);
    }
-   getBevandeDivElement().innerHTML = parseFloat(getBevandeDivElement().innerHTML)
+}
+
+function beverageChecked(beverage) {
+   getBevandeDivElement().innerHTML = (parseFloat(getBevandeDivElement().innerHTML) + parseFloat(beverage.price)).toString() + ' €';
+   updateTotal();
+}
+
+function beverageUnchecked(beverage){
+   getBevandeDivElement().innerHTML = (parseFloat(getBevandeDivElement().innerHTML) - parseFloat(beverage.price)).toString() + ' €';
+   updateTotal();
 }
 
 /* beveragesStats checkbox clicked*/
@@ -281,7 +290,7 @@ function bevandaClicked(bevanda, prezzo) {
    if(isCheckboxWithIdActive(bevanda)){
       let currentBevandaTotal = parseFloat(document.getElementById('prezzoBevande').innerHTML);
       let updatedBevandeTotal = currentBevandaTotal + prezzo;
-      getBevandeDivElement().innerHTML = updatedBevandeTotal.toString() + ' EURO';
+      getBevandeDivElement().innerHTML = updatedBevandeTotal.toString() + ' €';
       getBevandeInputElement().value = updatedBevandeTotal;
       updateTotal();
       document.getElementById("dropdown"+bevanda.charAt(bevanda.length-1)).innerHTML =  "1"; //setto il testo del dropdown menù
@@ -298,7 +307,7 @@ function bevandaClicked(bevanda, prezzo) {
       //aggiornamento totale beveragesStats
       let value = parseFloat(document.getElementById('prezzoBevande').innerHTML);
       value = value - prezzo*quantita;
-      getBevandeDivElement().innerHTML = value.toString() + ' EURO';
+      getBevandeDivElement().innerHTML = value.toString() + ' €';
       getBevandeInputElement().value = value;
       updateTotal();
       //riabilito la entry
@@ -326,7 +335,7 @@ function dropClicked(dropdown, bevanda, prezzo) {
       let diff = quantita*prezzo - valore_old;
       let value = parseFloat(getBevandeDivElement().innerHTML);
       value = value + diff;
-      getBevandeDivElement().innerHTML = value.toString() + ' EURO';
+      getBevandeDivElement().innerHTML = value.toString() + ' €';
       getBevandeInputElement().value = value;
       updateTotal();
       //metto in coda a bevanda la quantità selezionata (O ALMENO CI PROVO)
@@ -340,7 +349,7 @@ function dropClicked(dropdown, bevanda, prezzo) {
 
       let value = parseFloat(getBevandeDivElement().innerHTML);
       value = value + prezzo*quantita;
-      getBevandeDivElement().innerHTML = value.toString() + ' EURO';
+      getBevandeDivElement().innerHTML = value.toString() + ' €';
       getBevandeInputElement().value = value;
       updateTotal();
       //metto nel valore di 'bevanda' la quantità selezionata (O ALMENO CI PROVO)
