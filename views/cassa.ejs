@@ -100,6 +100,7 @@
                         <% beverageType.list.forEach((beverage)=>{%>
                         <label>
                             <input name="beverages" type="checkbox" id="<%=beverage.name%>"  value="<%=JSON.stringify(beverage)%>" onclick="beverageClicked(<%=JSON.stringify(beverage)%>)"><%=beverage.name%>
+                            <input name="beverages-quantities" class="beverage-quantity" id="<%=beverage.name%>-quantity" type="number" min="1" max="99" onchange="beverageQuantityChanged(<%=JSON.stringify(beverage)%>)">
                         </label>
                         <%})%>
                     </div>

@@ -80,11 +80,11 @@
       "type": "Birra Artigianale",
       "list": [
         {
-          "name": "Bianca Artigianale",
+          "name": "Notte Bianca alla spina",
           "price": "3.5"
         },
         {
-          "name": "Rossa Artigianale",
+          "name": "Rossa Intigante alla spina",
           "price": "3.5"
         }
       ]
@@ -93,7 +93,7 @@
       "type": "Birra Normale",
       "list": [
         {
-          "name": "Bionda Forst",
+          "name": "Bionda Forst alla spina",
           "price": "3"
         }
       ]
@@ -112,6 +112,23 @@
         {
           "name": "Acqua Frizzante",
           "price": "1"
+        }
+      ]
+    },
+    {
+      "type": "Vetro",
+      "list": [
+        {
+          "name": "New England Bottiglia",
+          "price": "5"
+        },
+        {
+          "name": "Notte Bianca Bottiglia",
+          "price": "5"
+        },
+        {
+          "name": "Rossa Intrigante Bottiglia",
+          "price": "5"
         }
       ]
     }

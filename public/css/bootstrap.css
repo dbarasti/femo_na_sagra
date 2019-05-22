@@ -28,6 +28,12 @@ summary {
   display: block;
 }
 
+.beverage-quantity{
+  width: 4em;
+  margin: 1px;
+  margin-right: 1.5em;
+}
+
 .orders-block{
   margin-top: 7%;
 }

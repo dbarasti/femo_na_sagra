@@ -87,11 +87,11 @@ const config = {
              "type": "Birra Artigianale",
              "list": [
                 {
-                   "name": "Bianca Artigianale",
+                   "name": "Notte Bianca alla spina",
                    "price": "3.5"
                 },
                 {
-                   "name": "Rossa Artigianale",
+                   "name": "Rossa Intigante alla spina",
                    "price": "3.5"
                 }
              ]
@@ -100,7 +100,7 @@ const config = {
              "type": "Birra Normale",
              "list": [
                 {
-                   "name": "Bionda Forst",
+                   "name": "Bionda Forst alla spina",
                    "price": "3"
                 }
              ]
@@ -121,6 +121,23 @@ const config = {
                    "price": "1"
                 }
              ]
+          },
+          {
+             "type": "Vetro",
+             "list": [
+                {
+                   "name": "New England Bottiglia",
+                   "price": "5"
+                },
+                {
+                   "name": "Notte Bianca Bottiglia",
+                   "price": "5"
+                },
+                {
+                   "name": "Rossa Intrigante Bottiglia",
+                   "price": "5"
+                }
+             ]
           }
        ],
        "extra": [
@@ -130,6 +147,7 @@ const config = {
           }
        ]
     };
+
 
 
 
@@ -143,15 +161,8 @@ function clearAllIngredients() {
    });
 }
 
-function getBevandeInputElement(){
-   return document.getElementById('totaleBevande');
-}
 function getBevandeDivElement(){
    return document.getElementById('prezzoBevande');
-}
-
-function getPaninoInputElement(){
-   return document.getElementById('totalePanino');
 }
 
 function getPaninoDivElement(){
@@ -162,7 +173,7 @@ function getTotaleDivElement(){
    return document.getElementById('totale');
 }
 
-function updateTotal(){
+function updateOrderTotal(){
    getTotaleDivElement().innerHTML = (parseFloat(getBevandeDivElement().innerHTML) + parseFloat(getPaninoDivElement().innerHTML)).toString() + ' €';
 }
 
@@ -210,13 +221,13 @@ function defaultBurgerChecked(defaultBurger) {
       console.log(ingredient);
       checkBoxWithId(ingredient);
    });
-   updateTotal();
+   updateOrderTotal();
 }
 
 function defaultBurgerUnchecked() {
    clearAllIngredients();
    setBurgerTotalDivHTML("0");
-   updateTotal();
+   updateOrderTotal();
 }
 
 
@@ -227,11 +238,11 @@ function doubleClicked() {
       }
       else{
          getPaninoDivElement().innerHTML = "9 €";
-         updateTotal()
+         updateOrderTotal()
       }
    }  else{
       getPaninoDivElement().innerHTML = "7 €";
-      updateTotal();
+      updateOrderTotal();
    }
 }
 
@@ -240,11 +251,11 @@ function primaryClicked() {
       return;
    if(isCheckboxWithIdActive("Double")){
       getPaninoDivElement().innerHTML = "9 €";
-      updateTotal()
+      updateOrderTotal()
    }
    else{
       getPaninoDivElement().innerHTML = "7 €";
-      updateTotal()
+      updateOrderTotal()
    }
 }
 
@@ -254,13 +265,13 @@ function secondaryClicked(){
          return;
       else{
          getPaninoDivElement().innerHTML = "5 €";
-         updateTotal()
+         updateOrderTotal()
       }
    else{
       if(isCheckboxWithIdActive("Baby")){
          document.getElementById("Baby").checked = false;
          getPaninoDivElement().innerHTML = "7 €";
-         updateTotal()
+         updateOrderTotal()
       }
    }
 }
@@ -274,85 +285,42 @@ function beverageClicked(beverage) {
 }
 
 function beverageChecked(beverage) {
-   getBevandeDivElement().innerHTML = (parseFloat(getBevandeDivElement().innerHTML) + parseFloat(beverage.price)).toString() + ' €';
-   updateTotal();
+   getBeverageQuantityElement(beverage).value = 1;
+   updateBeveragesTotal();
+   updateOrderTotal();
 }
 
 function beverageUnchecked(beverage){
-   getBevandeDivElement().innerHTML = (parseFloat(getBevandeDivElement().innerHTML) - parseFloat(beverage.price)).toString() + ' €';
-   updateTotal();
+   getBeverageQuantityElement(beverage).value = '';
+   updateBeveragesTotal();
+   updateOrderTotal();
 }
 
-/* beveragesStats checkbox clicked*/
-function bevandaClicked(bevanda, prezzo) {
+function getBeverageQuantityElement(beverage) {
+   return document.getElementById(`${beverage.name}-quantity`)
+}
 
-   //controllo se il checkbox è stato selezionato
-   if(isCheckboxWithIdActive(bevanda)){
-      let currentBevandaTotal = parseFloat(document.getElementById('prezzoBevande').innerHTML);
-      let updatedBevandeTotal = currentBevandaTotal + prezzo;
-      getBevandeDivElement().innerHTML = updatedBevandeTotal.toString() + ' €';
-      getBevandeInputElement().value = updatedBevandeTotal;
-      updateTotal();
-      document.getElementById("dropdown"+bevanda.charAt(bevanda.length-1)).innerHTML =  "1"; //setto il testo del dropdown menù
-      document.getElementById(bevanda+"1").classList.toggle('disabled'); //bevanda+"1" indica il primo elemento del dropdown della bevanda
-      
-      //metto in coda a bevanda la quantità selezionata (O ALMENO CI PROVO)
-      document.getElementById(bevanda).value = 1;  
+function beverageQuantityChanged(beverage) {
+   checkBoxWithId(beverage.name);
+   updateBeveragesTotal();
+   updateOrderTotal();
+}
 
-
-   }
-   else{
-      //calcolo valore da sottrarre
-      let quantita = parseInt(document.getElementById("dropdown"+bevanda.charAt(bevanda.length-1)).innerHTML);
-      //aggiornamento totale beveragesStats
-      let value = parseFloat(document.getElementById('prezzoBevande').innerHTML);
-      value = value - prezzo*quantita;
-      getBevandeDivElement().innerHTML = value.toString() + ' €';
-      getBevandeInputElement().value = value;
-      updateTotal();
-      //riabilito la entry
-      let dropdown = "dropdown" + bevanda.charAt(bevanda.length-1);
-      document.getElementById(bevanda+document.getElementById(dropdown).innerHTML).classList.toggle('disabled');
-      //aggiorno drop menu
-      document.getElementById('dropdown'+bevanda.charAt( bevanda.length-1)).innerHTML = 0;
-   }
+function updateBeveragesTotal() {
+   let totalBeveragesPrice = 0;
+   config.beverages.forEach(beverageType=>{
+      beverageType.list.forEach(beverage=>{
+         totalBeveragesPrice += totalBeverageValue(beverage);
+      })
+   });
+   getBevandeDivElement().innerHTML = `${totalBeveragesPrice} €`;
 }
 
 
-function dropClicked(dropdown, bevanda, prezzo) {
- 
-   let quantita = bevanda.charAt(dropdown.length-1);  //ultimo carattere di bevanda
-   if(isCheckboxWithIdActive("bevanda"+bevanda.charAt(dropdown.length-2))){
-      let quantita_old = parseInt(document.getElementById(dropdown).innerHTML);
-      let dropNum = dropdown.charAt(dropdown.length-1);
-      //disabilito entry selezionata
-      document.getElementById(bevanda).classList.toggle('disabled');
-      //riabilito la entry selezionata precedentemente
-      document.getElementById("bevanda"+dropNum+quantita_old.toString()).classList.toggle('disabled');
-      //aggiorno testo del dropdown menu
-      document.getElementById(dropdown).innerHTML = quantita;
-      let valore_old = quantita_old*prezzo;
-      let diff = quantita*prezzo - valore_old;
-      let value = parseFloat(getBevandeDivElement().innerHTML);
-      value = value + diff;
-      getBevandeDivElement().innerHTML = value.toString() + ' €';
-      getBevandeInputElement().value = value;
-      updateTotal();
-      //metto in coda a bevanda la quantità selezionata (O ALMENO CI PROVO)
-      document.getElementById(bevanda.slice(0,-1)).value = quantita;
+function totalBeverageValue(beverage) {
+   console.log(beverage);
+   if (!isCheckboxWithIdActive(beverage.name)){
+      return 0;
    }
-   else{
-      document.getElementById("bevanda"+bevanda.charAt(dropdown.length-2)).checked = true;
-      document.getElementById(dropdown).innerHTML = quantita;
-      //disabilito la entry selezionata
-      document.getElementById(bevanda).classList.toggle('disabled');
-
-      let value = parseFloat(getBevandeDivElement().innerHTML);
-      value = value + prezzo*quantita;
-      getBevandeDivElement().innerHTML = value.toString() + ' €';
-      getBevandeInputElement().value = value;
-      updateTotal();
-      //metto nel valore di 'bevanda' la quantità selezionata (O ALMENO CI PROVO)
-      document.getElementById(bevanda.slice(0,-1)).value = quantita;  
-   }
+   return parseFloat(beverage.price) * parseFloat(getBeverageQuantityElement(beverage).value)
 }
