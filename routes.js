@@ -190,7 +190,8 @@ router.get("/admin/giorno/:giorno", (req, res)=> {
         res.redirect("/cassa");
     }
     else {
-        res.redirect("/admin");
+        setTimeout(()=>{res.redirect("/admin");}, 400);
+        //res.redirect("/admin");
     }
 });
 
