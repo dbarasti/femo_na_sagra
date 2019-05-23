@@ -74,6 +74,7 @@ router.post("/cassa", (req, res)=>{
             uid: yeast(),
             day: currentDay,
             prezzo: beveragesPrice,
+            createdAt: moment(),
             visibility: true,
             actualOrder: requestBody,
             priority: isPriorityOrder,
