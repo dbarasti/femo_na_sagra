@@ -43,26 +43,31 @@ router.get("/cassa", (req,res)=>{
         BurgerOrder.find({day: currentDay})
             .sort({ createdAt: "descending" })
             .exec((err, burgerOrders)=>{
-                if(burgerOrders.length > 0){
-                    //console.log(burgerOrders[0]);
-                    res.render("cassa", { lastOrderID: burgerOrders[0].actualOrder.id, config: config });
-                }
-                else{
-                    //console.log(currentDay);
-                    res.render("cassa", { lastOrderID: -1, config: config });
-                }
+                BurgerStats.findOne({day: currentDay})
+                    .then(burgerStats=>{
+                        BeveragesStats.findOne({day: currentDay})
+                            .then(beveragesStats=>{
+                                if(burgerOrders.length > 0){
+                                    res.render("cassa", { burgerStats: burgerStats, beveragesStats: beveragesStats, lastOrderID: burgerOrders[0].actualOrder.id, config: config });
+                                }
+                                else{
+                                    res.render("cassa", { burgerStats: burgerStats, beveragesStats: beveragesStats, lastOrderID: -1, config: config });
+                                }
+                            })
+                    });
             });
     }
 });
 
 router.post("/cassa", (req, res)=>{
     let requestBody = req.body;
-    //console.log(requestBody);
+    console.log(requestBody);
     let isStaffOrder = Calculator.isStaffOrder(requestBody);
     let isPriorityOrder = Calculator.isPriorityOrder(requestBody);
     let burgerPrice = Calculator.calculateBurgerPrice(requestBody);
     let beveragesPrice = Calculator.calculateBeveragesPrice(requestBody);
     let extrasPrice = Calculator.calculateExtrasPrice(requestBody);
+    console.log(extrasPrice);
     //console.log(`Prezzo panino: ${burgerPrice}`);
     //console.log(`Prezzo bevande: ${beveragesPrice}`);
 
@@ -78,6 +83,7 @@ router.post("/cassa", (req, res)=>{
             staff: isStaffOrder
         });
         newBurgerOrder.save();
+        updateBurgersStats(newBurgerOrder);
     }
 
     if (beveragesPrice != 0){
@@ -138,8 +144,8 @@ router.get("/orders/undo", (req, res)=>{
             burgerOrder.save();
         })
     }
-    res.redirect("/orders");
-    //setTimeout(()=>{res.redirect("/orders");}, 400);
+    //res.redirect("/orders");
+    setTimeout(()=>{res.redirect("/orders");}, 300);
 });
 
 //GESIONE BAR
@@ -282,20 +288,24 @@ router.get("/admin/drinks/:day", (req, res, next)=>{
 });
 
 router.get("/admin/report", (req, res, next)=>{
-    if(currentDay === 0)
+    if(currentDay === 0){
         res.redirect('back');
+    }
     BurgerStats.find()
-    .sort({ day: "ascending" })
-    .exec((err, burgerStats)=>{
-        if(err){return next(err); }
-        BeveragesStats.find().sort({day: "ascending"}).exec((err, bevande)=>{
-            if(err){return next(err)}
-            res.render("report", {burgerStats: burgerStats, beveragesStats: bevande});
-        })
-    });
+        .sort({ id: "ascending" })
+        .exec((err, burgerStats)=>{
+            if(err){return next(err); }
+            BeveragesStats.find()
+                .sort({id: "ascending"})
+                .exec((err, beveragesStats)=>{
+                    if(err){return next(err)}
+                    res.render("report", {burgerStats: burgerStats, beveragesStats: beveragesStats});
+                })
+        });
 });
 
 router.get("/admin/report/carne", (req, res)=>{
+    /*
     if (currentDay === 0) {res.redirect('back');}
     BurgerOrder.count({carne: 'Hamburger'}, (err, count_hamburger)=>{
         BurgerOrder.count({carne: 'Salsiccia'}, (err, count_salsiccia)=>{
@@ -304,6 +314,9 @@ router.get("/admin/report/carne", (req, res)=>{
             });
         });
     });
+    */
+    res.redirect("/admin");
+
 });
 
 router.get("/orders/:uid/delete", (req, res, next)=>{
@@ -311,8 +324,9 @@ router.get("/orders/:uid/delete", (req, res, next)=>{
         burgerOrder.remove((err)=>{
         if(err){return next(err); }
         });
-        res.redirect('back');
+        updateBurgersStatsAfterRemove(burgerOrder);
     });
+    setTimeout(()=>{res.redirect('back');}, 400);
 });
 
 router.get("/drinks/:uid/delete", (req, res, next)=>{
@@ -320,8 +334,9 @@ router.get("/drinks/:uid/delete", (req, res, next)=>{
         beveragesOrder.remove((err)=>{
         if(err){return next(err); }
         });
-        res.redirect('back');
+        updateBeveragesStatsAfterRemove(beveragesOrder);
     });
+    setTimeout(()=>{res.redirect('back');}, 400);
 });
 
 router.get("/orders/restore/:uid", (req, res)=>{
@@ -369,5 +384,46 @@ router.get("/admin/deleteall/:what", (req, res, next)=>{
 router.use((request, response)=>{
     response.status(404).render("404");
 });
+
+
+function updateBurgersStats(order){
+    if(!order.staff) {
+        BurgerStats.findOne({day: order.day})
+            .then(stats => {
+                stats.total += order.prezzo;
+                stats.save();
+            })
+    }
+}
+
+function updateBurgersStatsAfterRemove(order){
+    if(!order.staff) {
+        BurgerStats.findOne({day: order.day})
+            .then(stats => {
+                stats.total -= order.prezzo;
+                stats.save();
+            })
+    }
+}
+
+function updateBeveragesStats(order){
+    if(!order.staff){
+        BeveragesStats.findOne({day: order.day})
+            .then(stats=>{
+                stats.total += order.prezzo;
+                stats.save();
+            })
+    }
+}
+
+function updateBeveragesStatsAfterRemove(order){
+    if(!order.staff) {
+        BeveragesStats.findOne({day: order.day})
+            .then(stats => {
+                stats.total -= order.prezzo;
+                stats.save();
+            })
+    }
+}
 
 module.exports = router;

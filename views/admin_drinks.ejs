@@ -22,7 +22,7 @@
     <div class="panel-heading">
       <div class="text pull-right">
         <% if (!order.visibility) { %>
-          <a href='/orders/restore/<%= order.uid %>' class="btn btn-info"> Ripristina </a>
+          <a href='/drinks/restore/<%= order.uid %>' class="btn btn-info"> Ripristina </a>
         <% } %>
         <a href='/orders/edit/<%= order.uid %>' class="btn btn-info" disabled> Modifica </a>
         <a href='/drinks/<%= order.uid %>/delete' class="btn btn-raised btn-danger"> Elimina </a>
