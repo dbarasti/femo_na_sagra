@@ -12,8 +12,8 @@ let Calculator = require("./modules/Calculator");
 let config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 let returnToCassa = false;
 let currentDay = 0;
-let ordini_completati = [];
-let ordini_completati_bar = [];
+let ordiniCompletatiPanini = [];
+let ordiniCompletatiBevande = [];
 
 router.use((req, res, next)=>{
     res.locals.currentUser = req.Ordine;
@@ -54,29 +54,33 @@ router.post("/cassa", (req, res)=>{
     let isPriorityOrder = Calculator.isPriorityOrder(requestBody);
     let burgerPrice = Calculator.calculateBurgerPrice(requestBody);
     let beveragesPrice = Calculator.calculateBeveragesPrice(requestBody.beverages);
+    
+    if (burgerPrice != 0){
+        let newBurgerOrder = new BurgerOrder({
+            uid: yeast(),
+            day: currentDay,
+            prezzo: burgerPrice,
+            createdAt: moment(),
+            visibility: true,
+            actualOrder: requestBody,
+            priority: isPriorityOrder,
+            staff: isStaffOrder
+        });
+        newBurgerOrder.save();
+    }
 
-    let newBurgerOrder = new BurgerOrder({
-        uid: yeast(),
-        day: currentDay,
-        prezzo: burgerPrice,
-        createdAt: moment(),
-        visibility: true,
-        actualOrder: requestBody,
-        priority: isPriorityOrder,
-        staff: isStaffOrder
-    });
-    newBurgerOrder.save();
-
-    let newBeveragesOrder = new BeveragesOrder({
-        uid: yeast(),
-        day: currentDay,
-        prezzo: beveragesPrice,
-        visibility: true,
-        actualOrder: requestBody,
-        priority: isPriorityOrder,
-        staff: isStaffOrder
-    });
-    newBeveragesOrder.save();
+    if (beveragesPrice != 0){
+        let newBeveragesOrder = new BeveragesOrder({
+            uid: yeast(),
+            day: currentDay,
+            prezzo: beveragesPrice,
+            visibility: true,
+            actualOrder: requestBody,
+            priority: isPriorityOrder,
+            staff: isStaffOrder
+        });
+        newBeveragesOrder.save();
+    }
 
     res.redirect("/cassa");
 });
@@ -94,14 +98,14 @@ router.get("/orders/:uid/remove", (req, res)=> {
     BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
     burgerOrder.visibility = false;
     burgerOrder.save();
-    ordini_completati.push(burgerOrder.uid);
+    ordiniCompletatiPanini.push(burgerOrder.uid);
     res.redirect("/orders");
     }); 
 });
 
 router.get("/orders/undo", (req, res)=>{
-    if(ordini_completati.length !== 0){
-        let uidOfOrderToUndo = ordini_completati.pop();
+    if(ordiniCompletatiPanini.length !== 0){
+        let uidOfOrderToUndo = ordiniCompletatiPanini.pop();
         BurgerOrder.findOne({ uid: uidOfOrderToUndo }, (err, burgerOrder)=>{
             burgerOrder.visibility = true;
             burgerOrder.save();
@@ -125,14 +129,14 @@ router.get("/bar/:uid/remove", (req, res)=> {
     BeveragesOrder.findOne({ uid: req.params.uid }, (err, beveragesOrder)=>{
     beveragesOrder.visibility = false;
     beveragesOrder.save();
-    ordini_completati_bar.push(beveragesOrder.uid);
+    ordiniCompletatiBevande.push(beveragesOrder.uid);
     res.redirect("/bar");
     }); 
 });
 
 router.get("/bar/undo", (req, res)=>{
-    if(ordini_completati_bar.length !== 0){
-        let uidOfOrderToUndo = ordini_completati_bar.pop();
+    if(ordiniCompletatiBevande.length !== 0){
+        let uidOfOrderToUndo = ordiniCompletatiBevande.pop();
         BeveragesOrder.findOne({ uid: uidOfOrderToUndo }, (err, beveragesOrder)=>{
             beveragesOrder.visibility = true;
             beveragesOrder.save();
@@ -153,8 +157,8 @@ router.get("/admin", (req, res, next)=>{
 router.get("/admin/giorno/:giorno", (req, res)=> {
     if (currentDay !== req.params.giorno) {
         currentDay = req.params.giorno;
-        ordini_completati = [];
-        ordini_completati_bar = [];
+        ordiniCompletatiPanini = [];
+        ordiniCompletatiBevande = [];
     }
 
     BeveragesStats.findOne({day: currentDay}, (err, doc) => {
