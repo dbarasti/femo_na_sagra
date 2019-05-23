@@ -1,0 +1,92 @@
+<% include _header %>
+
+<div class="page-header">
+    <h1>Extra</h1>
+</div>
+
+<div class="pull-right">
+    <a href='/extra/undo' class="btn btn-raised btn-warning">
+        <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> UNDO
+    </a>
+</div>
+<br/>
+
+<div class="row orders-block">
+    <% orders.forEach((order)=>{ %>
+    <div class="col-md-6">
+        <% if(order.actualOrder.id % 2 != 0) { %>
+        <div class="panel panel-primary">
+            <% } %>
+
+            <% if(order.actualOrder.id % 2 == 0) { %>
+            <div class="panel panel-info">
+                <% } %>
+
+                <div class="panel-heading">
+                    <div class="pull-right">
+                        <a href='/extra/<%= order.uid %>/remove' class="btn-sm btn-raised btn-danger">
+                            COMPLETATO
+                        </a>
+                    </div>
+
+                    <div class="ora_ordinazione">
+                        <p>
+                            ORA ORDINAZIONE:
+                            <%=moment(order.createdAt).format('HH:mm')%>
+                        </p>
+                    </div>
+                    <div class="numero-ordine">
+                        <p>
+                            NUMERO ORDINE
+                            <% if(order.actualOrder.takeaway) { %>
+                                <span class="asporto">
+                                PER ASPORTO
+                                </span>
+                            <% } %>
+                            :
+                            <%= order.actualOrder.id %>
+                        </p>
+                    </div>
+                    <div class="text priorità">
+                        <p>
+                            <% if (order.priority) { %>
+                                ORDINE CON PRIORITÀ
+                                <span class="staff">
+                                    <% if (order.staff === true) { %>
+                                        PER STAFF
+                                    <% } %>
+                                </span>
+                            <% } %>
+                        </p>
+                    </div>
+                </div>
+                <div class="panel-body ingredienti">
+                    <%if (Array.isArray(order.extrasQuantities)){ %>
+                        <%let i = 0%>
+                        <%order.actualOrder.extrasQuantities.forEach(quantity=>{%>
+                        <%if (quantity != ''){%>
+                        <%=quantity%>x
+                        <span class="bevanda-bar">
+                            <%if (Array.isArray(order.actualOrder.extras)){ %>
+                            <%=JSON.parse(order.actualOrder.extras[i]).name%>
+                            <%}else{%>
+                            <%=JSON.parse(order.actualOrder.extras).name%>
+                            <%}%>
+                        </span>
+                        <%i++%>
+                        <%}%>
+                        <%})%>
+                    <%}else{%>
+                        <%=order.actualOrder.extrasQuantities%>x
+                        <span class="bevanda-bar">
+                            <%=JSON.parse(order.actualOrder.extras).name%>
+                        </span>
+                    <%}%>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+</div>
+<% include _footer %>
+<meta http-equiv="refresh" content="15">

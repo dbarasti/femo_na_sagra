@@ -135,8 +135,13 @@
   ],
   "extra": [
     {
-      "name": "Patatine fritte",
-      "price": "2.5"
+      "type": "Fritto",
+      "list": [
+        {
+          "name": "Patatine fritte",
+          "price": "2.5"
+        }
+      ]
     }
   ]
 }

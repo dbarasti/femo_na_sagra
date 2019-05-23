@@ -41,6 +41,31 @@ function calculateBeveragesPrice(order) {
 	return total;
 }
 
+function calculateExtrasPrice(order) {
+    if (!order.extras) {
+        return 0;
+    }
+    let total = 0;
+
+    if (Array.isArray(order.extrasQuantities)){
+        let extrasIndex = 0;
+        order.extrasQuantities.forEach(quantity=>{
+            if (quantity != ''){
+                if (Array.isArray(order.extras)) {
+                    total += quantity * JSON.parse(order.extras[extrasIndex]).price;
+                    extrasIndex++;
+                }else{
+                    total += quantity * JSON.parse(order.extras).price;
+                }
+            }
+        });
+    }else{
+        total = parseInt(order.extrasQuantities) * JSON.parse(order.extras).price;
+    }
+    return total;
+}
+
+
 function isStaffOrder(order){
 	return !!(order.id == 0 && order.priority);
 }
@@ -49,4 +74,4 @@ function isPriorityOrder(order){
 	return order.priority != undefined;
 }
 
-module.exports = {calculateBeveragesPrice, calculateBurgerPrice, isStaffOrder, isPriorityOrder};
+module.exports = {calculateExtrasPrice, calculateBeveragesPrice, calculateBurgerPrice, isStaffOrder, isPriorityOrder};

@@ -4,6 +4,17 @@
     <h1>Cassa</h1>
 </div>
 
+<ul class="list-group">
+    <li class="list-group-item">
+        <span class="badge"><%= burgerStats.total %>€</span>
+        Totale parziale giorno <%= burgerStats.day %> PANINI
+    </li>
+    <li class="list-group-item">
+        <span class="badge"><%= beveragesStats.total %>€</span>
+        Totale parziale giorno <%= beveragesStats.day %> BEVANDE
+    </li>
+</ul>
+
 <form method="post" role="form">
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -121,6 +132,47 @@
             </div>
         </div>
     </div>
+
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>EXTRA</h3>
+        </div>
+        <div class="panel-body">
+            <%config.extra.forEach((extraType)=>{%>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <%=extraType.type%>
+                </div>
+                <div class="panel-body">
+                    <div class="checkbox">
+                        <% extraType.list.forEach((extra)=>{%>
+                        <label>
+                            <input name="extras" type="checkbox" id="<%=extra.name%>"  value="<%=JSON.stringify(extra)%>" onclick="extraClicked(<%=JSON.stringify(extra)%>)"><%=extra.name%>
+                            <input name="extrasQuantities" class="beverage-quantity" id="<%=extra.name%>-quantity" type="number" min="1" max="99" onchange="extraQuantityChanged(<%=JSON.stringify(extra)%>)">
+                        </label>
+                        <%})%>
+                    </div>
+                </div>
+            </div>
+            <%})%>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Conto Extra
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <div id="prezzoExtra">
+                        0 €
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <div class="panel panel-default">
         <div class="panel-heading">

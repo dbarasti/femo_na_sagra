@@ -7,6 +7,9 @@ let BurgerOrder = require("./models/burger_order");
 let BurgerStats = require("./models/burger_stats");
 let BeveragesStats = require("./models/beverages_stats");
 let BeveragesOrder = require("./models/beverages_order");
+let ExtraOrder = require("./models/extra_order");
+
+
 let Calculator = require("./modules/Calculator");
 
 let config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
@@ -14,6 +17,8 @@ let returnToCassa = false;
 let currentDay = 0;
 let ordiniCompletatiPanini = [];
 let ordiniCompletatiBevande = [];
+let ordiniCompletatiExtra = [];
+
 
 router.use((req, res, next)=>{
     res.locals.currentUser = req.Ordine;
@@ -57,6 +62,7 @@ router.post("/cassa", (req, res)=>{
     let isPriorityOrder = Calculator.isPriorityOrder(requestBody);
     let burgerPrice = Calculator.calculateBurgerPrice(requestBody);
     let beveragesPrice = Calculator.calculateBeveragesPrice(requestBody);
+    let extrasPrice = Calculator.calculateExtrasPrice(requestBody);
     //console.log(`Prezzo panino: ${burgerPrice}`);
     //console.log(`Prezzo bevande: ${beveragesPrice}`);
 
@@ -86,6 +92,21 @@ router.post("/cassa", (req, res)=>{
             staff: isStaffOrder
         });
         newBeveragesOrder.save();
+        updateBeveragesStats(newBeveragesOrder);
+    }
+
+    if (extrasPrice != 0){
+        let newExtrasOrder = new ExtraOrder({
+            uid: yeast(),
+            day: currentDay,
+            prezzo: extrasPrice,
+            createdAt: moment(),
+            visibility: true,
+            actualOrder: requestBody,
+            priority: isPriorityOrder,
+            staff: isStaffOrder
+        });
+        newExtrasOrder.save();
     }
 
     res.redirect("/cassa");
@@ -148,9 +169,44 @@ router.get("/bar/undo", (req, res)=>{
             beveragesOrder.save();
         })
     }
-    res.redirect("/orders");
-    //setTimeout(()=>{res.redirect("/bar");}, 400);
+    //res.redirect("/orders");
+    setTimeout(()=>{res.redirect("/bar");}, 300);
 });
+
+
+//gestione patatine
+router.get("/extra", (req, res, next)=>{
+    ExtraOrder.find({day: currentDay, visibility: true})
+        .sort({ priority: "descending", createdAt: "ascending" })
+        .exec((err, extraOrders)=>{
+            if(err){return next(err); }
+            res.render("extra", {orders: extraOrders,  moment: moment});
+        });
+});
+
+router.get("/extra/:uid/remove", (req, res)=> {
+    ExtraOrder.findOne({ uid: req.params.uid }, (err, extraOrder)=>{
+        extraOrder.visibility = false;
+        extraOrder.save();
+        ordiniCompletatiExtra.push(extraOrder.uid);
+        res.redirect("/extra");
+    });
+});
+
+router.get("/extra/undo", (req, res)=>{
+    if(ordiniCompletatiExtra.length !== 0){
+        let uidOfOrderToUndo = ordiniCompletatiExtra.pop();
+        ExtraOrder.findOne({ uid: uidOfOrderToUndo }, (err, extrasOrder)=>{
+            extrasOrder.visibility = true;
+            extrasOrder.save();
+        })
+    }
+    setTimeout(()=>{res.redirect("/extra");}, 300);
+});
+
+
+
+
 
 
 router.get("/admin", (req, res, next)=>{

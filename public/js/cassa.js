@@ -6,147 +6,153 @@
  * div with id="prezzoPanino"*/
 
 const config = {
-       "ingredients":[
-          {
-             "type": "Principale",
-             "list": [
-                "Hamburger",
-                "Salsiccia"
-             ]
-          },
-          {
-             "type": "Farcitura",
-             "list": [
-                "Formaggio",
-                "Zucchine",
-                "Peperoni",
-                "Melanzane",
-                "Cipolla",
-                "Insalata",
-                "Pomodoro"
-             ]
-          },
-          {
-             "type": "Salse",
-             "list": [
-                "Ketchup",
-                "Senape",
-                "Maionese",
-                "BBQ"
-             ]
-          }
-       ],
-       "defaultBurgers": [
-          {
-             "name": "Cannavacciuolo",
-             "ingredients": [
-                "Salsiccia",
-                "Formaggio",
-                "Cipolla",
-                "Peperoni",
-                "Zucchine",
-                "Senape"
-             ],
-             "price": "7"
-          },
-          {
-             "name": "Borghese",
-             "ingredients": [
-                "Hamburger",
-                "Formaggio",
-                "Peperoni",
-                "Melanzane",
-                "BBQ"
-             ],
-             "price": "7"
-          },
-          {
-             "name": "Ramsey",
-             "ingredients": [
-                "Hamburger",
-                "Double",
-                "Formaggio",
-                "Cipolla",
-                "Insalata",
-                "Pomodoro",
-                "Ketchup",
-                "Maionese"
-             ],
-             "price": "9"
-          },
-          {
-             "name": "Baby",
-             "ingredients": [
-                "Hamburger"
-             ],
-             "price": "5"
-          }
-       ],
-       "beverages": [
-          {
-             "type": "Birra Artigianale",
-             "list": [
-                {
-                   "name": "Notte Bianca alla spina",
-                   "price": "3.5"
-                },
-                {
-                   "name": "Rossa Intigante alla spina",
-                   "price": "3.5"
-                }
-             ]
-          },
-          {
-             "type": "Birra Normale",
-             "list": [
-                {
-                   "name": "Bionda Forst alla spina",
-                   "price": "3"
-                }
-             ]
-          },
-          {
-             "type": "Bevande analcoliche",
-             "list": [
-                {
-                   "name": "CocaCola",
-                   "price": "2.5"
-                },
-                {
-                   "name": "Acqua Naturale",
-                   "price": "1"
-                },
-                {
-                   "name": "Acqua Frizzante",
-                   "price": "1"
-                }
-             ]
-          },
-          {
-             "type": "Vetro",
-             "list": [
-                {
-                   "name": "New England Bottiglia",
-                   "price": "5"
-                },
-                {
-                   "name": "Notte Bianca Bottiglia",
-                   "price": "5"
-                },
-                {
-                   "name": "Rossa Intrigante Bottiglia",
-                   "price": "5"
-                }
-             ]
-          }
-       ],
-       "extra": [
-          {
-             "name": "Patatine fritte",
-             "price": "2.5"
-          }
-       ]
-    };
+   "ingredients":[
+      {
+         "type": "Principale",
+         "list": [
+            "Hamburger",
+            "Salsiccia"
+         ]
+      },
+      {
+         "type": "Farcitura",
+         "list": [
+            "Formaggio",
+            "Zucchine",
+            "Peperoni",
+            "Melanzane",
+            "Cipolla",
+            "Insalata",
+            "Pomodoro"
+         ]
+      },
+      {
+         "type": "Salse",
+         "list": [
+            "Ketchup",
+            "Senape",
+            "Maionese",
+            "BBQ"
+         ]
+      }
+   ],
+   "defaultBurgers": [
+      {
+         "name": "Cannavacciuolo",
+         "ingredients": [
+            "Salsiccia",
+            "Formaggio",
+            "Cipolla",
+            "Peperoni",
+            "Zucchine",
+            "Senape"
+         ],
+         "price": "7"
+      },
+      {
+         "name": "Borghese",
+         "ingredients": [
+            "Hamburger",
+            "Formaggio",
+            "Peperoni",
+            "Melanzane",
+            "BBQ"
+         ],
+         "price": "7"
+      },
+      {
+         "name": "Ramsey",
+         "ingredients": [
+            "Hamburger",
+            "Double",
+            "Formaggio",
+            "Cipolla",
+            "Insalata",
+            "Pomodoro",
+            "Ketchup",
+            "Maionese"
+         ],
+         "price": "9"
+      },
+      {
+         "name": "Baby",
+         "ingredients": [
+            "Hamburger"
+         ],
+         "price": "5"
+      }
+   ],
+   "beverages": [
+      {
+         "type": "Birra Artigianale",
+         "list": [
+            {
+               "name": "Notte Bianca alla spina",
+               "price": "3.5"
+            },
+            {
+               "name": "Rossa Intigante alla spina",
+               "price": "3.5"
+            }
+         ]
+      },
+      {
+         "type": "Birra Normale",
+         "list": [
+            {
+               "name": "Bionda Forst alla spina",
+               "price": "3"
+            }
+         ]
+      },
+      {
+         "type": "Bevande analcoliche",
+         "list": [
+            {
+               "name": "CocaCola",
+               "price": "2.5"
+            },
+            {
+               "name": "Acqua Naturale",
+               "price": "1"
+            },
+            {
+               "name": "Acqua Frizzante",
+               "price": "1"
+            }
+         ]
+      },
+      {
+         "type": "Vetro",
+         "list": [
+            {
+               "name": "New England Bottiglia",
+               "price": "5"
+            },
+            {
+               "name": "Notte Bianca Bottiglia",
+               "price": "5"
+            },
+            {
+               "name": "Rossa Intrigante Bottiglia",
+               "price": "5"
+            }
+         ]
+      }
+   ],
+   "extra": [
+      {
+         "type": "Fritto",
+         "list": [
+            {
+               "name": "Patatine fritte",
+               "price": "2.5"
+            }
+         ]
+      }
+   ]
+};
+
 
 
 
@@ -169,17 +175,20 @@ function getPaninoDivElement(){
    return document.getElementById('prezzoPanino');
 }
 
+function getExtrasDivElement() {
+   return document.getElementById('prezzoExtra');
+}
+
 function getTotaleDivElement(){
    return document.getElementById('totale');
 }
 
 function updateOrderTotal(){
-   getTotaleDivElement().innerHTML = (parseFloat(getBevandeDivElement().innerHTML) + parseFloat(getPaninoDivElement().innerHTML)).toString() + ' €';
+   getTotaleDivElement().innerHTML = (parseFloat(getExtrasDivElement().innerHTML) + parseFloat(getBevandeDivElement().innerHTML) + parseFloat(getPaninoDivElement().innerHTML)).toString() + ' €';
 }
 
 function checkBoxWithId(id){
    document.getElementById(id).checked = true;
-   console.log(document.getElementById(id).checked);
 }
 
 function uncheckBoxWithId(id){
@@ -218,7 +227,6 @@ function defaultBurgerChecked(defaultBurger) {
    clearDefaultBurgersExcept(defaultBurger.name);
    setBurgerTotalDivHTML(defaultBurger.price);
    defaultBurger.ingredients.forEach((ingredient)=>{
-      console.log(ingredient);
       checkBoxWithId(ingredient);
    });
    updateOrderTotal();
@@ -316,11 +324,57 @@ function updateBeveragesTotal() {
    getBevandeDivElement().innerHTML = `${totalBeveragesPrice} €`;
 }
 
-
 function totalBeverageValue(beverage) {
-   console.log(beverage);
    if (!isCheckboxWithIdActive(beverage.name)){
       return 0;
    }
    return parseFloat(beverage.price) * parseFloat(getBeverageQuantityElement(beverage).value)
+}
+
+
+function extraClicked(extra) {
+   if (isCheckboxWithIdActive(extra.name)){
+      extraChecked(extra);
+   }else{
+      extraUnchecked(extra);
+   }
+}
+
+function extraChecked(extra) {
+   getExtraQuantityElement(extra).value = 1;
+   updateExtrasTotal();
+   updateOrderTotal();
+}
+
+function extraUnchecked(extra){
+   getExtraQuantityElement(extra).value = '';
+   updateExtrasTotal();
+   updateOrderTotal();
+}
+
+function updateExtrasTotal() {
+   let totalExtraPrice = 0;
+   config.extra.forEach(extraType=>{
+      extraType.list.forEach(extra=>{
+         totalExtraPrice += totalExtraValue(extra);
+      })
+   });
+   getExtrasDivElement().innerHTML = `${totalExtraPrice} €`;
+}
+
+function getExtraQuantityElement(extra) {
+   return document.getElementById(`${extra.name}-quantity`)
+}
+
+function extraQuantityChanged(extra) {
+   checkBoxWithId(extra.name);
+   updateExtrasTotal();
+   updateOrderTotal();
+}
+
+function totalExtraValue(extra) {
+   if (!isCheckboxWithIdActive(extra.name)){
+      return 0;
+   }
+   return parseFloat(extra.price) * parseFloat(getExtraQuantityElement(extra).value)
 }
