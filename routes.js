@@ -35,26 +35,31 @@ router.get("/cassa", (req,res)=>{
         res.render("admin", {day: currentDay});
     }
     else{
-        BurgerOrder.findOne({day: currentDay})
-            .sort({createdAt: "descending"})
-            .then((err, burgerOrder)=>{
-                if(burgerOrder){
-                    res.render("cassa", { lastOrderID: burgerOrder.actualOrder.id, config: config });
+        BurgerOrder.find({day: currentDay})
+            .sort({ createdAt: "descending" })
+            .exec((err, burgerOrders)=>{
+                if(burgerOrders.length > 0){
+                    //console.log(burgerOrders[0]);
+                    res.render("cassa", { lastOrderID: burgerOrders[0].actualOrder.id, config: config });
                 }
-                else
+                else{
+                    //console.log(currentDay);
                     res.render("cassa", { lastOrderID: -1, config: config });
+                }
             });
     }
 });
 
 router.post("/cassa", (req, res)=>{
     let requestBody = req.body;
-    console.log(requestBody);
+    //console.log(requestBody);
     let isStaffOrder = Calculator.isStaffOrder(requestBody);
     let isPriorityOrder = Calculator.isPriorityOrder(requestBody);
     let burgerPrice = Calculator.calculateBurgerPrice(requestBody);
-    let beveragesPrice = Calculator.calculateBeveragesPrice(requestBody.beverages);
-    
+    let beveragesPrice = Calculator.calculateBeveragesPrice(requestBody);
+    //console.log(`Prezzo panino: ${burgerPrice}`);
+    //console.log(`Prezzo bevande: ${beveragesPrice}`);
+
     if (burgerPrice != 0){
         let newBurgerOrder = new BurgerOrder({
             uid: yeast(),
