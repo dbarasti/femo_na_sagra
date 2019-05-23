@@ -1,6 +1,6 @@
 <% include _header %>
 
-<h1>Ordini bevande giornata <%= incassos[0].id %> </h1> 
+<h1>Ordini bevande giornata <%= day %> </h1>
 
 <span class="pull-left">
 <span class="btn-group">
@@ -8,70 +8,60 @@
     Tipo Ordine <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
-    <li><a href="/admin/orders/<%= incassos[0].id %>">Panini</a></li>
+    <li><a href="/admin/orders/<%= day %>">Panini</a></li>
   </ul>
 </span>
 </span>
 
 
-</br>
-</br>
+<br/>
+<br/>
 
-<% ordini.forEach(function(ordine) { %>
+<% orders.forEach(function(order) { %>
   <div class="panel panel-default">
     <div class="panel-heading">
       <div class="text pull-right">
-      <% if (!ordine.visibility) { %>
-        <a href='/drinks/restore/<%= ordine.uid %>' class="btn btn-info"> Ripristina </a> 
-      <% } %>
-      <a href='/drinks/<%= ordine.uid %>/delete' class="btn btn-raised btn-danger"> Elimina </a>
+        <% if (!order.visibility) { %>
+          <a href='/orders/restore/<%= order.uid %>' class="btn btn-info"> Ripristina </a>
+        <% } %>
+        <a href='/orders/edit/<%= order.uid %>' class="btn btn-info" disabled> Modifica </a>
+        <a href='/drinks/<%= order.uid %>/delete' class="btn btn-raised btn-danger"> Elimina </a>
       </div>
-      <div class="text pull-left">
-      NOME:
-      <%= ordine.nome %>
+      <div class="ora_ordinazione">
+        ORA ORDINAZIONE:
+        <%=moment(order.createdAt).format('MM/DD/YYYY HH:mm:ss')%>
       </div>
-      <center>
-      ORA ORDINAZIONE:
-      <%=moment(ordine.createdAt).format('MM/DD/YYYY HH:mm:ss')%>
-      </center>
-      </br>
+      <br/>
       <div class="text pull-right">
         PREZZO:
-      <%= ordine.prezzo %>€
+        <%= order.prezzo %>€
       </div>
-      <div class="text">
+      <div class="numero-ordine">
         NUMERO ORDINE:
-        <%= ordine.id %>
+        <%= order.actualOrder.id %>
       </div>
-      <center>
-        <font color="red">
-          <div class="text ">
-            <% if (ordine.priority) { %>
-              ORDINE CON PRIORITÀ
-            <% } %>
-          </div>
-        </font>
-      </center>
+      <div class="text priorità">
+        <% if (order.priority) { %>
+          ORDINE CON PRIORITÀ
+        <% } %>
+      </div>
     </div>
-    <div class="panel-body">
-        <font size="6">
-          <% if(ordine.BAB > 0) {%>
-            <%= ordine.BAB %>x BIRRA bianca ART.
-          <% } %>  
-          <% if(ordine.BB > 0) {%>
-            <%= ordine.BB %>x BIRRA Bionda
-          <% } %>
-          <% if(ordine.BAR > 0) {%>
-            <%= ordine.BAR %>x BIRRA Rossa ART.
-          <% } %>
-          <% if(ordine.CC > 0) {%>
-            <%= ordine.CC %>x CocaCola 
-          <% } %>
-          <% if(ordine.AQ >0) {%>
-            <%= ordine.AQ %>x Acqua          
-          <% } %>
-        </font>
-      </div>
+    <div class="panel-body ingredienti">
+      <%let i = 0%>
+      <%order.actualOrder.beveragesQuantities.forEach(beverageQuantity=>{%>
+      <%if (beverageQuantity != ''){%>
+      <%=beverageQuantity%>x
+      <span class="bevanda-bar">
+        <%if (Array.isArray(order.actualOrder.beverages)){ %>
+        <%=JSON.parse(order.actualOrder.beverages[i]).name%>
+        <%}else{%>
+        <%=JSON.parse(order.actualOrder.beverages).name%>
+        <%}%>
+      </span>
+      <%i++%>
+      <%}%>
+      <%})%>
+    </div>
   </div>
 <% }) %>
 

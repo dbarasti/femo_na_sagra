@@ -1,107 +1,73 @@
 <% include _header %>
 
-<h1>Ordini giornata <%= incassos[0].id %> </h1> 
+<h1>Ordini panini giornata <%= day %> </h1>
 
 <span class="pull-left">
 <span class="btn-group">
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Tipo Ordine <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu">
-    <li><a href="/admin/drinks/<%= incassos[0].id %>">Bevande</a></li>
-  </ul>
-</span>
-</span>
-
+    </button>
+    <ul class="dropdown-menu">
+        <li><a href="/admin/drinks/<%= day %>">Bevande</a></li>
+    </ul>
+    </span>
+    </span>
 
 </br>
 </br>
 
-<% ordini.forEach(function(ordine) { %>
+<% orders.forEach(function(order) { %>
   <div class="panel panel-default">
     <div class="panel-heading">
       <div class="text pull-right">
-      <% if (!ordine.visibility) { %>
-        <a href='/orders/restore/<%= ordine.uid %>' class="btn btn-info"> Ripristina </a> 
-      <% } %>
-      <a href='/orders/edit/<%= ordine.uid %>' class="btn btn-info" disabled> Modifica </a> 
-      <a href='/orders/<%= ordine.uid %>/delete' class="btn btn-raised btn-danger"> Elimina </a>
+        <% if (!order.visibility) { %>
+          <a href='/orders/restore/<%= order.uid %>' class="btn btn-info"> Ripristina </a>
+        <% } %>
+        <a href='/orders/edit/<%= order.uid %>' class="btn btn-info" disabled> Modifica </a>
+        <a href='/orders/<%= order.uid %>/delete' class="btn btn-raised btn-danger"> Elimina </a>
       </div>
-      <div class="text pull-left">
-      NOME:
-      <%= ordine.nome %>
+      <div class="ora_ordinazione">
+        ORA ORDINAZIONE:
+        <%=moment(order.createdAt).format('MM/DD/YYYY HH:mm:ss')%>
       </div>
-      <center>
-      ORA ORDINAZIONE:
-      <%=moment(ordine.createdAt).format('MM/DD/YYYY HH:mm:ss')%>
-      </center>
-      </br>
+      <br/>
       <div class="text pull-right">
         PREZZO:
-      <%= ordine.prezzo %>€
+        <%= order.prezzo %>€
       </div>
-      <div class="text">
+      <div class="numero-ordine">
         NUMERO ORDINE:
-        <%= ordine.id %>
+        <%= order.actualOrder.id %>
       </div>
-      <center>
-        <font color="red">
-          <div class="text ">
-            <% if (ordine.priority) { %>
-              ORDINE CON PRIORITÀ
-            <% } %>
-          </div>
-        </font>
-      </center>
+      <div class="text priorità">
+        <% if (order.priority) { %>
+          ORDINE CON PRIORITÀ
+        <% } %>
+      </div>
     </div>
-    <div class="panel-body">
-      <font size="6">
-        <font color="red">
-        <% if (ordine.carne) { %>
-          <% if (ordine.double){ %>
-            Double
-          <% } %>
-          <%= ordine.carne %>
-        <% } %>
-        </font>
-        <font color="green">
-        <% if (ordine.verdura1) { %>
-          <%= ordine.verdura1 %>
-        <% } %>            
-        <% if (ordine.verdura2) { %>
-          <%= ordine.verdura2 %>
-        <% } %>
-        <% if (ordine.verdura3) { %>
-          <%= ordine.verdura3 %>
-        <% } %>
-        <% if (ordine.verdura4) { %>
-          <%= ordine.verdura4 %>
-        <% } %>
-        <% if (ordine.verdura5) { %>
-          <%= ordine.verdura5 %>
-        <% } %>
-        <% if (ordine.verdura6) { %>
-          <%= ordine.verdura6 %>
-        <% } %>            
-        <% if (ordine.verdura7) { %>
-          <%= ordine.verdura7 %>
-        <% } %>
-        </font>
-        <font color="purple">
-          <% if (ordine.salsa1) { %>
-          <%= ordine.salsa1 %>
-        <% } %>
-        <% if (ordine.salsa2) { %>
-          <%= ordine.salsa2 %>
-        <% } %>
-        <% if (ordine.salsa3) { %>
-          <%= ordine.salsa3 %>
-        <% } %>
-        <% if (ordine.salsa4) { %>
-          <%= ordine.salsa4 %>
-        <% } %>
-        </font>   
-      </font>
+    <div class="panel-body ingredienti">
+      <span class="carne">
+      <%= order.actualOrder.double%>
+      <%= order.actualOrder.Principale %>
+      </span>
+      <span class="verdura">
+        <%if (Array.isArray(order.actualOrder.Farcitura)){ %>
+          <% order.actualOrder.Farcitura.forEach((farcitura)=>{ %>
+          <%=farcitura%>
+          <% }) %>
+        <%}else{%>
+          <%= order.actualOrder.Farcitura %>
+        <%}%>
+      </span>
+      <span class="salsa">
+        <%if (Array.isArray(order.actualOrder.Salse)){ %>
+          <% order.actualOrder.Salse.forEach((sauce)=>{ %>
+            <%= sauce%>
+          <% }) %>
+        <%}else{%>
+          <%= order.actualOrder.Salse %>
+        <%}%>
+      </span>
     </div>
   </div>
 <% }) %>

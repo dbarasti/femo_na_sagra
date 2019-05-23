@@ -191,17 +191,20 @@ router.get("/admin/giorno/:giorno", (req, res)=> {
     }
     else {
         setTimeout(()=>{res.redirect("/admin");}, 400);
-        //res.redirect("/admin");
     }
 });
 
+
 router.get("/admin/orders", (req, res, next)=>{
+    res.redirect("/admin");
+    /*
     BurgerOrder.find()
     .sort({ createdAt: "ascending" })
     .exec((err, burgerOrders)=>{
         if(err){return next(err); }
         res.render("admin_orders_all", {orders: burgerOrders, moment: moment});
     });
+     */
 });
 
 router.get("/admin/orders/:day", (req, res, next)=>{
@@ -209,9 +212,7 @@ router.get("/admin/orders/:day", (req, res, next)=>{
     .sort({ createdAt: "descending" })
     .exec((err, burgerOrders)=>{
         if(err){return next(err); }
-        BurgerStats.find({ day: req.params.day }, (err, burgerStats)=>{
-        res.render("admin_orders", { orders: burgerOrders, stats: burgerStats, moment: moment});
-        });
+        res.render("admin_orders", { day: req.params.day, orders: burgerOrders, /*stats: burgerStats,*/ moment: moment});
     });
 });
 
@@ -220,9 +221,7 @@ router.get("/admin/drinks/:day", (req, res, next)=>{
     .sort({ createdAt: "descending" })
     .exec((err, beveragesOrders)=>{
         if(err){return next(err); }
-        BeveragesStats.find({ day: req.params.day }, (err, beveragesStats)=>{
-        res.render("admin_drinks", { orders: beveragesOrders, stats: beveragesStats, moment: moment});
-        });
+        res.render("admin_drinks", { day: req.params.day, orders: beveragesOrders, moment: moment});
     });
 });
 
@@ -253,10 +252,6 @@ router.get("/admin/report/carne", (req, res)=>{
 
 router.get("/orders/:uid/delete", (req, res, next)=>{
     BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
-        BurgerStats.findOne({ day: burgerOrder.day }, (err, burgerStats)=>{
-            burgerStats.total = +burgerStats.total - +burgerOrder.prezzo;
-            burgerStats.save();
-        });
         burgerOrder.remove((err)=>{
         if(err){return next(err); }
         });
@@ -266,15 +261,6 @@ router.get("/orders/:uid/delete", (req, res, next)=>{
 
 router.get("/drinks/:uid/delete", (req, res, next)=>{
     BeveragesOrder.findOne({ uid: req.params.uid }, (err, beveragesOrder)=>{
-        BeveragesStats.findOne({ day: beveragesOrder.day }, (err, beveragesStats)=>{
-            beveragesStats.totale -= +beveragesOrder.prezzo;
-            beveragesStats.BAB -= beveragesOrder.BAB;
-            beveragesStats.BB -= beveragesOrder.BB;
-            beveragesStats.BAR -= beveragesOrder.BAR;
-            beveragesStats.CC -= beveragesOrder.CC;
-            beveragesStats.AQ -= beveragesOrder.AQ;
-            beveragesStats.save();
-        });
         beveragesOrder.remove((err)=>{
         if(err){return next(err); }
         });
