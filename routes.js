@@ -119,6 +119,9 @@ router.post("/cassa", (req, res)=>{
 });
 
 router.get("/orders", (req, res, next)=>{
+    if(currentDay === 0){
+        res.render("admin", {day: currentDay});
+    }
     BurgerOrder.find({day: currentDay, visibility: true})
     .sort({ priority: "descending", createdAt: "ascending" })
     .exec((err, burgerOrders)=>{
@@ -150,6 +153,9 @@ router.get("/orders/undo", (req, res)=>{
 
 //GESIONE BAR
 router.get("/bar", (req, res, next)=>{
+    if(currentDay === 0){
+        res.render("admin", {day: currentDay});
+    }
     BeveragesOrder.find({day: currentDay, visibility: true})
     .sort({ priority: "descending", createdAt: "ascending" })
     .exec((err, barOrders)=>{
@@ -182,6 +188,9 @@ router.get("/bar/undo", (req, res)=>{
 
 //gestione patatine
 router.get("/extra", (req, res, next)=>{
+    if(currentDay === 0){
+        res.render("admin", {day: currentDay});
+    }
     ExtraOrder.find({day: currentDay, visibility: true})
         .sort({ priority: "descending", createdAt: "ascending" })
         .exec((err, extraOrders)=>{
