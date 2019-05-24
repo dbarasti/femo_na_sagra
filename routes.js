@@ -365,6 +365,11 @@ router.get("/admin/deleteall/:what", (req, res, next)=>{
         BurgerStats.remove((err)=>{
         if(err){return next(err); }
         });
+
+        /*eliminazione extra*/ //TODO sistemare
+        ExtraOrder.remove((err)=>{
+            if(err){return next(err)}
+        })
     }
 
     if(req.params.what === "all" || req.params.what ==="beveragesStats"){
