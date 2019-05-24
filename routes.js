@@ -374,11 +374,15 @@ router.get("/admin/deleteall/:what", (req, res, next)=>{
         BurgerStats.remove((err)=>{
         if(err){return next(err); }
         });
+        ordiniCompletatiPanini = [];
 
-        /*eliminazione extra*/ //TODO sistemare
+
+        /*eliminazione extra*/ //TODO sistemare in sezione a parte
         ExtraOrder.remove((err)=>{
             if(err){return next(err)}
         })
+        ordiniCompletatiExtra = [];
+
     }
 
     if(req.params.what === "all" || req.params.what ==="beveragesStats"){
@@ -389,8 +393,9 @@ router.get("/admin/deleteall/:what", (req, res, next)=>{
         BeveragesOrder.remove((err)=>{
         if(err){return next(err); }
         });
-    }
+        ordiniCompletatiBevande = [];
 
+    }
     currentDay = 0;
     res.render("deletedeverything");
 });
