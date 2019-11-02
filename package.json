@@ -15,7 +15,7 @@
     "forever": "^0.15.3",
     "latest-version": "^3.1.0",
     "moment": "^2.20.1",
-    "mongoose": "^4.11.13",
+    "mongoose": "^5.7.7",
     "nodemon": "^1.12.0",
     "yeast": "^0.1.2"
   },
