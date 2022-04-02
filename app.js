@@ -23,12 +23,8 @@ mongoose.connect( "mongodb://localhost:27017", { //27017
 });
 */
 
-
-mongoose.connect("mongodb://heroku_55rqs31t:alfunmd16dnnisd4rf0398fp5d@ds155934.mlab.com:55934/heroku_55rqs31t", { 
-  useMongoClient: true,
-});
-
-//mongoose.connect("mongodb://heroku_55rqs31t:alfunmd16dnnisd4rf0398fp5d@ds155934.mlab.com:55934/heroku_55rqs31t?useMongoClient");
+const uri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@test.812tv.mongodb.net/${process.env.MONGODB_NAME}?retryWrites=true&w=majority`;
+mongoose.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true });
 
 // DA RIPRISTINARE!
 //app.use(wwwhisper());
