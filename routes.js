@@ -61,15 +61,11 @@ router.get("/cassa", (req,res)=>{
 
 router.post("/cassa", (req, res)=>{
     let requestBody = req.body;
-    console.log(requestBody);
     let isStaffOrder = Calculator.isStaffOrder(requestBody);
     let isPriorityOrder = Calculator.isPriorityOrder(requestBody);
     let burgerPrice = Calculator.calculateBurgerPrice(requestBody);
     let beveragesPrice = Calculator.calculateBeveragesPrice(requestBody);
     let extrasPrice = Calculator.calculateExtrasPrice(requestBody);
-    console.log(extrasPrice);
-    //console.log(`Prezzo panino: ${burgerPrice}`);
-    //console.log(`Prezzo bevande: ${beveragesPrice}`);
 
     if (burgerPrice != 0){
         let newBurgerOrder = new BurgerOrder({
@@ -121,13 +117,14 @@ router.post("/cassa", (req, res)=>{
 router.get("/orders", (req, res, next)=>{
     if(currentDay === 0){
         res.render("admin", {day: currentDay});
+    } else{
+        BurgerOrder.find({day: currentDay, visibility: true})
+        .sort({ priority: "descending", createdAt: "ascending" })
+        .exec((err, burgerOrders)=>{
+            if(err){return next(err); }
+            res.render("cucina", {orders: burgerOrders,  moment: moment});
+        });
     }
-    BurgerOrder.find({day: currentDay, visibility: true})
-    .sort({ priority: "descending", createdAt: "ascending" })
-    .exec((err, burgerOrders)=>{
-        if(err){return next(err); }
-        res.render("cucina", {orders: burgerOrders,  moment: moment});
-    });
 });
 
 router.get("/orders/:uid/remove", (req, res)=> {
@@ -147,7 +144,6 @@ router.get("/orders/undo", (req, res)=>{
             burgerOrder.save();
         })
     }
-    //res.redirect("/orders");
     setTimeout(()=>{res.redirect("/orders");}, 300);
 });
 
@@ -155,13 +151,14 @@ router.get("/orders/undo", (req, res)=>{
 router.get("/bar", (req, res, next)=>{
     if(currentDay === 0){
         res.render("admin", {day: currentDay});
+    } else {
+        BeveragesOrder.find({day: currentDay, visibility: true})
+        .sort({ priority: "descending", createdAt: "ascending" })
+        .exec((err, barOrders)=>{
+            if(err){return next(err); }
+            res.render("bar", {orders: barOrders,  moment: moment});
+        });
     }
-    BeveragesOrder.find({day: currentDay, visibility: true})
-    .sort({ priority: "descending", createdAt: "ascending" })
-    .exec((err, barOrders)=>{
-        if(err){return next(err); }
-        res.render("bar", {orders: barOrders,  moment: moment});
-    });
 });
 
 router.get("/bar/:uid/remove", (req, res)=> {
@@ -181,7 +178,6 @@ router.get("/bar/undo", (req, res)=>{
             beveragesOrder.save();
         })
     }
-    //res.redirect("/orders");
     setTimeout(()=>{res.redirect("/bar");}, 300);
 });
 
@@ -190,13 +186,14 @@ router.get("/bar/undo", (req, res)=>{
 router.get("/extra", (req, res, next)=>{
     if(currentDay === 0){
         res.render("admin", {day: currentDay});
+    } else {
+        ExtraOrder.find({day: currentDay, visibility: true})
+            .sort({ priority: "descending", createdAt: "ascending" })
+            .exec((err, extraOrders)=>{
+                if(err){return next(err); }
+                res.render("extra", {orders: extraOrders,  moment: moment});
+            });
     }
-    ExtraOrder.find({day: currentDay, visibility: true})
-        .sort({ priority: "descending", createdAt: "ascending" })
-        .exec((err, extraOrders)=>{
-            if(err){return next(err); }
-            res.render("extra", {orders: extraOrders,  moment: moment});
-        });
 });
 
 router.get("/extra/:uid/remove", (req, res)=> {
@@ -299,23 +296,23 @@ router.get("/admin/drinks/:day", (req, res, next)=>{
 router.get("/admin/report", (req, res, next)=>{
     if(currentDay === 0){
         res.redirect('back');
+    } else {
+        BurgerStats.find()
+            .sort({ id: "ascending" })
+            .exec((err, burgerStats)=>{
+                if(err){return next(err); }
+                BeveragesStats.find()
+                    .sort({id: "ascending"})
+                    .exec((err, beveragesStats)=>{
+                        if(err){return next(err)}
+                        res.render("report", {burgerStats: burgerStats, beveragesStats: beveragesStats});
+                    })
+            });
     }
-    BurgerStats.find()
-        .sort({ id: "ascending" })
-        .exec((err, burgerStats)=>{
-            if(err){return next(err); }
-            BeveragesStats.find()
-                .sort({id: "ascending"})
-                .exec((err, beveragesStats)=>{
-                    if(err){return next(err)}
-                    res.render("report", {burgerStats: burgerStats, beveragesStats: beveragesStats});
-                })
-        });
 });
 
 router.get("/admin/report/carne", (req, res)=>{
     /*
-    if (currentDay === 0) {res.redirect('back');}
     BurgerOrder.count({carne: 'Hamburger'}, (err, count_hamburger)=>{
         BurgerOrder.count({carne: 'Salsiccia'}, (err, count_salsiccia)=>{
             BurgerOrder.count({}, (err, count_tot)=>{
@@ -324,7 +321,7 @@ router.get("/admin/report/carne", (req, res)=>{
         });
     });
     */
-    res.redirect("/admin");
+    res.status(404).render("404");
 
 });
 
