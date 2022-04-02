@@ -1,113 +1,85 @@
 <% include _header %>
 
-<h1>BAR</h1>
-
-<div class="text-muted pull-right">
-<a href='/bar/undo' class="btn btn-raised btn-warning">
-  <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
-  UNDO
-</a>
-</div>  
-  
-</br>
-</br>
-
-  <% var count = 0; %>
-  <% ordini.forEach(function(ordine) { %>
-
-    <% if(ordine.visibility) { %>   
-      <% count++; %>
-      <% if(ordine.id % 2 != 0) { %> 
-        <div class="panel panel-primary">
-      <% } %>
-
-      <% if(ordine.id % 2 == 0) { %>
-        <div class="panel panel-info">
-      <% } %>
-
-      <div class="panel-heading">
-        <div class="text-muted pull-right">
-          <a href='/bar/<%= ordine.uid %>/<%= ordine.giorno %>/remove' class="btn btn-raised btn-danger">
-            <i class="icon-user icon-white"></i>
-            COMPLETATO
-          </a>
-        </div>
-        <div class="text pull-left">
-          <font size="5">
-            NOME:
-            <%= ordine.nome %>
-          </font>
-        </div>
-        <center>
-        ORA ORDINAZIONE:
-        <%=moment(ordine.createdAt).format('HH:mm:ss')%>
-        </center>
-        <br/>
-        <div class="text pull-left">
-          <font size="5">
-            NUMERO ORDINE
-            <%= ordine.id %>
-          </font>
-        </div>
-        <br/>
-        <br/>
-        <center>
-          <font color="red">
-            <div class="text ">
-              <% if (ordine.priority) { %>
-                ORDINE CON PRIORITÀ
-                <% if (ordine.id == 0) { %>
-                  PER STAFF
-                <% } %>
-              <% } %>
-            </div>
-          </font>
-        </center>
-      </div>
-      <div class="panel-body">
-        <font size="6">
-          <% if(ordine.BA > 0) {%>
-            <%= ordine.BA %>x BIRRA ART. 
-          <% } %>  
-          <% if(ordine.BB > 0) {%>
-            <%= ordine.BB %>x BIRRA Bionda spina
-          <% } %>
-          <% if(ordine.BR > 0) {%>
-            <%= ordine.BR %>x BIRRA Rossa spina. 
-          <% } %>
-          <% if(ordine.CC > 0) {%>
-            <%= ordine.CC %>x CocaCola 
-          <% } %>
-          <% if(ordine.AQ >0) {%>
-            <%= ordine.AQ %>x Acqua          
-          <% } %>
-        </font>
-      </div>
-    </div>
-
-    <% } %>
-
-  <% }) %>
-
-
-  <% if(count == 0) { %> 
-  
-    </br>
-    <div class="alert alert-success" role="alert">
-    <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
-    <span class="sr-only">Error:</span>
-    Non ci sono ordini bar da completare!
-    </div>
-
-  <% } %>
-
-<% var prog = ((ordini.length - count)/ordini.length) * 100; %>
-
-<div class="progress">
-  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= prog %>%;">
-    <span class="sr-only">60% Complete</span>
-  </div>
+<div class="page-header">
+  <h1>Bar</h1>
 </div>
 
+<div class="pull-right">
+  <a href='/bar/undo' class="btn btn-raised btn-warning">
+    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> UNDO
+  </a>
+</div>
+<br/>
+
+<div class="row orders-block">
+  <% orders.forEach((order)=>{ %>
+  <div class="col-md-6">
+    <% if(order.actualOrder.id % 2 != 0) { %>
+    <div class="panel panel-primary">
+      <% } %>
+
+      <% if(order.actualOrder.id % 2 == 0) { %>
+      <div class="panel panel-info">
+        <% } %>
+
+        <div class="panel-heading">
+          <div class="pull-right">
+            <a href='/bar/<%= order.uid %>/remove' class="btn-sm btn-raised btn-danger">
+              COMPLETATO
+            </a>
+          </div>
+
+          <div class="ora_ordinazione">
+            <p>
+              ORA ORDINAZIONE:
+              <%=moment(order.createdAt).format('HH:mm')%>
+            </p>
+          </div>
+          <div class="numero-ordine">
+            <p>
+              NUMERO ORDINE
+              <% if(order.actualOrder.takeaway) { %>
+                <span class="asporto">
+                PER ASPORTO
+              </span>
+              <% } %>
+              :
+              <%= order.actualOrder.id %>
+            </p>
+          </div>
+          <div class="text priorità">
+            <p>
+              <% if (order.priority) { %>
+                ORDINE CON PRIORITÀ
+                <span class="staff">
+                  <% if (order.staff === true) { %>
+                    PER STAFF
+                  <% } %>
+                </span>
+              <% } %>
+            </p>
+          </div>
+        </div>
+        <div class="panel-body ingredienti">
+          <%let i = 0%>
+          <%order.actualOrder.beveragesQuantities.forEach(beverageQuantity=>{%>
+          <%if (beverageQuantity != ''){%>
+            <%=beverageQuantity%>x
+            <span class="bevanda-bar">
+              <%if (Array.isArray(order.actualOrder.beverages)){ %>
+                <%=JSON.parse(order.actualOrder.beverages[i]).name%>
+              <%}else{%>
+                <%=JSON.parse(order.actualOrder.beverages).name%>
+              <%}%>
+            </span>
+            <%i++%>
+          <%}%>
+          <%})%>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</div>
 <% include _footer %>
-<meta http-equiv="refresh" content="15" >
+<meta http-equiv="refresh" content="15">

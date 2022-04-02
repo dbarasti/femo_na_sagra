@@ -2,17 +2,10 @@
 <h1><small class="text-muted">Report giornate</small></h1>
 <div class="row">
   <div class="col-sm">
-    <% incassi.forEach(function(incasso) { %>
-		<h3> giorno numero <%= incasso.id %> <h3>
-	 	<h4> totale vendite panini: <%= incasso.parziale %>€ <h4>
-	 	<h4> totale vendite bevande: <%= bevande[incasso.id-1].totale %>€ <h4>
-	 	<ul>
-	 		<li><h5> totale vendite Birre Artigianali: <%= bevande[incasso.id-1].BA %> <h5></li>
-		 	<li><h5> totale vendite Birre Bionde alla spina : <%= bevande[incasso.id-1].BB %> <h5></li>
-		 	<li><h5> totale vendite Birre Rosse alla spina: <%= bevande[incasso.id-1].BR %> <h5> </li>
-		 	<li><h5> totale vendite CocaCola alla spina: <%= bevande[incasso.id-1].CC %> <h5> </li>
-		 	<li><h5> totale vendite Acqua in bottiglia: <%= bevande[incasso.id-1].AQ %> <h5> </li>		
- 		</ul>
+    <% burgerStats.forEach(function(dailyStats) { %>
+		<h3> giorno numero <%= dailyStats.day %> </h3>
+	 	<h4> totale vendite panini: <%= dailyStats.total %>€ </h4>
+	 	<h4> totale vendite bevande: <%= beveragesStats[dailyStats.day-1].total %>€ </h4>
  	<% }) %>
   </div>
 </div>

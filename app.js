@@ -5,10 +5,10 @@ var mongoose = require("mongoose");
 var session = require("express-session");
 var flash = require("connect-flash");
 var path = require("path");
-var Ordine = require("./models/ordine");
-var Incasso = require("./models/incasso")
-var Bevande = require("./models/bevande");
-var Bar = require("./models/bar");
+var Ordine = require("./models/burger_order");
+var Incasso = require("./models/burger_stats")
+var Bevande = require("./models/beverages_stats");
+var Bar = require("./models/beverages_order");
 
 var routes = require("./routes");
 
@@ -23,12 +23,8 @@ mongoose.connect( "mongodb://localhost:27017", { //27017
 });
 */
 
-
-mongoose.connect("mongodb://heroku_55rqs31t:alfunmd16dnnisd4rf0398fp5d@ds155934.mlab.com:55934/heroku_55rqs31t", { 
-  useMongoClient: true,
-});
-
-//mongoose.connect("mongodb://heroku_55rqs31t:alfunmd16dnnisd4rf0398fp5d@ds155934.mlab.com:55934/heroku_55rqs31t?useMongoClient");
+const uri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@test.812tv.mongodb.net/${process.env.MONGODB_NAME}?retryWrites=true&w=majority`;
+mongoose.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true });
 
 // DA RIPRISTINARE!
 //app.use(wwwhisper());
@@ -54,7 +50,7 @@ app.use(routes);
 
 app.listen(app.get("port"), function(){
 	console.log("server started on port " + app.get("port"));
-})
+});
 
 /*
 app.listen(("3000"), function(){

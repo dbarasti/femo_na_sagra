@@ -81,9 +81,12 @@ FemoNaSagra è un'applicazione web per gestire ordini di bevande e panini pensat
 Per avere una copia di questo progetto sulla vostra macchina non servirà altro che il comando `git clone https://github.com/dbarasti/femo_na_sagra.git ` oppure scaricare il file zip.
 
 ### Prerequisiti
-Per avere il programma *up and running* avrete bisogno di un'installazione di node.js sulla vostra macchina. L'ultima versione disponibile sarà perfetta.
-[Installing Nodejs](https://nodejs.org/en/download/)
-al link qui sopra troverete tutte le istruzioni necessarie.
+Per avere il programma *up and running* avrete bisogno di un'installazione di: 
+* un'installazione di [node.js](https://nodejs.org/en/download/) sulla vostra macchina. L'ultima versione disponibile sarà perfetta.
+* node package manager [npm](https://www.npmjs.com/get-npm)
+ai link qui sopra troverete tutte le istruzioni necessarie.
+qui sopra troverete tutte le istruzioni necessarie.
+
 
 ### Installazione
 
