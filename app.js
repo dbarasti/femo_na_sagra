@@ -1,14 +1,11 @@
 var express = require("express");
+require('dotenv').config()
 var wwwhisper = require('connect-wwwhisper');
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var session = require("express-session");
 var flash = require("connect-flash");
 var path = require("path");
-var Ordine = require("./models/burger_order");
-var Incasso = require("./models/burger_stats")
-var Bevande = require("./models/beverages_stats");
-var Bar = require("./models/beverages_order");
 
 var routes = require("./routes");
 
