@@ -2,7 +2,7 @@ let mongoose = require("mongoose");
 let moment = require('moment');
 let extraOrderSchema = mongoose.Schema({
     uid: String,
-    day: Number,
+    day: Date,
     prezzo: Number,
     createdAt: { type: Date, default: moment() },
     visibility: Boolean,

@@ -7,11 +7,11 @@
 <ul class="list-group">
     <li class="list-group-item">
         <span class="badge"><%= burgerStats.total %>€</span>
-        Totale parziale giorno <%= burgerStats.day %> PANINI
+        Totale parziale giorno <%= burgerStats.day.toLocaleDateString('it-IT') %> PANINI
     </li>
     <li class="list-group-item">
         <span class="badge"><%= beveragesStats.total %>€</span>
-        Totale parziale giorno <%= beveragesStats.day %> BEVANDE
+        Totale parziale giorno <%= beveragesStats.day.toLocaleDateString('it-IT') %> BEVANDE
     </li>
 </ul>
 <form method="post" role="form">

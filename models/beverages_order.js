@@ -2,7 +2,7 @@ let mongoose = require("mongoose");
 let moment = require('moment');
 let beveragesOrderSchema = mongoose.Schema({
   uid: String,
-  day: Number,
+  day: Date,
   prezzo: Number, //required: true
   createdAt: { type: Date, default: moment() },
   visibility: Boolean,

@@ -1,7 +1,7 @@
 let mongoose = require("mongoose");
 
 let beveragesStatsSchema = mongoose.Schema({
-  day: Number,
+  day: Date,
   stats: JSON,
   total: {type: Number, default:0}
 });
