@@ -13,8 +13,8 @@ let ExtraOrder = require("./models/extra_order");
 let Calculator = require("./modules/Calculator");
 
 let config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
-let returnToCassa = false;
-let currentDay = 0;
+let redirect = false;
+let currentDay = undefined;
 let ordiniCompletatiPanini = [];
 let ordiniCompletatiBevande = [];
 let ordiniCompletatiExtra = [];
@@ -35,9 +35,9 @@ router.get("/", (req,res)=>{
 });
 
 router.get("/cassa", (req,res)=>{
-    if(currentDay === 0){
-        returnToCassa = true;
-        res.render("admin", {day: currentDay});
+    if(!currentDay){
+        redirect = true;
+        res.render("admin", {day: currentDay, config: config});
     }
     else{
         BurgerOrder.find({day: currentDay})
@@ -115,8 +115,9 @@ router.post("/cassa", (req, res)=>{
 });
 
 router.get("/orders", (req, res, next)=>{
-    if(currentDay === 0){
-        res.render("admin", {day: currentDay});
+    if(!currentDay){
+        redirect = true;
+        res.render("admin", {day: currentDay, config: config});
     } else{
         BurgerOrder.find({day: currentDay, visibility: true})
         .sort({ priority: "descending", createdAt: "ascending" })
@@ -149,8 +150,9 @@ router.get("/orders/undo", (req, res)=>{
 
 //GESIONE BAR
 router.get("/bar", (req, res, next)=>{
-    if(currentDay === 0){
-        res.render("admin", {day: currentDay});
+    if(!currentDay){
+        redirect = true;
+        res.render("admin", {day: currentDay, config: config});
     } else {
         BeveragesOrder.find({day: currentDay, visibility: true})
         .sort({ priority: "descending", createdAt: "ascending" })
@@ -184,8 +186,9 @@ router.get("/bar/undo", (req, res)=>{
 
 //gestione patatine
 router.get("/extra", (req, res, next)=>{
-    if(currentDay === 0){
-        res.render("admin", {day: currentDay});
+    if(!currentDay){
+        redirect = true;
+        res.render("admin", {day: currentDay, config: config});
     } else {
         ExtraOrder.find({day: currentDay, visibility: true})
             .sort({ priority: "descending", createdAt: "ascending" })
@@ -217,20 +220,16 @@ router.get("/extra/undo", (req, res)=>{
 });
 
 
-
-
-
-
 router.get("/admin", (req, res, next)=>{
     BurgerStats.findOne({day: currentDay }, (err, burgerStats)=>{
         if(err){return next(err); }
-        res.render("admin", {burgerStats: burgerStats, day: currentDay});
+        res.render("admin", {burgerStats: burgerStats, day: currentDay, config: config});
     });
 });
 
 router.get("/admin/giorno/:giorno", (req, res)=> {
-    if (currentDay !== req.params.giorno) {
-        currentDay = req.params.giorno;
+    if (currentDay != req.params.giorno) {
+        currentDay = new Date(req.params.giorno).toISOString();
         ordiniCompletatiPanini = [];
         ordiniCompletatiBevande = [];
     }
@@ -294,10 +293,7 @@ router.get("/admin/drinks/:day", (req, res, next)=>{
 });
 
 router.get("/admin/report", (req, res, next)=>{
-    if(currentDay === 0){
-        res.redirect('back');
-    } else {
-        BurgerStats.find()
+    BurgerStats.find()
             .sort({ id: "ascending" })
             .exec((err, burgerStats)=>{
                 if(err){return next(err); }
@@ -308,7 +304,6 @@ router.get("/admin/report", (req, res, next)=>{
                         res.render("report", {burgerStats: burgerStats, beveragesStats: beveragesStats});
                     })
             });
-    }
 });
 
 router.get("/admin/report/carne", (req, res)=>{

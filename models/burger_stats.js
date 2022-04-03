@@ -1,7 +1,7 @@
 let mongoose = require("mongoose");
 
 let burgerStatsSchema = mongoose.Schema({
-  day: Number,
+  day: Date,
   stats: JSON,
   total: {type: Number, default:0}
 });

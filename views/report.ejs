@@ -3,10 +3,17 @@
 <div class="row">
   <div class="col-sm">
     <% burgerStats.forEach(function(dailyStats) { %>
-		<h3> giorno numero <%= dailyStats.day %> </h3>
+		<h3> giorno <%= dailyStats.day.toLocaleDateString('it-IT') %> </h3>
 	 	<h4> totale vendite panini: <%= dailyStats.total %>€ </h4>
-	 	<h4> totale vendite bevande: <%= beveragesStats[dailyStats.day-1].total %>€ </h4>
- 	<% }) %>
+ 		<% }) %>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm">
+    <% beveragesStats.forEach(function(dailyStats) { %>
+		<h3> giorno <%= dailyStats.day.toLocaleDateString('it-IT') %> </h3>
+	 	<h4> totale vendite bevande: <%= dailyStats.total %>€ </h4>
+ 		<% }) %>
   </div>
 </div>
 
