@@ -368,13 +368,6 @@ router.get("/admin/deleteall/:what", (req, res, next)=>{
         });
         ordiniCompletatiPanini = [];
 
-
-        /*eliminazione extra*/ //TODO sistemare in sezione a parte
-        ExtraOrder.deleteMany({}, (err)=>{
-            if(err){return next(err)}
-        })
-        ordiniCompletatiExtra = [];
-
     }
 
     if(req.params.what === "all" || req.params.what ==="bevande"){
@@ -387,6 +380,13 @@ router.get("/admin/deleteall/:what", (req, res, next)=>{
         });
         ordiniCompletatiBevande = [];
 
+    }
+
+    if(req.params.what === "all" || req.params.what ==="extra"){
+        ExtraOrder.deleteMany({}, (err)=>{
+            if(err){return next(err)}
+        })
+        ordiniCompletatiExtra = [];
     }
     res.render("deletedeverything");
 });
