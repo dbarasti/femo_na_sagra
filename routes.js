@@ -359,36 +359,35 @@ router.get("/drinks/restore/:uid", (req, res)=>{
 router.get("/admin/deleteall/:what", (req, res, next)=>{
 
     if(req.params.what === "all" || req.params.what ==="panini"){
-        BurgerOrder.remove((err)=>{
+        BurgerOrder.deleteMany({}, (err)=>{
         if(err){return next(err); }
         });
 
-        BurgerStats.remove((err)=>{
+        BurgerStats.deleteMany({}, (err)=>{
         if(err){return next(err); }
         });
         ordiniCompletatiPanini = [];
 
 
         /*eliminazione extra*/ //TODO sistemare in sezione a parte
-        ExtraOrder.remove((err)=>{
+        ExtraOrder.deleteMany({}, (err)=>{
             if(err){return next(err)}
         })
         ordiniCompletatiExtra = [];
 
     }
 
-    if(req.params.what === "all" || req.params.what ==="beveragesStats"){
-        BeveragesStats.remove((err)=>{
+    if(req.params.what === "all" || req.params.what ==="bevande"){
+        BeveragesStats.deleteMany({}, (err)=>{
         if(err){return next(err); }
         });
 
-        BeveragesOrder.remove((err)=>{
+        BeveragesOrder.deleteMany({}, (err)=>{
         if(err){return next(err); }
         });
         ordiniCompletatiBevande = [];
 
     }
-    currentDay = 0;
     res.render("deletedeverything");
 });
 
