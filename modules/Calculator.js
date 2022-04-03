@@ -1,5 +1,4 @@
 let fs = require('fs');
-let config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 
 function calculateBurgerPrice(order) {
     if(!order.Principale && !order.Farcitura && !order.Salse){
