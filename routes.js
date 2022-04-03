@@ -252,9 +252,9 @@ router.get("/admin/giorno/:giorno", (req, res)=> {
         }
 
     });
-    if(returnToCassa === true){
-        returnToCassa = false;
-        res.redirect("/cassa");
+    if(redirect === true){
+        redirect = false;
+        setTimeout(()=>{res.redirect("back");}, 400);
     }
     else {
         setTimeout(()=>{res.redirect("/admin");}, 400);
