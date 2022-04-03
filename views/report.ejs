@@ -16,5 +16,12 @@
  		<% }) %>
   </div>
 </div>
-
+<div class="row">
+  <div class="col-sm">
+    <% extrasStats.forEach(function(dailyStats) { %>
+		<h3> giorno <%= dailyStats.day.toLocaleDateString('it-IT') %> </h3>
+	 	<h4> totale vendite extra: <%= dailyStats.total %>€ </h4>
+ 		<% }) %>
+  </div>
+</div>
 <% include _footer %>

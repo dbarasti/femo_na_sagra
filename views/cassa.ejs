@@ -13,6 +13,10 @@
         <span class="badge"><%= beveragesStats.total %>€</span>
         Totale parziale giorno <%= beveragesStats.day.toLocaleDateString('it-IT') %> BEVANDE
     </li>
+    <li class="list-group-item">
+        <span class="badge"><%= extrasStats.total %>€</span>
+        Totale parziale giorno <%= extrasStats.day.toLocaleDateString('it-IT') %> EXTRA
+    </li>
 </ul>
 <form method="post" role="form">
     <div class="panel panel-default">

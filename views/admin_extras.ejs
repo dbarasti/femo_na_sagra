@@ -1,6 +1,6 @@
 <% include _header %>
 
-<h1>Ordini bevande giornata <%= day %> </h1>
+<h1>Ordini extra giornata <%= day %> </h1>
 
 <span class="pull-left">
 <span class="btn-group">
@@ -9,7 +9,7 @@
   </button>
   <ul class="dropdown-menu">
     <li><a href="/admin/orders/<%= day %>">Panini</a></li>
-    <li><a href="/admin/extras/<%= day %>">Extra</a></li>
+    <li><a href="/admin/drinks/<%= day %>">Bevande</a></li>
   </ul>
 </span>
 </span>
@@ -23,10 +23,10 @@
     <div class="panel-heading">
       <div class="text pull-right">
         <% if (!order.visibility) { %>
-          <a href='/drinks/restore/<%= order.uid %>' class="btn btn-info"> Ripristina </a>
+          <a href='/extras/restore/<%= order.uid %>' class="btn btn-info"> Ripristina </a>
         <% } %>
-        <a href='/orders/edit/<%= order.uid %>' class="btn btn-info" disabled> Modifica </a>
-        <a href='/drinks/<%= order.uid %>/delete' class="btn btn-raised btn-danger"> Elimina </a>
+        <a href='/extras/edit/<%= order.uid %>' class="btn btn-info" disabled> Modifica </a>
+        <a href='/extras/<%= order.uid %>/delete' class="btn btn-raised btn-danger"> Elimina </a>
       </div>
       <div class="ora_ordinazione">
         ORA ORDINAZIONE:
@@ -48,20 +48,10 @@
       </div>
     </div>
     <div class="panel-body ingredienti">
-      <%let i = 0%>
-      <%order.actualOrder.beveragesQuantities.forEach(beverageQuantity=>{%>
-      <%if (beverageQuantity != ''){%>
-      <%=beverageQuantity%>x
+      <%=order.actualOrder.extrasQuantities%>x
       <span class="bevanda-bar">
-        <%if (Array.isArray(order.actualOrder.beverages)){ %>
-        <%=JSON.parse(order.actualOrder.beverages[i]).name%>
-        <%}else{%>
-        <%=JSON.parse(order.actualOrder.beverages).name%>
-        <%}%>
+        <%=JSON.parse(order.actualOrder.extras).name%>
       </span>
-      <%i++%>
-      <%}%>
-      <%})%>
     </div>
   </div>
 <% }) %>

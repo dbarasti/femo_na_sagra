@@ -8,7 +8,7 @@ let BurgerStats = require("./models/burger_stats");
 let BeveragesStats = require("./models/beverages_stats");
 let BeveragesOrder = require("./models/beverages_order");
 let ExtraOrder = require("./models/extra_order");
-
+let ExtrasStats = require("./models/extras_stats");
 
 let Calculator = require("./modules/Calculator");
 
@@ -47,12 +47,15 @@ router.get("/cassa", (req,res)=>{
                     .then(burgerStats=>{
                         BeveragesStats.findOne({day: currentDay})
                             .then(beveragesStats=>{
-                                if(burgerOrders.length > 0){
-                                    res.render("cassa", { burgerStats: burgerStats, beveragesStats: beveragesStats, lastOrderID: burgerOrders[0].actualOrder.id, config: config });
-                                }
-                                else{
-                                    res.render("cassa", { burgerStats: burgerStats, beveragesStats: beveragesStats, lastOrderID: -1, config: config });
-                                }
+                                ExtrasStats.findOne({day: currentDay})
+                                .then(extrasStats=>{
+                                    if(burgerOrders.length > 0){
+                                        res.render("cassa", { burgerStats: burgerStats, beveragesStats: beveragesStats, extrasStats: extrasStats, lastOrderID: burgerOrders[0].actualOrder.id, config: config });
+                                    }
+                                    else{
+                                        res.render("cassa", { burgerStats: burgerStats, beveragesStats: beveragesStats, extrasStats: extrasStats, lastOrderID: -1, config: config });
+                                    }
+                                })
                             })
                     });
             });
@@ -109,6 +112,7 @@ router.post("/cassa", (req, res)=>{
             staff: isStaffOrder
         });
         newExtrasOrder.save();
+        updateExtrasStats(newExtrasOrder);
     }
 
     res.redirect("/cassa");
@@ -232,6 +236,7 @@ router.get("/admin/giorno/:giorno", (req, res)=> {
         currentDay = new Date(req.params.giorno).toISOString();
         ordiniCompletatiPanini = [];
         ordiniCompletatiBevande = [];
+        ordiniCompletatiExtra = [];
     }
 
     BeveragesStats.findOne({day: currentDay}, (err, doc) => {
@@ -250,8 +255,17 @@ router.get("/admin/giorno/:giorno", (req, res)=> {
             });
             newBurgerStats.save();
         }
-
     });
+
+    ExtrasStats.findOne({day: currentDay}, (err, doc) => {
+        if (!doc) {
+            let newExtrasStats = new ExtrasStats({
+                day: currentDay
+            });
+            newExtrasStats.save();
+        }
+    });
+
     if(redirect === true){
         redirect = false;
         setTimeout(()=>{res.redirect("back");}, 400);
@@ -292,6 +306,15 @@ router.get("/admin/drinks/:day", (req, res, next)=>{
     });
 });
 
+router.get("/admin/extras/:day", (req, res, next)=>{
+    ExtraOrder.find( { day: req.params.day } )
+    .sort({ createdAt: "descending" })
+    .exec((err, extrasOrders)=>{
+        if(err){return next(err); }
+        res.render("admin_extras", { day: req.params.day, orders: extrasOrders, moment: moment});
+    });
+});
+
 router.get("/admin/report", (req, res, next)=>{
     BurgerStats.find()
         .sort({ day: "ascending" })
@@ -301,7 +324,12 @@ router.get("/admin/report", (req, res, next)=>{
                 .sort({day: "ascending"})
                 .exec((err, beveragesStats)=>{
                     if(err){return next(err)}
-                    res.render("report", {burgerStats: burgerStats, beveragesStats: beveragesStats});
+                    ExtrasStats.find()
+                        .sort({day: "ascending"})
+                        .exec((err, extrasStats)=>{
+                            if(err){return next(err)}
+                            res.render("report", {burgerStats: burgerStats, beveragesStats: beveragesStats, extrasStats: extrasStats});
+                        });
                 })
         });
 });
@@ -340,6 +368,16 @@ router.get("/drinks/:uid/delete", (req, res, next)=>{
     setTimeout(()=>{res.redirect('back');}, 400);
 });
 
+router.get("/extras/:uid/delete", (req, res, next)=>{
+    ExtraOrder.findOne({ uid: req.params.uid }, (err, extrasOrder)=>{
+        extrasOrder.remove((err)=>{
+        if(err){return next(err); }
+        });
+        updateExtrasStatsAfterRemove(extrasOrder);
+    });
+    setTimeout(()=>{res.redirect('back');}, 400);
+});
+
 router.get("/orders/restore/:uid", (req, res)=>{
     BurgerOrder.findOne({ uid: req.params.uid },  (err, doc)=>{
         doc.visibility = true;
@@ -350,6 +388,14 @@ router.get("/orders/restore/:uid", (req, res)=>{
 
 router.get("/drinks/restore/:uid", (req, res)=>{
     BeveragesOrder.findOne({ uid: req.params.uid }, (err, doc)=>{
+        doc.visibility = true;
+        doc.save();
+        setTimeout(()=>{res.redirect('back');}, 500);
+    });
+});
+
+router.get("/extras/restore/:uid", (req, res)=>{
+    ExtraOrder.findOne({ uid: req.params.uid }, (err, doc)=>{
         doc.visibility = true;
         doc.save();
         setTimeout(()=>{res.redirect('back');}, 500);
@@ -383,6 +429,9 @@ router.get("/admin/deleteall/:what", (req, res, next)=>{
     }
 
     if(req.params.what === "all" || req.params.what ==="extra"){
+        ExtrasStats.deleteMany({}, (err)=>{
+            if(err){return next(err); }
+        });
         ExtraOrder.deleteMany({}, (err)=>{
             if(err){return next(err)}
         })
@@ -436,4 +485,23 @@ function updateBeveragesStatsAfterRemove(order){
     }
 }
 
+function updateExtrasStats(order){
+    if(!order.staff){
+        ExtrasStats.findOne({day: order.day})
+            .then(stats=>{
+                stats.total += order.prezzo;
+                stats.save();
+            })
+    }
+}
+
+function updateExtrasStatsAfterRemove(order){
+    if(!order.staff) {
+        ExtrasStats.findOne({day: order.day})
+            .then(stats => {
+                stats.total -= order.prezzo;
+                stats.save();
+            })
+    }
+}
 module.exports = router;
