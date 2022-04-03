@@ -294,16 +294,16 @@ router.get("/admin/drinks/:day", (req, res, next)=>{
 
 router.get("/admin/report", (req, res, next)=>{
     BurgerStats.find()
-            .sort({ id: "ascending" })
-            .exec((err, burgerStats)=>{
-                if(err){return next(err); }
-                BeveragesStats.find()
-                    .sort({id: "ascending"})
-                    .exec((err, beveragesStats)=>{
-                        if(err){return next(err)}
-                        res.render("report", {burgerStats: burgerStats, beveragesStats: beveragesStats});
-                    })
-            });
+        .sort({ day: "ascending" })
+        .exec((err, burgerStats)=>{
+            if(err){return next(err); }
+            BeveragesStats.find()
+                .sort({day: "ascending"})
+                .exec((err, beveragesStats)=>{
+                    if(err){return next(err)}
+                    res.render("report", {burgerStats: burgerStats, beveragesStats: beveragesStats});
+                })
+        });
 });
 
 router.get("/admin/report/carne", (req, res)=>{
