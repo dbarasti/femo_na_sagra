@@ -61,27 +61,25 @@
                     </div>
                 </div>
                 <div class="panel-body ingredienti">
-                    <%if (Array.isArray(order.extrasQuantities)){ %>
-                        <%let i = 0%>
-                        <%order.actualOrder.extrasQuantities.forEach(quantity=>{%>
-                        <%if (quantity != ''){%>
-                        <%=quantity%>x
+                    <%let i = 0%>
+                    <%order.actualOrder.extrasQuantities.forEach(extrasQuantity=>{%>
+                    <%if (extrasQuantity != ''){%>
+                        <% if (i != 0){ %>
+                            <br><%=extrasQuantity%>x
+                        <%}else{%>
+                            <%=extrasQuantity%>x
+                        <%}%>
                         <span class="bevanda-bar">
-                            <%if (Array.isArray(order.actualOrder.extras)){ %>
+                        <%if (Array.isArray(order.actualOrder.extras)){ %>
                             <%=JSON.parse(order.actualOrder.extras[i]).name%>
-                            <%}else{%>
+                        <%}else{%>
                             <%=JSON.parse(order.actualOrder.extras).name%>
-                            <%}%>
+                        <%}%>
                         </span>
                         <%i++%>
-                        <%}%>
-                        <%})%>
-                    <%}else{%>
-                        <%=order.actualOrder.extrasQuantities%>x
-                        <span class="bevanda-bar">
-                            <%=JSON.parse(order.actualOrder.extras).name%>
-                        </span>
                     <%}%>
+                    <%})%>
+                        </span>
                 </div>
             </div>
         </div>
