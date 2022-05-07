@@ -6,152 +6,156 @@
  * div with id="prezzoPanino"*/
 
 const config = {
+   "days":[
+     "2022-05-27", "2022-05-28", "2022-05-29", "2022-06-02", "2022-06-03", "2022-06-04", "2022-06-05"
+   ],
+ 
    "ingredients":[
-      {
-         "type": "Principale",
-         "list": [
-            "Hamburger",
-            "Salsiccia"
-         ]
-      },
-      {
-         "type": "Farcitura",
-         "list": [
-            "Formaggio",
-            "Zucchine",
-            "Peperoni",
-            "Melanzane",
-            "Cipolla",
-            "Insalata",
-            "Pomodoro"
-         ]
-      },
-      {
-         "type": "Salse",
-         "list": [
-            "Ketchup",
-            "Senape",
-            "Maionese",
-            "BBQ"
-         ]
-      }
+     {
+       "type": "Principale",
+       "list": [
+         "Hamburger",
+         "Salsiccia"
+       ]
+     },
+     {
+       "type": "Farcitura",
+       "list": [
+         "Formaggio",
+         "Zucchine",
+         "Peperoni",
+         "Cipolla",
+         "Insalata",
+         "Pomodoro"
+       ]
+     },
+     {
+       "type": "Salse",
+       "list": [
+         "Ketchup",
+         "Maionese",
+         "BBQ"
+       ]
+     }
    ],
    "defaultBurgers": [
-      {
-         "name": "Cannavacciuolo",
-         "ingredients": [
-            "Salsiccia",
-            "Formaggio",
-            "Cipolla",
-            "Peperoni",
-            "Zucchine",
-            "Senape"
-         ],
-         "price": "7"
-      },
-      {
-         "name": "Borghese",
-         "ingredients": [
-            "Hamburger",
-            "Formaggio",
-            "Peperoni",
-            "Melanzane",
-            "BBQ"
-         ],
-         "price": "7"
-      },
-      {
-         "name": "Ramsey",
-         "ingredients": [
-            "Hamburger",
-            "Double",
-            "Formaggio",
-            "Cipolla",
-            "Insalata",
-            "Pomodoro",
-            "Ketchup",
-            "Maionese"
-         ],
-         "price": "9"
-      },
-      {
-         "name": "Baby",
-         "ingredients": [
-            "Hamburger"
-         ],
-         "price": "5"
-      }
+     {
+       "name": "Cannavacciuolo",
+       "ingredients": [
+         "Salsiccia",
+         "Formaggio",
+         "Cipolla",
+         "Zucchine",
+         "Maionese"
+       ],
+       "price": "7"
+     },
+     {
+       "name": "Borghese",
+       "ingredients": [
+         "Hamburger",
+         "Formaggio",
+         "Peperoni",
+         "BBQ"
+       ],
+       "price": "7"
+     },
+     {
+       "name": "Ramsey",
+       "ingredients": [
+         "Hamburger",
+         "Double",
+         "Formaggio",
+         "Cipolla",
+         "Insalata",
+         "Pomodoro",
+         "Ketchup",
+         "Maionese"
+       ],
+       "price": "9"
+     },
+     {
+       "name": "Baby",
+       "ingredients": [
+         "Hamburger"
+       ],
+       "price": "5"
+     }
    ],
    "beverages": [
-      {
-         "type": "Birra Artigianale",
-         "list": [
-            {
-               "name": "Notte Bianca alla spina",
-               "price": "3.5"
-            },
-            {
-               "name": "Rossa Intigante alla spina",
-               "price": "3.5"
-            }
-         ]
-      },
-      {
-         "type": "Birra Normale",
-         "list": [
-            {
-               "name": "Bionda Forst alla spina",
-               "price": "3"
-            }
-         ]
-      },
-      {
-         "type": "Bevande analcoliche",
-         "list": [
-            {
-               "name": "CocaCola",
-               "price": "2.5"
-            },
-            {
-               "name": "Acqua Naturale",
-               "price": "1"
-            },
-            {
-               "name": "Acqua Frizzante",
-               "price": "1"
-            }
-         ]
-      },
-      {
-         "type": "Vetro",
-         "list": [
-            {
-               "name": "New England Bottiglia",
-               "price": "5"
-            },
-            {
-               "name": "Notte Bianca Bottiglia",
-               "price": "5"
-            },
-            {
-               "name": "Rossa Intrigante Bottiglia",
-               "price": "5"
-            }
-         ]
-      }
+     {
+       "type": "Birra Artigianale",
+       "list": [
+         {
+           "name": "Rooibos Red Spina",
+           "price": "4"
+         },
+         {
+           "name": "Hooper IPA Spina",
+           "price": "4"
+         }
+       ]
+     },
+     {
+       "type": "Birra Normale",
+       "list": [
+         {
+           "name": "Bionda Forst Spina",
+           "price": "3"
+         }
+       ]
+     },
+     {
+       "type": "Bevande analcoliche",
+       "list": [
+         {
+           "name": "CocaCola",
+           "price": "2.5"
+         },
+         {
+           "name": "Acqua Naturale",
+           "price": "1"
+         },
+         {
+           "name": "Acqua Frizzante",
+           "price": "1"
+         }
+       ]
+     },
+     {
+       "type": "Vetro",
+       "list": [
+         {
+           "name": "Percy Blonde Ale Bottiglia",
+           "price": "4"
+         },
+         {
+           "name": "Rooibos Red Ale Bottiglia",
+           "price": "4.5"
+         },
+         {
+           "name": "Hooper IPA Bottiglia",
+           "price": "4.5"
+         }
+       ]
+     }
    ],
    "extra": [
-      {
-         "type": "Fritto",
-         "list": [
-            {
-               "name": "Patatine fritte",
-               "price": "2.5"
-            }
-         ]
-      }
+     {
+       "type": "Fritto",
+       "list": [
+         {
+           "name": "Patatine fritte",
+           "price": "2.5"
+         },
+         {
+            "name": "Anelli Cipolla",
+            "price": "3.5"
+         }
+       ]
+     }
    ]
-};
+ };
 
 
 
