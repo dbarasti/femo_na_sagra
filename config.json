@@ -17,7 +17,6 @@
         "Formaggio",
         "Zucchine",
         "Peperoni",
-        "Melanzane",
         "Cipolla",
         "Insalata",
         "Pomodoro"
@@ -27,7 +26,6 @@
       "type": "Salse",
       "list": [
         "Ketchup",
-        "Senape",
         "Maionese",
         "BBQ"
       ]
@@ -40,9 +38,8 @@
         "Salsiccia",
         "Formaggio",
         "Cipolla",
-        "Peperoni",
         "Zucchine",
-        "Senape"
+        "Maionese"
       ],
       "price": "7"
     },
@@ -52,7 +49,6 @@
         "Hamburger",
         "Formaggio",
         "Peperoni",
-        "Melanzane",
         "BBQ"
       ],
       "price": "7"
@@ -84,12 +80,12 @@
       "type": "Birra Artigianale",
       "list": [
         {
-          "name": "Notte Bianca alla spina",
-          "price": "3.5"
+          "name": "Rooibos Red Spina",
+          "price": "4"
         },
         {
-          "name": "Rossa Intigante alla spina",
-          "price": "3.5"
+          "name": "Hooper IPA Spina",
+          "price": "4"
         }
       ]
     },
@@ -97,7 +93,7 @@
       "type": "Birra Normale",
       "list": [
         {
-          "name": "Bionda Forst alla spina",
+          "name": "Bionda Forst Spina",
           "price": "3"
         }
       ]
@@ -123,16 +119,16 @@
       "type": "Vetro",
       "list": [
         {
-          "name": "New England Bottiglia",
-          "price": "5"
+          "name": "Percy Blonde Ale Bottiglia",
+          "price": "4"
         },
         {
-          "name": "Notte Bianca Bottiglia",
-          "price": "5"
+          "name": "Rooibos Red Ale Bottiglia",
+          "price": "4.5"
         },
         {
-          "name": "Rossa Intrigante Bottiglia",
-          "price": "5"
+          "name": "Hooper IPA Bottiglia",
+          "price": "4.5"
         }
       ]
     }
@@ -144,6 +140,10 @@
         {
           "name": "Patatine fritte",
           "price": "2.5"
+        },
+        {
+        	"name": "Anelli Cipolla",
+        	"price": "3.5"
         }
       ]
     }
