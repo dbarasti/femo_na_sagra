@@ -64,7 +64,11 @@
           <%let i = 0%>
           <%order.actualOrder.beveragesQuantities.forEach(beverageQuantity=>{%>
           <%if (beverageQuantity != ''){%>
-            <%=beverageQuantity%>x
+            <% if (i != 0){ %>
+              <br><%=beverageQuantity%>x
+            <%}else{%>
+              <%=beverageQuantity%>x
+            <%}%>
             <span class="bevanda-bar">
               <%if (Array.isArray(order.actualOrder.beverages)){ %>
                 <%=JSON.parse(order.actualOrder.beverages[i]).name%>
