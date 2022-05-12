@@ -6,6 +6,7 @@ let extraOrderSchema = mongoose.Schema({
     prezzo: Number,
     createdAt: { type: Date, default: moment() },
     visibility: Boolean,
+    completed: {type: Boolean, default: false},
     actualOrder: JSON,
     priority: {type: Boolean, default: false},
     staff: {type: Boolean, default: false}
