@@ -132,12 +132,21 @@ router.get("/orders", (req, res, next)=>{
     }
 });
 
+router.get("/orders/:uid/completed", (req, res)=> {
+    BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
+    burgerOrder.completed = true;
+    burgerOrder.save();
+    setTimeout(()=>{res.redirect("/orders");}, 300);
+    }); 
+});
+
 router.get("/orders/:uid/remove", (req, res)=> {
     BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
     burgerOrder.visibility = false;
+    burgerOrder.completed = false;
     burgerOrder.save();
     ordiniCompletatiPanini.push(burgerOrder.uid);
-    res.redirect("/orders");
+    setTimeout(()=>{res.redirect("/orders");}, 300);
     }); 
 });
 
@@ -150,6 +159,20 @@ router.get("/orders/undo", (req, res)=>{
         })
     }
     setTimeout(()=>{res.redirect("/orders");}, 300);
+});
+
+router.get("/status", (_, res)=> {
+    if(!currentDay){
+        redirect = true;
+        res.render("admin", {day: currentDay, config: config});
+    } else{
+        BurgerOrder.find({day: currentDay, visibility: true, completed: true})
+        .sort({ priority: "descending", createdAt: "ascending" })
+        .exec((err, burgerOrders)=>{
+            if(err){return next(err); }
+            res.render("status_page", {orders: burgerOrders,  moment: moment});
+        });
+    }
 });
 
 //GESIONE BAR
@@ -188,7 +211,7 @@ router.get("/bar/undo", (req, res)=>{
 });
 
 
-//gestione patatine
+//gestione fritti
 router.get("/extra", (req, res, next)=>{
     if(!currentDay){
         redirect = true;
