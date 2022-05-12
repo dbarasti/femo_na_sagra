@@ -13,13 +13,12 @@
 
 <div class="row orders-block">
   <% orders.forEach((order)=>{ %>
-  <div class="col-md-6">
-    <% if(order.actualOrder.id % 2 != 0) { %>
-      <div class="panel panel-primary">
-    <% } %>
-    <% if(order.actualOrder.id % 2 == 0) { %>
-      <div class="panel panel-info">
-    <% } %>
+    <div class="col-md-6">
+      <% if(order.actualOrder.id % 2 != 0) { %>
+        <div class="panel panel-primary">
+      <% } else { %>
+        <div class="panel panel-info">
+      <% } %>
         <div class="panel-heading">
           <div class="pull-right">
             <% if(!order.completed) { %>
@@ -95,8 +94,7 @@
         </div>
       </div>
     </div>
-    <% }) %>
-  </div>
+  <% }) %>
 </div>
-  <% include _footer %>
-  <meta http-equiv="refresh" content="15">
+<% include _footer %>
+<meta http-equiv="refresh" content="15">

@@ -5,7 +5,7 @@
 </div>
 <div class="container">
   <div class="row">
-    <% orders.forEach((order)=>{ %>
+    <% burgers.forEach((order)=>{ %>
       <div class="col-md-4">
         <div class="panel panel-info">
           <div class="panel-heading">
@@ -20,9 +20,27 @@
         </div>
       </div>
       <% }) %>
-    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <% extras.forEach((order)=>{ %>
+      <div class="col-md-4">
+        <div class="panel panel-warning">
+          <div class="panel-heading">
+            <div class="order-status">
+              <p class="text-center">
+                <strong>
+                  <%= order.actualOrder.id %>
+                </strong>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% }) %>
   </div>
 </div>
+
 
   <% include _footer %>
   <meta http-equiv="refresh" content="15">
