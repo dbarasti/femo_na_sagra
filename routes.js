@@ -160,7 +160,8 @@ router.get("/orders/undo", (req, res)=>{
     }
     setTimeout(()=>{res.redirect("/orders");}, 300);
 });
-
+    
+// gestione status page
 router.get("/status", (_, res)=> {
     if(!currentDay){
         redirect = true;
@@ -170,7 +171,12 @@ router.get("/status", (_, res)=> {
         .sort({ priority: "descending", createdAt: "ascending" })
         .exec((err, burgerOrders)=>{
             if(err){return next(err); }
-            res.render("status_page", {orders: burgerOrders,  moment: moment});
+            ExtraOrder.find({day: currentDay, visibility: true, completed: true})
+            .sort({ priority: "descending", createdAt: "ascending" })
+            .exec((err, extraOrders)=>{
+                if(err){return next(err); }
+                res.render("status_page", {burgers: burgerOrders, extras: extraOrders, moment: moment});
+            });
         });
     }
 });
@@ -226,12 +232,22 @@ router.get("/extra", (req, res, next)=>{
     }
 });
 
+router.get("/extra/:uid/completed", (req, res)=> {
+    ExtraOrder.findOne({ uid: req.params.uid }, (err, extraOrder)=>{
+        extraOrder.completed = true;
+        extraOrder.save();
+        ordiniCompletatiExtra.push(extraOrder.uid);
+        setTimeout(()=>{res.redirect("/extra");}, 300);
+    });
+});
+
 router.get("/extra/:uid/remove", (req, res)=> {
     ExtraOrder.findOne({ uid: req.params.uid }, (err, extraOrder)=>{
         extraOrder.visibility = false;
+        extraOrder.completed = false;
         extraOrder.save();
         ordiniCompletatiExtra.push(extraOrder.uid);
-        res.redirect("/extra");
+        setTimeout(()=>{res.redirect("/extra");}, 300);
     });
 });
 
