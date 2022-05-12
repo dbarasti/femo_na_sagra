@@ -28,6 +28,15 @@ summary {
   display: block;
 }
 
+.send-order {
+  width: 10em;
+  height: 5em;
+}
+
+.order-status {
+  font-size: 100px;
+}
+
 .beverage-quantity{
   width: 4em;
   margin: 1px;
@@ -48,7 +57,7 @@ summary {
 }
 
 .numero-ordine{
-  font-size: 1.5em;
+  font-size: 2em;
 }
 
 .nome_ordine{
