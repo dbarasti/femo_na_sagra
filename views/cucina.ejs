@@ -22,23 +22,30 @@
     <% } %>
         <div class="panel-heading">
           <div class="pull-right">
-            <a href='/orders/<%= order.uid %>/remove' class="btn-sm btn-raised btn-danger">
-              COMPLETATO
-            </a>
+            <% if(!order.completed) { %>
+              <a href='/orders/<%= order.uid %>/completed' class="btn btn-raised btn-info">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                COMPLETATO
+              </a>
+            <% } else { %>
+              <a href='/orders/<%= order.uid %>/remove' class="btn btn-raised btn-danger">
+                <span class="glyphicon glyphicon-send" aria-hidden="true"></span> CONSEGNATO
+              </a>
+            <% } %>
           </div>
 
           <div class="ora_ordinazione">
             <p>
-              ORA ORDINAZIONE:
+              ordinato alle
               <%=moment(order.createdAt).format('HH:mm')%>
             </p>
           </div>
           <div class="numero-ordine">
             <p>
-              NUMERO ORDINE
+              ORDINE
               <% if(order.actualOrder.takeaway) { %>
                 <span class="asporto">
-                PER ASPORTO
+                ASPORTO
               </span>
               <% } %>
               :
@@ -48,7 +55,7 @@
           <div class="text priorità">
             <p>
               <% if (order.priority) { %>
-                ORDINE CON PRIORITÀ
+                PRIORITÀ
                 <span class="staff">
                   <% if (order.staff === true) { %>
                     PER STAFF
