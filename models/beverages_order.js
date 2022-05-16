@@ -5,7 +5,7 @@ let beveragesOrderSchema = mongoose.Schema({
   day: Date,
   prezzo: Number, //required: true
   createdAt: { type: Date, default: moment() },
-  visibility: Boolean,
+  visibility: {type: Boolean, default: true},
   actualOrder: JSON,
   priority: {type: Boolean, default: false},
   staff: {type: Boolean, default: false}
