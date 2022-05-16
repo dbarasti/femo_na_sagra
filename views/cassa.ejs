@@ -47,6 +47,11 @@
                     <input name="takeaway" type="checkbox" value="Take-Away"> Asporto </label>
             </div>
         </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>PANINO</h3>
+        </div>
         <div class="panel-heading">
             <fieldset>
                 <div class="checkbox">
@@ -58,55 +63,62 @@
                 </div>
             </fieldset>
         </div>
-    </div>
-    <div class="row">
-        <%config.ingredients.forEach((ingredientType)=>{%>
-        <div class="col-md-4">
+        <div class="panel-body">
+            <div class="row">
+                <%config.ingredients.forEach((ingredientType)=>{%>
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <%=ingredientType.type%>
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <fieldset>
+                                <div class="checkbox">
+                                    <% ingredientType.list.forEach((ingredient)=>{ %>
+                                    <label>
+                                        <%if(ingredientType.type == "Principale"){%>
+                                            <input name="<%=ingredientType.type%>" id="<%=ingredient%>" type="radio" onclick="primaryClicked()" value="<%=ingredient%>">
+                                        <%} if(ingredientType.type == "Farcitura"){%>
+                                            <input name="<%=ingredientType.type%>" id="<%=ingredient%>" type="checkbox" onclick="secondaryClicked()" value="<%=ingredient%>">
+                                        <%} if(ingredientType.type == "Salse"){%>
+                                            <input name="<%=ingredientType.type%>" id="<%=ingredient%>" type="checkbox" value="<%=ingredient%>">
+                                        <%}%>
+                                        <%=ingredient%>
+                                    </label>
+                                    <%})%>
+                                </div>
+                                <%if(ingredientType.type == "Principale"){%>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input name="double" id="Double" type="checkbox" value="Double" onclick="doubleClicked()"> Double</label>
+                                    </div>
+                                <%}%>
+        
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <%})%>
+            </div>
+
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">
-                        <%=ingredientType.type%>
+                    <h3>
+                        Conto Panino
                     </h3>
                 </div>
                 <div class="panel-body">
-                    <fieldset>
-                        <div class="checkbox">
-                            <% ingredientType.list.forEach((ingredient)=>{ %>
-                            <label>
-                                <%if(ingredientType.type == "Principale"){%>
-                                <input name="<%=ingredientType.type%>" id="<%=ingredient%>" type="radio" onclick="primaryClicked()" value="<%=ingredient%>">
-                                <%}else{%>
-                                <input name="<%=ingredientType.type%>" id="<%=ingredient%>" type="checkbox" onclick="secondaryClicked()" value="<%=ingredient%>">
-                                <%}%>
-                                <%=ingredient%>
-                            </label>
-                            <%})%>
-                        </div>
-                        <%if(ingredientType.type == "Principale"){%>
-                            <div class="checkbox">
-                                <label>
-                                    <input name="double" id="Double" type="checkbox" value="Double" onclick="doubleClicked()"> Double</label>
-                            </div>
-                        <%}%>
-
-                    </fieldset>
+                    <div id="prezzoPanino">
+                        0 €
+                    </div>
                 </div>
             </div>
         </div>
-        <%})%>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3>
-                Conto Panino
-            </h3>
-        </div>
-        <div class="panel-body">
-            <div id="prezzoPanino">
-                0 €
-            </div>
-        </div>
-    </div>
+    
+    
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3>BEVANDE</h3>

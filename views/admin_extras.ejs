@@ -33,6 +33,7 @@
         <%=moment(order.createdAt).format('MM/DD/YYYY HH:mm:ss')%>
       </div>
       <br/>
+      <br/>
       <div class="text pull-right">
         PREZZO:
         <%= order.prezzo %>€
@@ -48,10 +49,25 @@
       </div>
     </div>
     <div class="panel-body ingredienti">
-      <%=order.actualOrder.extrasQuantities%>x
-      <span class="bevanda-bar">
-        <%=JSON.parse(order.actualOrder.extras).name%>
-      </span>
+      <%let i = 0%>
+      <%order.actualOrder.extrasQuantities.forEach(extrasQuantity=>{%>
+      <%if (extrasQuantity != ''){%>
+          <% if (i != 0){ %>
+              <br><%=extrasQuantity%>x
+          <%}else{%>
+              <%=extrasQuantity%>x
+          <%}%>
+          <span class="bevanda-bar">
+          <%if (Array.isArray(order.actualOrder.extras)){ %>
+              <%=JSON.parse(order.actualOrder.extras[i]).name%>
+          <%}else{%>
+              <%=JSON.parse(order.actualOrder.extras).name%>
+          <%}%>
+          </span>
+          <%i++%>
+      <%}%>
+      <%})%>
+          </span>
     </div>
   </div>
 <% }) %>
