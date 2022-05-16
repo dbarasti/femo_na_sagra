@@ -348,17 +348,15 @@ router.get("/admin/report", (req, res, next)=>{
 });
 
 router.get("/admin/report/carne", (req, res)=>{
-    /*
-    BurgerOrder.count({carne: 'Hamburger'}, (err, count_hamburger)=>{
-        BurgerOrder.count({carne: 'Salsiccia'}, (err, count_salsiccia)=>{
-            BurgerOrder.count({}, (err, count_tot)=>{
-                res.render("report_carne", { count_hamburger: count_hamburger, count_salsiccia: count_salsiccia, count_tot: count_tot });
-            });
+    BurgerOrder.aggregate([{
+        $group : {
+            _id:{day:"$day", main:"$actualOrder.Principale"}, 
+            count:{$sum:1}
+        }}])
+        .exec((err, result)=>{
+            res.send(result);
+            // res.render("report_carne", {stats:result});
         });
-    });
-    */
-    res.status(404).render("404");
-
 });
 
 router.get("/orders/:uid/delete", (req, res, next)=>{
