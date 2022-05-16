@@ -14,27 +14,76 @@ const config = {
      {
        "type": "Principale",
        "list": [
-         "Hamburger",
-         "Salsiccia"
+         {
+           "id": "hamburger",
+           "name": "Hamburger",
+           "price": "7"
+         },
+         {
+           "id": "salsiccia",
+           "name": "Salsiccia",
+           "price": "7"
+         }
        ]
      },
      {
        "type": "Farcitura",
        "list": [
-         "Formaggio",
-         "Zucchine",
-         "Peperoni",
-         "Cipolla",
-         "Insalata",
-         "Pomodoro"
+         {
+           "id": "formaggio",
+           "name": "Formaggio",
+           "price": "0"
+         },
+         {
+           "id": "zucchine",
+           "name": "Zucchine",
+           "price": "0"
+         },
+         {
+           "id": "peperoni",
+           "name": "Peperoni",
+           "price": "0"
+         },
+         {
+           "id": "cipolla",
+           "name": "Cipolla",
+           "price": "0"
+         },
+         {
+           "id": "insalata",
+           "name": "Insalata",
+           "price": "0"
+         },
+         {
+           "id": "pomodoro",
+           "name": "Pomodoro",
+           "price": "0"
+         },
+         {
+           "id": "anelli",
+           "name": "Anelli di cipolla",
+           "price": "0.50"
+         }
        ]
      },
      {
        "type": "Salse",
        "list": [
-         "Ketchup",
-         "Maionese",
-         "BBQ"
+         {
+           "id": "ketchup",
+           "name": "Ketchup",
+           "price": "0"
+         },
+         {
+           "id": "maionese",
+           "name": "Maionese",
+           "price": "0"
+         },
+         {
+           "id": "bbq",
+           "name": "BBQ",
+           "price": "0"
+         }
        ]
      }
    ],
@@ -42,42 +91,42 @@ const config = {
      {
        "name": "Cannavacciuolo",
        "ingredients": [
-         "Salsiccia",
-         "Formaggio",
-         "Cipolla",
-         "Zucchine",
-         "Maionese"
+         "salsiccia",
+         "formaggio",
+         "cipolla",
+         "zucchine",
+         "maionese"
        ],
        "price": "7"
      },
      {
        "name": "Borghese",
        "ingredients": [
-         "Hamburger",
-         "Formaggio",
-         "Peperoni",
-         "BBQ"
+         "hamburger",
+         "formaggio",
+         "peperoni",
+         "bbq"
        ],
        "price": "7"
      },
      {
-       "name": "Ramsey",
+       "name": "Ramsay",
        "ingredients": [
-         "Hamburger",
+         "hamburger",
          "Double",
-         "Formaggio",
-         "Cipolla",
-         "Insalata",
-         "Pomodoro",
-         "Ketchup",
-         "Maionese"
+         "formaggio",
+         "cipolla",
+         "insalata",
+         "pomodoro",
+         "ketchup",
+         "maionese"
        ],
        "price": "9"
      },
      {
        "name": "Baby",
        "ingredients": [
-         "Hamburger"
+         "hamburger"
        ],
        "price": "5"
      }
@@ -110,7 +159,7 @@ const config = {
        "list": [
          {
            "name": "CocaCola",
-           "price": "2.5"
+           "price": "1.5"
          },
          {
            "name": "Acqua Naturale",
@@ -150,14 +199,12 @@ const config = {
          },
          {
             "name": "Anelli Cipolla",
-            "price": "3.5"
+            "price": "3"
          }
        ]
      }
    ]
  };
-
-
 
 
 
