@@ -462,8 +462,16 @@ function updateBurgersStats(order){
     if(!order.staff) {
         BurgerStats.findOne({day: order.day})
             .then(stats => {
+                if (!stats) {
+                    let newBurgerStats = new BurgerStats({
+                        day: currentDay,
+                        total: order.prezzo
+                    });
+                    newBurgerStats.save();
+                } else {
                 stats.total += order.prezzo;
                 stats.save();
+                }
             })
     }
 }
@@ -482,8 +490,16 @@ function updateBeveragesStats(order){
     if(!order.staff){
         BeveragesStats.findOne({day: order.day})
             .then(stats=>{
+                if (!stats) {
+                    let newBeveragesStats = new BeveragesStats({
+                        day: currentDay,
+                        total: order.prezzo
+                    });
+                    newBeveragesStats.save();
+                } else {
                 stats.total += order.prezzo;
                 stats.save();
+                }
             })
     }
 }
@@ -502,8 +518,16 @@ function updateExtrasStats(order){
     if(!order.staff){
         ExtrasStats.findOne({day: order.day})
             .then(stats=>{
+                if (!stats) {
+                    let newExtrasStats = new ExtrasStats({
+                        day: currentDay,
+                        total: order.prezzo
+                    });
+                    newExtrasStats.save();
+                } else {
                 stats.total += order.prezzo;
                 stats.save();
+                }
             })
     }
 }
