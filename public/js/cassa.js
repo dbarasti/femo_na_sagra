@@ -213,7 +213,7 @@ function clearAllIngredients() {
    document.getElementById("Double").checked = false;
    config.ingredients.forEach((ingredientType)=>{
       ingredientType.list.forEach((ingredient)=>{
-         uncheckBoxWithId(ingredient)
+         uncheckBoxWithId(ingredient.id)
       })
    });
 }
@@ -265,7 +265,6 @@ function clearDefaultBurgersExcept(burgerName) {
        })
 }
 
-
 function defaultBurgerClicked(defaultBurger) {
    if(isCheckboxWithIdActive(defaultBurger.name))
       defaultBurgerChecked(defaultBurger);
@@ -289,50 +288,62 @@ function defaultBurgerUnchecked() {
    updateOrderTotal();
 }
 
-
 function doubleClicked() {
+   basePrice = 0;
    if(isCheckboxWithIdActive("Double")){
-      if(!isCheckboxWithIdActive("Hamburger") && !isCheckboxWithIdActive("Salsiccia")){
+      if(!isCheckboxWithIdActive("hamburger") && !isCheckboxWithIdActive("salsiccia")){
          document.getElementById("Double").checked = false;
+         return
       }
       else{
-         getPaninoDivElement().innerHTML = "9 €";
-         updateOrderTotal()
+         basePrice = 2;
       }
-   }  else{
-      getPaninoDivElement().innerHTML = "7 €";
-      updateOrderTotal();
    }
+   burgerPrice = basePrice + computeIngredientsPrice();
+   getPaninoDivElement().innerHTML = `${burgerPrice} €`;
+   updateOrderTotal()
 }
 
 function primaryClicked() {
+   basePrice = 0;
    if(isCheckboxWithIdActive("Baby"))
       return;
    if(isCheckboxWithIdActive("Double")){
-      getPaninoDivElement().innerHTML = "9 €";
-      updateOrderTotal()
+      basePrice = 2;
    }
-   else{
-      getPaninoDivElement().innerHTML = "7 €";
-      updateOrderTotal()
-   }
+   burgerPrice = basePrice + computeIngredientsPrice();
+   getPaninoDivElement().innerHTML = `${burgerPrice} €`;
+   updateOrderTotal();
 }
 
 function secondaryClicked(){
-   if(!isCheckboxWithIdActive("Hamburger") && !isCheckboxWithIdActive("Salsiccia"))
-      if(parseFloat(getPaninoDivElement().innerHTML) === 5)
-         return;
-      else{
-         getPaninoDivElement().innerHTML = "5 €";
-         updateOrderTotal()
-      }
-   else{
-      if(isCheckboxWithIdActive("Baby")){
-         document.getElementById("Baby").checked = false;
-         getPaninoDivElement().innerHTML = "7 €";
-         updateOrderTotal()
-      }
+   basePrice = 0;
+   if(!isCheckboxWithIdActive("hamburger") && !isCheckboxWithIdActive("salsiccia")){
+      basePrice = 5;
    }
+
+   if(isCheckboxWithIdActive("Baby")){
+      document.getElementById("Baby").checked = false;
+   }
+
+   if(isCheckboxWithIdActive("Double")){
+      basePrice = 2;
+   }
+
+   burgerPrice = basePrice + computeIngredientsPrice();
+   getPaninoDivElement().innerHTML = `${burgerPrice} €`;
+   updateOrderTotal()
+}
+
+function computeIngredientsPrice(){
+   let price = 0;
+   config.ingredients.forEach((ingredientType)=>{
+      ingredientType.list.forEach((ingredient)=>{
+         if(isCheckboxWithIdActive(ingredient.id))
+            price += parseFloat(ingredient.price);
+      })
+   });
+   return price;
 }
 
 function beverageClicked(beverage) {
