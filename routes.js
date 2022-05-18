@@ -118,6 +118,7 @@ router.get("/orders", (req, res, next)=>{
 router.get("/orders/:uid/completed", (req, res)=> {
     BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
     burgerOrder.completed = true;
+    burgerOrder.completedAt = new moment();
     burgerOrder.save();
     setTimeout(()=>{res.redirect("/orders");}, 300);
     }); 
@@ -179,10 +180,11 @@ router.get("/bar", (req, res, next)=>{
 
 router.get("/bar/:uid/remove", (req, res)=> {
     BeveragesOrder.findOne({ uid: req.params.uid }, (err, beveragesOrder)=>{
-    beveragesOrder.visibility = false;
-    beveragesOrder.save();
-    ordiniCompletatiBevande.push(beveragesOrder.uid);
-    res.redirect("/bar");
+        beveragesOrder.visibility = false;
+        beveragesOrder.completedAt = moment();
+        beveragesOrder.save();
+        ordiniCompletatiBevande.push(beveragesOrder.uid);
+        res.redirect("/bar");
     }); 
 });
 
@@ -215,6 +217,7 @@ router.get("/extra", (req, res, next)=>{
 router.get("/extra/:uid/completed", (req, res)=> {
     ExtraOrder.findOne({ uid: req.params.uid }, (err, extraOrder)=>{
         extraOrder.completed = true;
+        extraOrder.completedAt = new moment();
         extraOrder.save();
         ordiniCompletatiExtra.push(extraOrder.uid);
         setTimeout(()=>{res.redirect("/extra");}, 300);

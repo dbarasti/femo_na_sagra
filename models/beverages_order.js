@@ -3,8 +3,9 @@ let moment = require('moment');
 let beveragesOrderSchema = mongoose.Schema({
   uid: String,
   day: Date,
-  prezzo: Number, //required: true
+  prezzo: Number,
   createdAt: { type: Date, default: ()=> moment() },
+  completedAt:{ type: Date },
   visibility: {type: Boolean, default: true},
   actualOrder: JSON,
   priority: {type: Boolean, default: false},
