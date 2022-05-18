@@ -78,7 +78,7 @@ function calculateExtrasPrice(order) {
 
 
 function isStaffOrder(order){
-	return !!(order.id == 0 && order.priority);
+	return order.staff != undefined;
 }
 
 function isPriorityOrder(order){
