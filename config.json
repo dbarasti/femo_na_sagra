@@ -43,8 +43,8 @@
           "price": "0"
         },
         {
-          "id": "insalata",
-          "name": "Insalata",
+          "id": "lattuga",
+          "name": "Lattuga",
           "price": "0"
         },
         {
@@ -84,13 +84,14 @@
     {
       "name": "Cannavacciuolo",
       "ingredients": [
-        "salsiccia",
+        "hamburger",
         "formaggio",
         "cipolla",
-        "zucchine",
+        "anelli",
+        "ketchup",
         "maionese"
       ],
-      "price": "7"
+      "price": "7.5"
     },
     {
       "name": "Borghese",
@@ -98,6 +99,8 @@
         "hamburger",
         "formaggio",
         "peperoni",
+        "cipolla",
+        "zucchine",
         "bbq"
       ],
       "price": "7"
@@ -109,10 +112,9 @@
         "Double",
         "formaggio",
         "cipolla",
-        "insalata",
+        "lattuga",
         "pomodoro",
-        "ketchup",
-        "maionese"
+        "ketchup"
       ],
       "price": "9"
     },
@@ -151,7 +153,11 @@
       "type": "Bevande analcoliche",
       "list": [
         {
-          "name": "CocaCola",
+          "name": "CocaCola in lattina",
+          "price": "1.5"
+        },
+        {
+          "name": "Fanta in lattina",
           "price": "1.5"
         },
         {
@@ -188,7 +194,7 @@
       "list": [
         {
           "name": "Patatine fritte",
-          "price": "2.5"
+          "price": "3"
         },
         {
            "name": "Anelli Cipolla",

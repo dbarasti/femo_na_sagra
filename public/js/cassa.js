@@ -50,8 +50,8 @@ const config = {
            "price": "0"
          },
          {
-           "id": "insalata",
-           "name": "Insalata",
+           "id": "lattuga",
+           "name": "Lattuga",
            "price": "0"
          },
          {
@@ -91,13 +91,14 @@ const config = {
      {
        "name": "Cannavacciuolo",
        "ingredients": [
-         "salsiccia",
+         "hamburger",
          "formaggio",
          "cipolla",
-         "zucchine",
+         "anelli",
+         "ketchup",
          "maionese"
        ],
-       "price": "7"
+       "price": "7.5"
      },
      {
        "name": "Borghese",
@@ -105,6 +106,8 @@ const config = {
          "hamburger",
          "formaggio",
          "peperoni",
+         "cipolla",
+         "zucchine",
          "bbq"
        ],
        "price": "7"
@@ -116,10 +119,9 @@ const config = {
          "Double",
          "formaggio",
          "cipolla",
-         "insalata",
+         "lattuga",
          "pomodoro",
-         "ketchup",
-         "maionese"
+         "ketchup"
        ],
        "price": "9"
      },
@@ -158,7 +160,11 @@ const config = {
        "type": "Bevande analcoliche",
        "list": [
          {
-           "name": "CocaCola",
+           "name": "CocaCola in lattina",
+           "price": "1.5"
+         },
+         {
+           "name": "Fanta in lattina",
            "price": "1.5"
          },
          {
@@ -195,7 +201,7 @@ const config = {
        "list": [
          {
            "name": "Patatine fritte",
-           "price": "2.5"
+           "price": "3"
          },
          {
             "name": "Anelli Cipolla",
