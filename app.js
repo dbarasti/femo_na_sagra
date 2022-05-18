@@ -1,6 +1,5 @@
 var express = require("express");
 require('dotenv').config()
-var wwwhisper = require('connect-wwwhisper');
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var session = require("express-session");
@@ -22,9 +21,6 @@ mongoose.connect( "mongodb://localhost:27017", { //27017
 
 const uri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@test.812tv.mongodb.net/${process.env.MONGODB_NAME}?retryWrites=true&w=majority`;
 mongoose.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true });
-
-// DA RIPRISTINARE!
-//app.use(wwwhisper());
 
 app.set("port", process.env.PORT || 8000);
 
