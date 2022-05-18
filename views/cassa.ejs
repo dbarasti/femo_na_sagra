@@ -79,13 +79,13 @@
                                     <% ingredientType.list.forEach((ingredient)=>{ %>
                                     <label>
                                         <%if(ingredientType.type == "Principale"){%>
-                                            <input name="<%=ingredientType.type%>" id="<%=ingredient%>" type="radio" onclick="primaryClicked()" value="<%=ingredient%>">
+                                            <input name="<%=ingredientType.type%>" id="<%=ingredient.id%>" type="radio" onclick="primaryClicked()" value="<%=ingredient.name%>">
                                         <%} if(ingredientType.type == "Farcitura"){%>
-                                            <input name="<%=ingredientType.type%>" id="<%=ingredient%>" type="checkbox" onclick="secondaryClicked()" value="<%=ingredient%>">
+                                            <input name="<%=ingredientType.type%>" id="<%=ingredient.id%>" type="checkbox" onclick="secondaryClicked()" value="<%=ingredient.name%>">
                                         <%} if(ingredientType.type == "Salse"){%>
-                                            <input name="<%=ingredientType.type%>" id="<%=ingredient%>" type="checkbox" value="<%=ingredient%>">
+                                            <input name="<%=ingredientType.type%>" id="<%=ingredient.id%>" type="checkbox" value="<%=ingredient.name%>">
                                         <%}%>
-                                        <%=ingredient%>
+                                        <%=ingredient.name%>
                                     </label>
                                     <%})%>
                                 </div>
@@ -105,7 +105,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3>
+                    <h3 class="panel-title">
                         Conto Panino
                     </h3>
                 </div>
