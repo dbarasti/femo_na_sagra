@@ -24,7 +24,7 @@ function computeIngredientsPrice(order) {
     let price = 0;
     config.ingredients.forEach((ingredientType)=>{
         ingredientType.list.forEach((ingredient)=>{
-            if((order.Farcitura && order.Farcitura.includes(ingredient.name)) || (order.Salse && order.Salse.includes(ingredient.name)) || (order.Principale && order.Principale.includes(ingredient.name))){ 
+            if((order.Principale && order.Principale === ingredient.name) || (order.Farcitura && order.Farcitura.includes(ingredient.name)) || (order.Salse && order.Salse.includes(ingredient.name))){ 
                 price += parseFloat(ingredient.price);
             }
         })

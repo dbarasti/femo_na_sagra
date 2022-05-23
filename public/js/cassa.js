@@ -302,7 +302,7 @@ function defaultBurgerUnchecked() {
 function doubleClicked() {
    basePrice = 0;
    if(isCheckboxWithIdActive("Double")){
-      if(!isCheckboxWithIdActive("hamburger") && !isCheckboxWithIdActive("salsiccia")){
+      if(!isPrimarySelected()){
          document.getElementById("Double").checked = false;
          return
       }
@@ -319,9 +319,11 @@ function primaryClicked() {
    basePrice = 0;
    if(isCheckboxWithIdActive("Baby"))
       return;
+
    if(isCheckboxWithIdActive("Double")){
       basePrice = 2;
    }
+   
    burgerPrice = basePrice + computeIngredientsPrice();
    getPaninoDivElement().innerHTML = `${burgerPrice} €`;
    updateOrderTotal();
@@ -329,7 +331,7 @@ function primaryClicked() {
 
 function secondaryClicked(){
    basePrice = 0;
-   if(!isCheckboxWithIdActive("hamburger") && !isCheckboxWithIdActive("salsiccia")){
+   if(!isPrimarySelected()){
       basePrice = 5;
    }
 
@@ -344,6 +346,14 @@ function secondaryClicked(){
    burgerPrice = basePrice + computeIngredientsPrice();
    getPaninoDivElement().innerHTML = `${burgerPrice} €`;
    updateOrderTotal()
+}
+
+function isPrimarySelected(){
+   return config.ingredients.filter(ig=>ig.type=="Principale")[0].list.map(i=>isCheckboxWithIdActive(i.id)).reduce((acc, curr)=>acc || curr, false)
+}
+
+function isSecondarySelected(){
+   return config.ingredients.filter(ig=>ig.type=="Farcitura")[0].list.map(i=>isCheckboxWithIdActive(i.id)).reduce((acc, curr)=>acc || curr, false)
 }
 
 function computeIngredientsPrice(){
