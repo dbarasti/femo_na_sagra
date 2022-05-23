@@ -53,6 +53,10 @@ router.get("/cassa", (req,res)=>{
 });
 
 router.post("/cassa", (req, res)=>{
+    if(!currentDay){
+        res.render("admin", {day: currentDay, config: config});
+        return
+    }
     let requestBody = req.body;
     let isStaffOrder = Calculator.isStaffOrder(requestBody);
     let isPriorityOrder = Calculator.isPriorityOrder(requestBody);
