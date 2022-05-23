@@ -23,6 +23,11 @@ const config = {
            "id": "salsiccia",
            "name": "Salsiccia",
            "price": "7"
+         },
+         {
+            "id": "vegetariano",
+            "name": "Hamburger vegetariano",
+            "price": "7"
          }
        ]
      },
