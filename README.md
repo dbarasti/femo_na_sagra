@@ -17,6 +17,8 @@ You just need a couple of things:
 
 ### Installation
 
+`cp .env.exaple .end` to create a .env file. Fill the file as appropriate
+
 Now jump into the project folder and run on your terminal
 
 ```
@@ -69,10 +71,6 @@ For more information, please refer to <http://unlicense.org/>
 ## Il nome
 Il nome scelto per questo prodotto software è ispirato a un'espressione veneta che letteralmente significa "facciamo una sagra" ma che si riferisce alle situazioni di festa ed allegria insieme agli amici.
 
-
-
-
-
 # femo_na_sagra
 FemoNaSagra è un'applicazione web per gestire ordini di bevande e panini pensata e sviluppata per sagre ed eventi
 
@@ -90,15 +88,15 @@ qui sopra troverete tutte le istruzioni necessarie.
 
 ### Installazione
 
-Ora aprite il vostro terminale di fiducia e seguite le seguenti istruzioni.
+Ora aprite il vostro terminale di fiducia e seguite le seguenti istruzioni dalla cartella del progetto.
 
-Il primo passo per l'installazione del server che ospiterà la vostra applicazione è
+Prima di tutto, `cp .env.exaple .end` per creare un nuovo file contenente le variabili di ambiente. Riempite il file in maniera appropriata.
+
+Dopodichè, per installare le dipendenze:
 
 ```
 npm install
 ```
-
-Supponendo che vi troviate nella cartella che avete clonato (o scaricato) che contiene il progetto.
 
 Ora che tutte le dipendenze e i moduli sono stati installati possiamo dare il comando che avvierà il server;
 
@@ -147,7 +145,3 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
 For more information, please refer to <http://unlicense.org/>
-
-
-## Il nome
-Il nome scelto per questo prodotto software è ispirato a un'espressione veneta che letteralmente significa "facciamo una sagra" ma che si riferisce alle situazioni di festa ed allegria insieme agli amici.
