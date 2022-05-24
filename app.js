@@ -19,7 +19,7 @@ mongoose.connect( "mongodb://localhost:27017", { //27017
 });
 */
 
-const uri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@test.812tv.mongodb.net/${process.env.MONGODB_NAME}?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@${process.env.MONGODB_CLUSTER}/${process.env.MONGODB_NAME}?retryWrites=true&w=majority`;
 mongoose.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true });
 
 app.set("port", process.env.PORT || 8000);
