@@ -18,7 +18,7 @@ function calculateBurgerPrice(order) {
         }
     }
     if (!order.Principale && order.Farcitura){
-        return 5;
+        basePrice = 5;
     }
     return basePrice + computeIngredientsPrice(order);
 }
