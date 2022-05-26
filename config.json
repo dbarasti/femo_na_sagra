@@ -1,31 +1,88 @@
 {
+  "days":[
+    "2022-05-27", "2022-05-28", "2022-05-29", "2022-06-02", "2022-06-03", "2022-06-04", "2022-06-05"
+  ],
+
   "ingredients":[
     {
       "type": "Principale",
       "list": [
-        "Hamburger",
-        "Salsiccia"
+        {
+          "id": "hamburger",
+          "name": "Hamburger",
+          "price": "7"
+        },
+        {
+          "id": "salsiccia",
+          "name": "Salsiccia",
+          "price": "7"
+        }
+        ,
+         {
+            "id": "vegetariano",
+            "name": "Hamburger vegetariano",
+            "price": "7"
+         }
       ]
     },
     {
       "type": "Farcitura",
       "list": [
-        "Formaggio",
-        "Zucchine",
-        "Peperoni",
-        "Melanzane",
-        "Cipolla",
-        "Insalata",
-        "Pomodoro"
+        {
+          "id": "formaggio",
+          "name": "Formaggio",
+          "price": "0"
+        },
+        {
+          "id": "zucchine",
+          "name": "Zucchine",
+          "price": "0"
+        },
+        {
+          "id": "peperoni",
+          "name": "Peperoni",
+          "price": "0"
+        },
+        {
+          "id": "cipolla",
+          "name": "Cipolla",
+          "price": "0"
+        },
+        {
+          "id": "lattuga",
+          "name": "Lattuga",
+          "price": "0"
+        },
+        {
+          "id": "pomodoro",
+          "name": "Pomodoro",
+          "price": "0"
+        },
+        {
+          "id": "anelli",
+          "name": "Anelli di cipolla",
+          "price": "0.50"
+        }
       ]
     },
     {
       "type": "Salse",
       "list": [
-        "Ketchup",
-        "Senape",
-        "Maionese",
-        "BBQ"
+        {
+          "id": "ketchup",
+          "name": "Ketchup",
+          "price": "0"
+        },
+        {
+          "id": "maionese",
+          "name": "Maionese",
+          "price": "0"
+        },
+        {
+          "id": "bbq",
+          "name": "BBQ",
+          "price": "0"
+        }
       ]
     }
   ],
@@ -33,44 +90,44 @@
     {
       "name": "Cannavacciuolo",
       "ingredients": [
-        "Salsiccia",
-        "Formaggio",
-        "Cipolla",
-        "Peperoni",
-        "Zucchine",
-        "Senape"
+        "hamburger",
+        "formaggio",
+        "cipolla",
+        "anelli",
+        "ketchup",
+        "maionese"
       ],
-      "price": "7"
+      "price": "7.5"
     },
     {
       "name": "Borghese",
       "ingredients": [
-        "Hamburger",
-        "Formaggio",
-        "Peperoni",
-        "Melanzane",
-        "BBQ"
+        "hamburger",
+        "formaggio",
+        "peperoni",
+        "cipolla",
+        "zucchine",
+        "bbq"
       ],
       "price": "7"
     },
     {
-      "name": "Ramsey",
+      "name": "Ramsay",
       "ingredients": [
-        "Hamburger",
+        "hamburger",
         "Double",
-        "Formaggio",
-        "Cipolla",
-        "Insalata",
-        "Pomodoro",
-        "Ketchup",
-        "Maionese"
+        "formaggio",
+        "cipolla",
+        "lattuga",
+        "pomodoro",
+        "ketchup"
       ],
       "price": "9"
     },
     {
       "name": "Baby",
       "ingredients": [
-        "Hamburger"
+        "hamburger"
       ],
       "price": "5"
     }
@@ -80,12 +137,12 @@
       "type": "Birra Artigianale",
       "list": [
         {
-          "name": "Notte Bianca alla spina",
-          "price": "3.5"
+          "name": "Rooibos Red Spina",
+          "price": "4"
         },
         {
-          "name": "Rossa Intigante alla spina",
-          "price": "3.5"
+          "name": "Hooper IPA Spina",
+          "price": "4"
         }
       ]
     },
@@ -93,7 +150,7 @@
       "type": "Birra Normale",
       "list": [
         {
-          "name": "Bionda Forst alla spina",
+          "name": "Bionda Forst Spina",
           "price": "3"
         }
       ]
@@ -102,8 +159,12 @@
       "type": "Bevande analcoliche",
       "list": [
         {
-          "name": "CocaCola",
-          "price": "2.5"
+          "name": "CocaCola in lattina",
+          "price": "1.5"
+        },
+        {
+          "name": "Fanta in lattina",
+          "price": "1.5"
         },
         {
           "name": "Acqua Naturale",
@@ -119,16 +180,16 @@
       "type": "Vetro",
       "list": [
         {
-          "name": "New England Bottiglia",
-          "price": "5"
+          "name": "Percy Blonde Ale Bottiglia",
+          "price": "4"
         },
         {
-          "name": "Notte Bianca Bottiglia",
-          "price": "5"
+          "name": "Rooibos Red Ale Bottiglia",
+          "price": "4.5"
         },
         {
-          "name": "Rossa Intrigante Bottiglia",
-          "price": "5"
+          "name": "Hooper IPA Bottiglia",
+          "price": "4.5"
         }
       ]
     }
@@ -139,7 +200,11 @@
       "list": [
         {
           "name": "Patatine fritte",
-          "price": "2.5"
+          "price": "3"
+        },
+        {
+           "name": "Anelli Cipolla",
+           "price": "3"
         }
       ]
     }

@@ -1,0 +1,17 @@
+<% include _header %>
+<h1><small class="text-muted">Blocco ingredienti</small></h1>
+<div class="row">
+  <div class="col-sm">
+      <%ingredients.forEach((ingredient)=>{%>
+        <%=ingredient.name%> 
+        <%if(ingredient.available == false){%>
+          <a href='/ingredient/<%= ingredient.id %>/unlock'><span class="label label-danger">non disponibile</span></a>
+        <%} else {%>
+          <a href='/ingredient/<%= ingredient.id %>/lock'><span class="label label-success">disponibile</span></a>
+        <%}%>
+        <br/>
+      <%})%>
+  </div>
+</div>
+
+<% include _footer %>

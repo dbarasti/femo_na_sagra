@@ -24,23 +24,23 @@
 
         <div class="panel-heading">
           <div class="pull-right">
-            <a href='/bar/<%= order.uid %>/remove' class="btn-sm btn-raised btn-danger">
-              COMPLETATO
+            <a href='/bar/<%= order.uid %>/remove' class="btn btn-raised btn-danger">
+              <span class="glyphicon glyphicon-send" aria-hidden="true"></span>  CONSEGNATO
             </a>
           </div>
 
           <div class="ora_ordinazione">
             <p>
-              ORA ORDINAZIONE:
+              ordinato alle
               <%=moment(order.createdAt).format('HH:mm')%>
             </p>
           </div>
           <div class="numero-ordine">
             <p>
-              NUMERO ORDINE
+              ORDINE
               <% if(order.actualOrder.takeaway) { %>
                 <span class="asporto">
-                PER ASPORTO
+                ASPORTO
               </span>
               <% } %>
               :
@@ -50,7 +50,7 @@
           <div class="text priorità">
             <p>
               <% if (order.priority) { %>
-                ORDINE CON PRIORITÀ
+                PRIORITÀ
                 <span class="staff">
                   <% if (order.staff === true) { %>
                     PER STAFF
@@ -64,7 +64,11 @@
           <%let i = 0%>
           <%order.actualOrder.beveragesQuantities.forEach(beverageQuantity=>{%>
           <%if (beverageQuantity != ''){%>
-            <%=beverageQuantity%>x
+            <% if (i != 0){ %>
+              <br><%=beverageQuantity%>x
+            <%}else{%>
+              <%=beverageQuantity%>x
+            <%}%>
             <span class="bevanda-bar">
               <%if (Array.isArray(order.actualOrder.beverages)){ %>
                 <%=JSON.parse(order.actualOrder.beverages[i]).name%>
@@ -78,8 +82,7 @@
         </div>
       </div>
     </div>
-    <% }) %>
-  </div>
+  <% }) %>
 </div>
 <% include _footer %>
 <meta http-equiv="refresh" content="15">

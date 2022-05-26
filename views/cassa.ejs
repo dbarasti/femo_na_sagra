@@ -5,14 +5,24 @@
 </div>
 
 <ul class="list-group">
-    <li class="list-group-item">
-        <span class="badge"><%= burgerStats.total %>€</span>
-        Totale parziale giorno <%= burgerStats.day %> PANINI
-    </li>
+    <%if(burgerStats){%>
+        <li class="list-group-item">
+            <span class="badge"><%= burgerStats.total %>€</span>
+            Totale parziale giorno <%= burgerStats.day.toLocaleDateString('it-IT') %> PANINI
+        </li>
+    <%}%>
+    <%if(beveragesStats){%>
     <li class="list-group-item">
         <span class="badge"><%= beveragesStats.total %>€</span>
-        Totale parziale giorno <%= beveragesStats.day %> BEVANDE
+        Totale parziale giorno <%= beveragesStats.day.toLocaleDateString('it-IT') %> BEVANDE
     </li>
+    <%}%>
+    <%if(extrasStats){%>
+    <li class="list-group-item">
+        <span class="badge"><%= extrasStats.total %>€</span>
+        Totale parziale giorno <%= extrasStats.day.toLocaleDateString('it-IT') %> EXTRA
+    </li>
+    <%}%>
 </ul>
 <form method="post" role="form">
     <div class="panel panel-default">
@@ -30,12 +40,26 @@
             </div>
             <div class="checkbox">
                 <label>
-                    <input name="priority" id="priority" type="checkbox" value="priority">Priorità (per ordini STAFF inserire 0 (zero) in numero ordine e selezionare questa casella)</label>
+                    <input name="priority" id="priority" type="checkbox" value="priority">Ordine con Priorità</label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input name="staff" id="staff" type="checkbox" value="staff">Ordine Staff</label>
             </div>
             <div class="checkbox">
                 <label>
                     <input name="takeaway" type="checkbox" value="Take-Away"> Asporto </label>
             </div>
+        </div>
+    </div>
+    <div class="alert alert-danger" id="danger-alert">
+        <button type="button" class="close" data-dismiss="alert">x</button>
+        <strong>Attenzione</strong>
+        Uno o più ingredienti del panino selezionato non sono disponibili
+    </div>     
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>PANINO</h3>
         </div>
         <div class="panel-heading">
             <fieldset>
@@ -48,62 +72,69 @@
                 </div>
             </fieldset>
         </div>
-    </div>
-    <div class="row">
-        <%config.ingredients.forEach((ingredientType)=>{%>
-        <div class="col-md-4">
+        <div class="panel-body">
+            <div class="row">
+                <%config.ingredients.forEach((ingredientType)=>{%>
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <%=ingredientType.type%>
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <fieldset>
+                                <div class="checkbox">
+                                    <% ingredientType.list.forEach((ingredient)=>{ %>
+                                    <label>
+                                        <%if(ingredientType.type == "Principale"){%>
+                                            <input <%if(lockedIngredientsIDs.includes(ingredient.id)){%> disabled="disabled" <%}%> name="<%=ingredientType.type%>" id="<%=ingredient.id%>" type="radio" onclick="primaryClicked()" value="<%=ingredient.name%>">
+                                        <%} if(ingredientType.type == "Farcitura"){%>
+                                            <input <%if(lockedIngredientsIDs.includes(ingredient.id)){%> disabled="disabled" <%}%> name="<%=ingredientType.type%>" id="<%=ingredient.id%>" type="checkbox" onclick="secondaryClicked()" value="<%=ingredient.name%>">
+                                        <%} if(ingredientType.type == "Salse"){%>
+                                            <input <%if(lockedIngredientsIDs.includes(ingredient.id)){%> disabled="disabled" <%}%> name="<%=ingredientType.type%>" id="<%=ingredient.id%>" type="checkbox" value="<%=ingredient.name%>">
+                                        <%}%>
+                                        <%=ingredient.name%>
+                                    </label>
+                                    <%})%>
+                                </div>
+                                <%if(ingredientType.type == "Principale"){%>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input name="double" id="Double" type="checkbox" value="Double" onclick="doubleClicked()"> Double</label>
+                                    </div>
+                                <%}%>
+        
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <%})%>
+            </div>
+
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        <%=ingredientType.type%>
+                        Conto Panino
                     </h3>
                 </div>
                 <div class="panel-body">
-                    <fieldset>
-                        <div class="checkbox">
-                            <% ingredientType.list.forEach((ingredient)=>{ %>
-                            <label>
-                                <%if(ingredientType.type == "Principale"){%>
-                                <input name="<%=ingredientType.type%>" id="<%=ingredient%>" type="radio" onclick="primaryClicked()" value="<%=ingredient%>">
-                                <%}else{%>
-                                <input name="<%=ingredientType.type%>" id="<%=ingredient%>" type="checkbox" onclick="secondaryClicked()" value="<%=ingredient%>">
-                                <%}%>
-                                <%=ingredient%>
-                            </label>
-                            <%})%>
-                        </div>
-                        <%if(ingredientType.type == "Principale"){%>
-                            <div class="checkbox">
-                                <label>
-                                    <input name="double" id="Double" type="checkbox" value="Double" onclick="doubleClicked()"> Double</label>
-                            </div>
-                        <%}%>
-
-                    </fieldset>
+                    <div id="prezzoPanino">
+                        0 €
+                    </div>
                 </div>
             </div>
         </div>
-        <%})%>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3>
-                Conto Panino
-            </h3>
-        </div>
-        <div class="panel-body">
-            <div id="prezzoPanino">
-                0 €
-            </div>
-        </div>
-    </div>
+    
+    
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3>BEVANDE</h3>
         </div>
         <div class="panel-body">
             <%config.beverages.forEach((beverageType)=>{%>
-            <div class="panel panel-default">
+            <div class="panel panel-default ">
                 <div class="panel-heading">
                     <%=beverageType.type%>
                 </div>
@@ -182,7 +213,7 @@
         </div>
     </div>
     <center>
-        <input type="submit" value="Invia ordine" class="btn btn-primary">
+        <input type="submit" value="Invia ordine" class="btn btn-primary send-order" accesskey="enter">
         <div class="text pull-right">
             <a href="/cassa/" class="btn btn-raised btn-danger"> Annulla ordine </a>
         </div>

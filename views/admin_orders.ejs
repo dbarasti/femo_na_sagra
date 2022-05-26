@@ -9,6 +9,7 @@
     </button>
     <ul class="dropdown-menu">
         <li><a href="/admin/drinks/<%= day %>">Bevande</a></li>
+        <li><a href="/admin/extras/<%= day %>">Extra</a></li>
     </ul>
     </span>
     </span>
@@ -31,6 +32,7 @@
         <%=moment(order.createdAt).format('MM/DD/YYYY HH:mm:ss')%>
       </div>
       <br/>
+      <br/>
       <div class="text pull-right">
         PREZZO:
         <%= order.prezzo %>€
@@ -43,6 +45,9 @@
         <% if (order.priority) { %>
           ORDINE CON PRIORITÀ
         <% } %>
+      </div>
+      <div class="ora_ordinazione">
+        <%=order.actualOrder.orderNote.toUpperCase()%>
       </div>
     </div>
     <div class="panel-body ingredienti">

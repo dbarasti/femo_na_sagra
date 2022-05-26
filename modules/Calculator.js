@@ -1,24 +1,38 @@
 let fs = require('fs');
 let config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 
+
 function calculateBurgerPrice(order) {
+    basePrice = 0
+    
     if(!order.Principale && !order.Farcitura && !order.Salse){
             return 0;
     }
 
     if (order.Principale && order.double){
-        return 9;
+        basePrice = 2;
     }
     if (order.Principale && !order.double){
-        if (order.Farcitura) {
-                return 7;
-        }
-        else {
+        if (!order.Farcitura) {
                 return 5;
         }
-    }else{
-        return 5
     }
+    if (!order.Principale && order.Farcitura){
+        basePrice = 5;
+    }
+    return basePrice + computeIngredientsPrice(order);
+}
+
+function computeIngredientsPrice(order) {
+    let price = 0;
+    config.ingredients.forEach((ingredientType)=>{
+        ingredientType.list.forEach((ingredient)=>{
+            if((order.Principale && order.Principale === ingredient.name) || (order.Farcitura && order.Farcitura.includes(ingredient.name)) || (order.Salse && order.Salse.includes(ingredient.name))){ 
+                price += parseFloat(ingredient.price);
+            }
+        })
+    });
+    return price;
 }
 
 function calculateBeveragesPrice(order) {
@@ -67,7 +81,7 @@ function calculateExtrasPrice(order) {
 
 
 function isStaffOrder(order){
-	return !!(order.id == 0 && order.priority);
+	return order.staff != undefined;
 }
 
 function isPriorityOrder(order){

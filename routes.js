@@ -8,23 +8,20 @@ let BurgerStats = require("./models/burger_stats");
 let BeveragesStats = require("./models/beverages_stats");
 let BeveragesOrder = require("./models/beverages_order");
 let ExtraOrder = require("./models/extra_order");
-
+let ExtrasStats = require("./models/extras_stats");
+let Ingredient = require("./models/ingredient");
 
 let Calculator = require("./modules/Calculator");
 
 let config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
-let returnToCassa = false;
-let currentDay = 0;
+loadConfiguration()
+let currentDay = undefined;
 let ordiniCompletatiPanini = [];
 let ordiniCompletatiBevande = [];
 let ordiniCompletatiExtra = [];
 
 
 router.use((req, res, next)=>{
-    res.locals.currentUser = req.Ordine;
-    res.locals.currentIncasso = req.incasso;
-    res.locals.currentBevande = req.Bevande;
-    res.locals.currentBar = req.Bar;
     res.locals.errors = req.flash("error");
     res.locals.infos = req.flash("info");
     next();
@@ -35,24 +32,26 @@ router.get("/", (req,res)=>{
 });
 
 router.get("/cassa", (req,res)=>{
-    if(currentDay === 0){
-        returnToCassa = true;
-        res.render("admin", {day: currentDay});
+    if(!currentDay){
+        res.render("admin", {day: currentDay, config: config});
     }
     else{
-        BurgerOrder.find({day: currentDay})
+        BurgerOrder.findOne({day: currentDay})
             .sort({ createdAt: "descending" })
-            .exec((err, burgerOrders)=>{
+            .exec((err, burgerOrder)=>{
                 BurgerStats.findOne({day: currentDay})
                     .then(burgerStats=>{
                         BeveragesStats.findOne({day: currentDay})
                             .then(beveragesStats=>{
-                                if(burgerOrders.length > 0){
-                                    res.render("cassa", { burgerStats: burgerStats, beveragesStats: beveragesStats, lastOrderID: burgerOrders[0].actualOrder.id, config: config });
-                                }
-                                else{
-                                    res.render("cassa", { burgerStats: burgerStats, beveragesStats: beveragesStats, lastOrderID: -1, config: config });
-                                }
+                                ExtrasStats.findOne({day: currentDay})
+                                .then(extrasStats=>{
+                                    Ingredient.find({available: false}, 'id')
+                                    .then(lockedIngredients => {
+                                        lockedIngredients = lockedIngredients.map(ingredient=>ingredient.id)
+                                        lastID =  burgerOrder ? burgerOrder.actualOrder.id : 0;
+                                        res.render("cassa", { burgerStats: burgerStats, beveragesStats: beveragesStats, extrasStats: extrasStats, lastOrderID: lastID, config: config, lockedIngredientsIDs: lockedIngredients });
+                                    })
+                                })
                             })
                     });
             });
@@ -60,24 +59,22 @@ router.get("/cassa", (req,res)=>{
 });
 
 router.post("/cassa", (req, res)=>{
+    if(!currentDay){
+        res.render("admin", {day: currentDay, config: config});
+        return
+    }
     let requestBody = req.body;
-    console.log(requestBody);
     let isStaffOrder = Calculator.isStaffOrder(requestBody);
     let isPriorityOrder = Calculator.isPriorityOrder(requestBody);
     let burgerPrice = Calculator.calculateBurgerPrice(requestBody);
     let beveragesPrice = Calculator.calculateBeveragesPrice(requestBody);
     let extrasPrice = Calculator.calculateExtrasPrice(requestBody);
-    console.log(extrasPrice);
-    //console.log(`Prezzo panino: ${burgerPrice}`);
-    //console.log(`Prezzo bevande: ${beveragesPrice}`);
 
     if (burgerPrice != 0){
         let newBurgerOrder = new BurgerOrder({
             uid: yeast(),
             day: currentDay,
             prezzo: burgerPrice,
-            createdAt: moment(),
-            visibility: true,
             actualOrder: requestBody,
             priority: isPriorityOrder,
             staff: isStaffOrder
@@ -91,8 +88,6 @@ router.post("/cassa", (req, res)=>{
             uid: yeast(),
             day: currentDay,
             prezzo: beveragesPrice,
-            createdAt: moment(),
-            visibility: true,
             actualOrder: requestBody,
             priority: isPriorityOrder,
             staff: isStaffOrder
@@ -106,36 +101,46 @@ router.post("/cassa", (req, res)=>{
             uid: yeast(),
             day: currentDay,
             prezzo: extrasPrice,
-            createdAt: moment(),
-            visibility: true,
             actualOrder: requestBody,
             priority: isPriorityOrder,
             staff: isStaffOrder
         });
         newExtrasOrder.save();
+        updateExtrasStats(newExtrasOrder);
     }
 
     res.redirect("/cassa");
 });
 
 router.get("/orders", (req, res, next)=>{
-    if(currentDay === 0){
-        res.render("admin", {day: currentDay});
+    if(!currentDay){
+        res.render("admin", {day: currentDay, config: config});
+    } else{
+        BurgerOrder.find({day: currentDay, visibility: true})
+        .sort({ priority: "descending", createdAt: "ascending" })
+        .exec((err, burgerOrders)=>{
+            if(err){return next(err); }
+            res.render("cucina", {orders: burgerOrders,  moment: moment});
+        });
     }
-    BurgerOrder.find({day: currentDay, visibility: true})
-    .sort({ priority: "descending", createdAt: "ascending" })
-    .exec((err, burgerOrders)=>{
-        if(err){return next(err); }
-        res.render("cucina", {orders: burgerOrders,  moment: moment});
-    });
+});
+
+router.get("/orders/:uid/completed", (req, res)=> {
+    BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
+    burgerOrder.completed = true;
+    burgerOrder.completedAt = new moment();
+    burgerOrder.save();
+    setTimeout(()=>{res.redirect("/orders");}, 300);
+    }); 
 });
 
 router.get("/orders/:uid/remove", (req, res)=> {
     BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
     burgerOrder.visibility = false;
+    burgerOrder.completed = false;
     burgerOrder.save();
     ordiniCompletatiPanini.push(burgerOrder.uid);
-    res.redirect("/orders");
+    setTimeout(()=>{res.redirect("/orders");}, 300);
     }); 
 });
 
@@ -147,29 +152,75 @@ router.get("/orders/undo", (req, res)=>{
             burgerOrder.save();
         })
     }
-    //res.redirect("/orders");
     setTimeout(()=>{res.redirect("/orders");}, 300);
+});
+
+router.get("/ingredients", (req, res, next)=>{
+    Ingredient.find()
+    .sort({ name: "ascending"})
+    .exec((err, ingredients)=>{
+        res.render("lock_ingredients", {ingredients: ingredients});
+    })
+});
+
+router.get("/ingredient/:id/lock", (req, res, next)=>{
+    Ingredient.updateOne({id: req.params.id}, {available: false}, (err, docs) => {
+        if (err){
+            console.log(err)
+        }
+    })
+    setTimeout(()=>{res.redirect("/ingredients");}, 300);
+});
+
+router.get("/ingredient/:id/unlock", (req, res, next)=>{
+    Ingredient.updateOne({id: req.params.id}, {available: true}, (err, docs) => {
+        if (err){
+            console.log(err)
+        }
+    })
+    setTimeout(()=>{res.redirect("/ingredients");}, 300);
+});
+    
+// gestione status page
+router.get("/status", (_, res)=> {
+    if(!currentDay){
+        res.render("admin", {day: currentDay, config: config});
+    } else{
+        BurgerOrder.find({day: currentDay, visibility: true, completed: true})
+        .sort({ priority: "descending", createdAt: "ascending" })
+        .exec((err, burgerOrders)=>{
+            if(err){return next(err); }
+            ExtraOrder.find({day: currentDay, visibility: true, completed: true})
+            .sort({ priority: "descending", createdAt: "ascending" })
+            .exec((err, extraOrders)=>{
+                if(err){return next(err); }
+                res.render("status_page", {burgers: burgerOrders, extras: extraOrders, moment: moment});
+            });
+        });
+    }
 });
 
 //GESIONE BAR
 router.get("/bar", (req, res, next)=>{
-    if(currentDay === 0){
-        res.render("admin", {day: currentDay});
+    if(!currentDay){
+        res.render("admin", {day: currentDay, config: config});
+    } else {
+        BeveragesOrder.find({day: currentDay, visibility: true})
+        .sort({ priority: "descending", createdAt: "ascending" })
+        .exec((err, barOrders)=>{
+            if(err){return next(err); }
+            res.render("bar", {orders: barOrders,  moment: moment});
+        });
     }
-    BeveragesOrder.find({day: currentDay, visibility: true})
-    .sort({ priority: "descending", createdAt: "ascending" })
-    .exec((err, barOrders)=>{
-        if(err){return next(err); }
-        res.render("bar", {orders: barOrders,  moment: moment});
-    });
 });
 
 router.get("/bar/:uid/remove", (req, res)=> {
     BeveragesOrder.findOne({ uid: req.params.uid }, (err, beveragesOrder)=>{
-    beveragesOrder.visibility = false;
-    beveragesOrder.save();
-    ordiniCompletatiBevande.push(beveragesOrder.uid);
-    res.redirect("/bar");
+        beveragesOrder.visibility = false;
+        beveragesOrder.completedAt = moment();
+        beveragesOrder.save();
+        ordiniCompletatiBevande.push(beveragesOrder.uid);
+        res.redirect("/bar");
     }); 
 });
 
@@ -181,30 +232,41 @@ router.get("/bar/undo", (req, res)=>{
             beveragesOrder.save();
         })
     }
-    //res.redirect("/orders");
     setTimeout(()=>{res.redirect("/bar");}, 300);
 });
 
 
-//gestione patatine
+//gestione fritti
 router.get("/extra", (req, res, next)=>{
-    if(currentDay === 0){
-        res.render("admin", {day: currentDay});
+    if(!currentDay){
+        res.render("admin", {day: currentDay, config: config});
+    } else {
+        ExtraOrder.find({day: currentDay, visibility: true})
+            .sort({ priority: "descending", createdAt: "ascending" })
+            .exec((err, extraOrders)=>{
+                if(err){return next(err); }
+                res.render("extra", {orders: extraOrders,  moment: moment});
+            });
     }
-    ExtraOrder.find({day: currentDay, visibility: true})
-        .sort({ priority: "descending", createdAt: "ascending" })
-        .exec((err, extraOrders)=>{
-            if(err){return next(err); }
-            res.render("extra", {orders: extraOrders,  moment: moment});
-        });
+});
+
+router.get("/extra/:uid/completed", (req, res)=> {
+    ExtraOrder.findOne({ uid: req.params.uid }, (err, extraOrder)=>{
+        extraOrder.completed = true;
+        extraOrder.completedAt = new moment();
+        extraOrder.save();
+        ordiniCompletatiExtra.push(extraOrder.uid);
+        setTimeout(()=>{res.redirect("/extra");}, 300);
+    });
 });
 
 router.get("/extra/:uid/remove", (req, res)=> {
     ExtraOrder.findOne({ uid: req.params.uid }, (err, extraOrder)=>{
         extraOrder.visibility = false;
+        extraOrder.completed = false;
         extraOrder.save();
         ordiniCompletatiExtra.push(extraOrder.uid);
-        res.redirect("/extra");
+        setTimeout(()=>{res.redirect("/extra");}, 300);
     });
 });
 
@@ -220,22 +282,19 @@ router.get("/extra/undo", (req, res)=>{
 });
 
 
-
-
-
-
 router.get("/admin", (req, res, next)=>{
     BurgerStats.findOne({day: currentDay }, (err, burgerStats)=>{
         if(err){return next(err); }
-        res.render("admin", {burgerStats: burgerStats, day: currentDay});
+        res.render("admin", {burgerStats: burgerStats, day: currentDay, config: config});
     });
 });
 
 router.get("/admin/giorno/:giorno", (req, res)=> {
-    if (currentDay !== req.params.giorno) {
-        currentDay = req.params.giorno;
+    if (currentDay != req.params.giorno) {
+        currentDay = new Date(req.params.giorno).toISOString();
         ordiniCompletatiPanini = [];
         ordiniCompletatiBevande = [];
+        ordiniCompletatiExtra = [];
     }
 
     BeveragesStats.findOne({day: currentDay}, (err, doc) => {
@@ -254,15 +313,18 @@ router.get("/admin/giorno/:giorno", (req, res)=> {
             });
             newBurgerStats.save();
         }
-
     });
-    if(returnToCassa === true){
-        returnToCassa = false;
-        res.redirect("/cassa");
-    }
-    else {
-        setTimeout(()=>{res.redirect("/admin");}, 400);
-    }
+
+    ExtrasStats.findOne({day: currentDay}, (err, doc) => {
+        if (!doc) {
+            let newExtrasStats = new ExtrasStats({
+                day: currentDay
+            });
+            newExtrasStats.save();
+        }
+    });
+
+    setTimeout(()=>{res.redirect("back");}, 400);
 });
 
 
@@ -296,36 +358,44 @@ router.get("/admin/drinks/:day", (req, res, next)=>{
     });
 });
 
+router.get("/admin/extras/:day", (req, res, next)=>{
+    ExtraOrder.find( { day: req.params.day } )
+    .sort({ createdAt: "descending" })
+    .exec((err, extrasOrders)=>{
+        if(err){return next(err); }
+        res.render("admin_extras", { day: req.params.day, orders: extrasOrders, moment: moment});
+    });
+});
+
 router.get("/admin/report", (req, res, next)=>{
-    if(currentDay === 0){
-        res.redirect('back');
-    }
     BurgerStats.find()
-        .sort({ id: "ascending" })
+        .sort({ day: "ascending" })
         .exec((err, burgerStats)=>{
             if(err){return next(err); }
             BeveragesStats.find()
-                .sort({id: "ascending"})
+                .sort({day: "ascending"})
                 .exec((err, beveragesStats)=>{
                     if(err){return next(err)}
-                    res.render("report", {burgerStats: burgerStats, beveragesStats: beveragesStats});
+                    ExtrasStats.find()
+                        .sort({day: "ascending"})
+                        .exec((err, extrasStats)=>{
+                            if(err){return next(err)}
+                            res.render("report", {burgerStats: burgerStats, beveragesStats: beveragesStats, extrasStats: extrasStats});
+                        });
                 })
         });
 });
 
 router.get("/admin/report/carne", (req, res)=>{
-    /*
-    if (currentDay === 0) {res.redirect('back');}
-    BurgerOrder.count({carne: 'Hamburger'}, (err, count_hamburger)=>{
-        BurgerOrder.count({carne: 'Salsiccia'}, (err, count_salsiccia)=>{
-            BurgerOrder.count({}, (err, count_tot)=>{
-                res.render("report_carne", { count_hamburger: count_hamburger, count_salsiccia: count_salsiccia, count_tot: count_tot });
-            });
+    BurgerOrder.aggregate([{
+        $group : {
+            _id:{day:"$day", main:"$actualOrder.Principale"}, 
+            count:{$sum:1}
+        }}])
+        .exec((err, result)=>{
+            res.send(result);
+            // res.render("report_carne", {stats:result});
         });
-    });
-    */
-    res.redirect("/admin");
-
 });
 
 router.get("/orders/:uid/delete", (req, res, next)=>{
@@ -348,6 +418,16 @@ router.get("/drinks/:uid/delete", (req, res, next)=>{
     setTimeout(()=>{res.redirect('back');}, 400);
 });
 
+router.get("/extras/:uid/delete", (req, res, next)=>{
+    ExtraOrder.findOne({ uid: req.params.uid }, (err, extrasOrder)=>{
+        extrasOrder.remove((err)=>{
+        if(err){return next(err); }
+        });
+        updateExtrasStatsAfterRemove(extrasOrder);
+    });
+    setTimeout(()=>{res.redirect('back');}, 400);
+});
+
 router.get("/orders/restore/:uid", (req, res)=>{
     BurgerOrder.findOne({ uid: req.params.uid },  (err, doc)=>{
         doc.visibility = true;
@@ -364,39 +444,49 @@ router.get("/drinks/restore/:uid", (req, res)=>{
     });
 });
 
+router.get("/extras/restore/:uid", (req, res)=>{
+    ExtraOrder.findOne({ uid: req.params.uid }, (err, doc)=>{
+        doc.visibility = true;
+        doc.save();
+        setTimeout(()=>{res.redirect('back');}, 500);
+    });
+});
+
 router.get("/admin/deleteall/:what", (req, res, next)=>{
 
     if(req.params.what === "all" || req.params.what ==="panini"){
-        BurgerOrder.remove((err)=>{
+        BurgerOrder.deleteMany({}, (err)=>{
         if(err){return next(err); }
         });
 
-        BurgerStats.remove((err)=>{
+        BurgerStats.deleteMany({}, (err)=>{
         if(err){return next(err); }
         });
         ordiniCompletatiPanini = [];
 
-
-        /*eliminazione extra*/ //TODO sistemare in sezione a parte
-        ExtraOrder.remove((err)=>{
-            if(err){return next(err)}
-        })
-        ordiniCompletatiExtra = [];
-
     }
 
-    if(req.params.what === "all" || req.params.what ==="beveragesStats"){
-        BeveragesStats.remove((err)=>{
+    if(req.params.what === "all" || req.params.what ==="bevande"){
+        BeveragesStats.deleteMany({}, (err)=>{
         if(err){return next(err); }
         });
 
-        BeveragesOrder.remove((err)=>{
+        BeveragesOrder.deleteMany({}, (err)=>{
         if(err){return next(err); }
         });
         ordiniCompletatiBevande = [];
 
     }
-    currentDay = 0;
+
+    if(req.params.what === "all" || req.params.what ==="extra"){
+        ExtrasStats.deleteMany({}, (err)=>{
+            if(err){return next(err); }
+        });
+        ExtraOrder.deleteMany({}, (err)=>{
+            if(err){return next(err)}
+        })
+        ordiniCompletatiExtra = [];
+    }
     res.render("deletedeverything");
 });
 
@@ -409,8 +499,16 @@ function updateBurgersStats(order){
     if(!order.staff) {
         BurgerStats.findOne({day: order.day})
             .then(stats => {
+                if (!stats) {
+                    let newBurgerStats = new BurgerStats({
+                        day: currentDay,
+                        total: order.prezzo
+                    });
+                    newBurgerStats.save();
+                } else {
                 stats.total += order.prezzo;
                 stats.save();
+                }
             })
     }
 }
@@ -429,8 +527,16 @@ function updateBeveragesStats(order){
     if(!order.staff){
         BeveragesStats.findOne({day: order.day})
             .then(stats=>{
+                if (!stats) {
+                    let newBeveragesStats = new BeveragesStats({
+                        day: currentDay,
+                        total: order.prezzo
+                    });
+                    newBeveragesStats.save();
+                } else {
                 stats.total += order.prezzo;
                 stats.save();
+                }
             })
     }
 }
@@ -443,6 +549,50 @@ function updateBeveragesStatsAfterRemove(order){
                 stats.save();
             })
     }
+}
+
+function updateExtrasStats(order){
+    if(!order.staff){
+        ExtrasStats.findOne({day: order.day})
+            .then(stats=>{
+                if (!stats) {
+                    let newExtrasStats = new ExtrasStats({
+                        day: currentDay,
+                        total: order.prezzo
+                    });
+                    newExtrasStats.save();
+                } else {
+                stats.total += order.prezzo;
+                stats.save();
+                }
+            })
+    }
+}
+
+function updateExtrasStatsAfterRemove(order){
+    if(!order.staff) {
+        ExtrasStats.findOne({day: order.day})
+            .then(stats => {
+                stats.total -= order.prezzo;
+                stats.save();
+            })
+    }
+}
+
+function loadConfiguration(){
+    loadIngredientsToDB();
+}
+
+function loadIngredientsToDB(){
+    config.ingredients.forEach(ingredientType => {
+        ingredientType.list.forEach(ingredient => {
+            Ingredient.findOneAndUpdate({id:ingredient.id}, {
+                type: ingredientType.type,
+                name: ingredient.name,
+                price: ingredient.price
+            })
+        })
+    });
 }
 
 module.exports = router;
