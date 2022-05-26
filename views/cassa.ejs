@@ -52,6 +52,11 @@
             </div>
         </div>
     </div>
+    <div class="alert alert-danger" id="danger-alert">
+        <button type="button" class="close" data-dismiss="alert">x</button>
+        <strong>Attenzione</strong>
+        Uno o più ingredienti del panino selezionato non sono disponibili
+    </div>     
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3>PANINO</h3>
@@ -83,11 +88,11 @@
                                     <% ingredientType.list.forEach((ingredient)=>{ %>
                                     <label>
                                         <%if(ingredientType.type == "Principale"){%>
-                                            <input name="<%=ingredientType.type%>" id="<%=ingredient.id%>" type="radio" onclick="primaryClicked()" value="<%=ingredient.name%>">
+                                            <input <%if(lockedIngredientsIDs.includes(ingredient.id)){%> disabled="disabled" <%}%> name="<%=ingredientType.type%>" id="<%=ingredient.id%>" type="radio" onclick="primaryClicked()" value="<%=ingredient.name%>">
                                         <%} if(ingredientType.type == "Farcitura"){%>
-                                            <input name="<%=ingredientType.type%>" id="<%=ingredient.id%>" type="checkbox" onclick="secondaryClicked()" value="<%=ingredient.name%>">
+                                            <input <%if(lockedIngredientsIDs.includes(ingredient.id)){%> disabled="disabled" <%}%> name="<%=ingredientType.type%>" id="<%=ingredient.id%>" type="checkbox" onclick="secondaryClicked()" value="<%=ingredient.name%>">
                                         <%} if(ingredientType.type == "Salse"){%>
-                                            <input name="<%=ingredientType.type%>" id="<%=ingredient.id%>" type="checkbox" value="<%=ingredient.name%>">
+                                            <input <%if(lockedIngredientsIDs.includes(ingredient.id)){%> disabled="disabled" <%}%> name="<%=ingredientType.type%>" id="<%=ingredient.id%>" type="checkbox" value="<%=ingredient.name%>">
                                         <%}%>
                                         <%=ingredient.name%>
                                     </label>
@@ -129,7 +134,7 @@
         </div>
         <div class="panel-body">
             <%config.beverages.forEach((beverageType)=>{%>
-            <div class="panel panel-default">
+            <div class="panel panel-default ">
                 <div class="panel-heading">
                     <%=beverageType.type%>
                 </div>

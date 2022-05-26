@@ -217,7 +217,9 @@ const config = {
    ]
  };
 
-
+$(document).ready(function() {
+    $("#danger-alert").hide();
+});
 
 function clearAllIngredients() {
    setBurgerTotalDivHTML(0);
@@ -265,6 +267,10 @@ function isCheckboxWithIdActive(id){
    return document.getElementById(id).checked === true;
 }
 
+function isElementWithIdDisabled(id){
+   return document.getElementById(id).disabled === true;
+}
+
 function setBurgerTotalDivHTML(value) {
    getPaninoDivElement().innerHTML = value + " €";
 }
@@ -288,7 +294,16 @@ function defaultBurgerChecked(defaultBurger) {
    clearDefaultBurgersExcept(defaultBurger.name);
    setBurgerTotalDivHTML(defaultBurger.price);
    defaultBurger.ingredients.forEach((ingredient)=>{
-      checkBoxWithId(ingredient);
+      if (!isElementWithIdDisabled(ingredient)){
+         checkBoxWithId(ingredient);
+      } else {
+        $("#danger-alert").fadeTo(2000, 500).slideUp(1500, function() {
+            $("#danger-alert").slideUp(500);
+        });
+        clearAllIngredients();
+        uncheckBoxWithId(defaultBurger.name);
+        exit;
+      }
    });
    updateOrderTotal();
 }

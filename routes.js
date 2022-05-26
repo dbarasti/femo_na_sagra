@@ -9,10 +9,12 @@ let BeveragesStats = require("./models/beverages_stats");
 let BeveragesOrder = require("./models/beverages_order");
 let ExtraOrder = require("./models/extra_order");
 let ExtrasStats = require("./models/extras_stats");
+let Ingredient = require("./models/ingredient");
 
 let Calculator = require("./modules/Calculator");
 
 let config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+loadConfiguration()
 let currentDay = undefined;
 let ordiniCompletatiPanini = [];
 let ordiniCompletatiBevande = [];
@@ -43,8 +45,12 @@ router.get("/cassa", (req,res)=>{
                             .then(beveragesStats=>{
                                 ExtrasStats.findOne({day: currentDay})
                                 .then(extrasStats=>{
-                                    lastID =  burgerOrder ? burgerOrder.actualOrder.id : 0;
-                                    res.render("cassa", { burgerStats: burgerStats, beveragesStats: beveragesStats, extrasStats: extrasStats, lastOrderID: lastID, config: config });
+                                    Ingredient.find({available: false}, 'id')
+                                    .then(lockedIngredients => {
+                                        lockedIngredients = lockedIngredients.map(ingredient=>ingredient.id)
+                                        lastID =  burgerOrder ? burgerOrder.actualOrder.id : 0;
+                                        res.render("cassa", { burgerStats: burgerStats, beveragesStats: beveragesStats, extrasStats: extrasStats, lastOrderID: lastID, config: config, lockedIngredientsIDs: lockedIngredients });
+                                    })
                                 })
                             })
                     });
@@ -147,6 +153,32 @@ router.get("/orders/undo", (req, res)=>{
         })
     }
     setTimeout(()=>{res.redirect("/orders");}, 300);
+});
+
+router.get("/ingredients", (req, res, next)=>{
+    Ingredient.find()
+    .sort({ name: "ascending"})
+    .exec((err, ingredients)=>{
+        res.render("lock_ingredients", {ingredients: ingredients});
+    })
+});
+
+router.get("/ingredient/:id/lock", (req, res, next)=>{
+    Ingredient.updateOne({id: req.params.id}, {available: false}, (err, docs) => {
+        if (err){
+            console.log(err)
+        }
+    })
+    setTimeout(()=>{res.redirect("/ingredients");}, 300);
+});
+
+router.get("/ingredient/:id/unlock", (req, res, next)=>{
+    Ingredient.updateOne({id: req.params.id}, {available: true}, (err, docs) => {
+        if (err){
+            console.log(err)
+        }
+    })
+    setTimeout(()=>{res.redirect("/ingredients");}, 300);
 });
     
 // gestione status page
@@ -546,4 +578,21 @@ function updateExtrasStatsAfterRemove(order){
             })
     }
 }
+
+function loadConfiguration(){
+    loadIngredientsToDB();
+}
+
+function loadIngredientsToDB(){
+    config.ingredients.forEach(ingredientType => {
+        ingredientType.list.forEach(ingredient => {
+            Ingredient.findOneAndUpdate({id:ingredient.id}, {
+                type: ingredientType.type,
+                name: ingredient.name,
+                price: ingredient.price
+            })
+        })
+    });
+}
+
 module.exports = router;
