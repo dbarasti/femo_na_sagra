@@ -34,8 +34,20 @@ summary {
 }
 
 .order-status {
-  font-size: 100px;
+  font-size: 130px;
   color: #262829;
+}
+
+#delivery-order {
+  margin:0;
+}
+
+#delivery-order > .panel-heading{
+  padding:0;
+}
+
+.order-status > p {
+  margin: 0;
 }
 
 .beverage-quantity{
