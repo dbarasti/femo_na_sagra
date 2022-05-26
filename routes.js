@@ -16,9 +16,12 @@ let Calculator = require("./modules/Calculator");
 let config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 loadConfiguration()
 let currentDay = undefined;
-let ordiniCompletatiPanini = [];
-let ordiniCompletatiBevande = [];
-let ordiniCompletatiExtra = [];
+let deliveredBurgerOrders = [];
+let compeltedBurgerOrders = [];
+let deliveredBeverageOrder = [];
+let completedBurgerOrders = [];
+let deliveredExtraOrders = [];
+let completedExtraOrders = [];
 
 
 router.use((req, res, next)=>{
@@ -116,7 +119,7 @@ router.get("/orders", (req, res, next)=>{
     if(!currentDay){
         res.render("admin", {day: currentDay, config: config});
     } else{
-        BurgerOrder.find({day: currentDay, visibility: true})
+        BurgerOrder.find({day: currentDay, visibility: true, completed: false})
         .sort({ priority: "descending", createdAt: "ascending" })
         .exec((err, burgerOrders)=>{
             if(err){return next(err); }
@@ -125,35 +128,63 @@ router.get("/orders", (req, res, next)=>{
     }
 });
 
+router.get("/deliveries", (req, res, next)=>{
+    if(!currentDay){
+        res.render("admin", {day: currentDay, config: config});
+    } else{
+        BurgerOrder.find({day: currentDay, visibility: true, completed: true})
+        .sort({ priority: "descending", createdAt: "ascending" })
+        .exec((err, burgerOrders)=>{
+            if(err){return next(err); }
+            res.render("deliveries", {orders: burgerOrders,  moment: moment});
+        });
+    }
+});
+
 router.get("/orders/:uid/completed", (req, res)=> {
     BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
-    burgerOrder.completed = true;
-    burgerOrder.completedAt = new moment();
-    burgerOrder.save();
-    setTimeout(()=>{res.redirect("/orders");}, 300);
+        burgerOrder.completed = true;
+        burgerOrder.completedAt = new moment();
+        burgerOrder.save();
+        completedBurgerOrders.push(burgerOrder.uid);
+        setTimeout(()=>{res.redirect("/orders");}, 300);
     }); 
 });
 
 router.get("/orders/:uid/remove", (req, res)=> {
     BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
-    burgerOrder.visibility = false;
-    burgerOrder.completed = false;
-    burgerOrder.save();
-    ordiniCompletatiPanini.push(burgerOrder.uid);
-    setTimeout(()=>{res.redirect("/orders");}, 300);
+        burgerOrder.visibility = false;
+        burgerOrder.save();
+        deliveredBurgerOrders.push(burgerOrder.uid);
+        completedBurgerOrders = completedBurgerOrders.filter(order=>order != burgerOrder.uid);
+        setTimeout(()=>{res.redirect("/deliveries");}, 300);
     }); 
 });
 
 router.get("/orders/undo", (req, res)=>{
-    if(ordiniCompletatiPanini.length !== 0){
-        let uidOfOrderToUndo = ordiniCompletatiPanini.pop();
+    console.log(completedBurgerOrders)
+    if(completedBurgerOrders.length !== 0){
+        let uidOfOrderToUndo = completedBurgerOrders.pop();
         BurgerOrder.findOne({ uid: uidOfOrderToUndo }, (err, burgerOrder)=>{
-            burgerOrder.visibility = true;
+            burgerOrder.completed = false;
             burgerOrder.save();
         })
     }
     setTimeout(()=>{res.redirect("/orders");}, 300);
 });
+
+router.get("/deliveries/undo", (req, res)=>{
+    if(deliveredBurgerOrders.length !== 0){
+        let uidOfOrderToUndo = deliveredBurgerOrders.pop();
+        BurgerOrder.findOne({ uid: uidOfOrderToUndo }, (err, burgerOrder)=>{
+            burgerOrder.visibility = true;
+            burgerOrder.save();
+        })
+    }
+    setTimeout(()=>{res.redirect("/deliveries");}, 300);
+});
+
+
 
 router.get("/ingredients", (req, res, next)=>{
     Ingredient.find()
@@ -219,14 +250,14 @@ router.get("/bar/:uid/remove", (req, res)=> {
         beveragesOrder.visibility = false;
         beveragesOrder.completedAt = moment();
         beveragesOrder.save();
-        ordiniCompletatiBevande.push(beveragesOrder.uid);
+        deliveredBeverageOrder.push(beveragesOrder.uid);
         res.redirect("/bar");
     }); 
 });
 
 router.get("/bar/undo", (req, res)=>{
-    if(ordiniCompletatiBevande.length !== 0){
-        let uidOfOrderToUndo = ordiniCompletatiBevande.pop();
+    if(deliveredBeverageOrder.length !== 0){
+        let uidOfOrderToUndo = deliveredBeverageOrder.pop();
         BeveragesOrder.findOne({ uid: uidOfOrderToUndo }, (err, beveragesOrder)=>{
             beveragesOrder.visibility = true;
             beveragesOrder.save();
@@ -255,7 +286,7 @@ router.get("/extra/:uid/completed", (req, res)=> {
         extraOrder.completed = true;
         extraOrder.completedAt = new moment();
         extraOrder.save();
-        ordiniCompletatiExtra.push(extraOrder.uid);
+        deliveredExtraOrders.push(extraOrder.uid);
         setTimeout(()=>{res.redirect("/extra");}, 300);
     });
 });
@@ -265,14 +296,14 @@ router.get("/extra/:uid/remove", (req, res)=> {
         extraOrder.visibility = false;
         extraOrder.completed = false;
         extraOrder.save();
-        ordiniCompletatiExtra.push(extraOrder.uid);
+        deliveredExtraOrders.push(extraOrder.uid);
         setTimeout(()=>{res.redirect("/extra");}, 300);
     });
 });
 
 router.get("/extra/undo", (req, res)=>{
-    if(ordiniCompletatiExtra.length !== 0){
-        let uidOfOrderToUndo = ordiniCompletatiExtra.pop();
+    if(deliveredExtraOrders.length !== 0){
+        let uidOfOrderToUndo = deliveredExtraOrders.pop();
         ExtraOrder.findOne({ uid: uidOfOrderToUndo }, (err, extrasOrder)=>{
             extrasOrder.visibility = true;
             extrasOrder.save();
@@ -292,9 +323,9 @@ router.get("/admin", (req, res, next)=>{
 router.get("/admin/giorno/:giorno", (req, res)=> {
     if (currentDay != req.params.giorno) {
         currentDay = new Date(req.params.giorno).toISOString();
-        ordiniCompletatiPanini = [];
-        ordiniCompletatiBevande = [];
-        ordiniCompletatiExtra = [];
+        deliveredBurgerOrders = [];
+        deliveredBeverageOrder = [];
+        deliveredExtraOrders = [];
     }
 
     BeveragesStats.findOne({day: currentDay}, (err, doc) => {
@@ -462,7 +493,7 @@ router.get("/admin/deleteall/:what", (req, res, next)=>{
         BurgerStats.deleteMany({}, (err)=>{
         if(err){return next(err); }
         });
-        ordiniCompletatiPanini = [];
+        deliveredBurgerOrders = [];
 
     }
 
@@ -474,7 +505,7 @@ router.get("/admin/deleteall/:what", (req, res, next)=>{
         BeveragesOrder.deleteMany({}, (err)=>{
         if(err){return next(err); }
         });
-        ordiniCompletatiBevande = [];
+        deliveredBeverageOrder = [];
 
     }
 
@@ -485,7 +516,7 @@ router.get("/admin/deleteall/:what", (req, res, next)=>{
         ExtraOrder.deleteMany({}, (err)=>{
             if(err){return next(err)}
         })
-        ordiniCompletatiExtra = [];
+        deliveredExtraOrders = [];
     }
     res.render("deletedeverything");
 });

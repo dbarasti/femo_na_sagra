@@ -1,11 +1,11 @@
 <% include _header %>
 
 <div class="page-header">
-  <h1>Cucina</h1>
+  <h1>Consegne Panini</h1>
 </div>
 
 <div class="pull-right">
-  <a href='/orders/undo' class="btn btn-raised btn-warning">
+  <a href='/deliveries/undo' class="btn btn-raised btn-warning">
     <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> UNDO
   </a>
 </div>
@@ -21,12 +21,9 @@
       <% } %>
         <div class="panel-heading">
           <div class="pull-right">
-            <% if(!order.completed) { %>
-              <a href='/orders/<%= order.uid %>/completed' class="btn btn-raised btn-info">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                COMPLETATO
+              <a href='/orders/<%= order.uid %>/remove' class="btn btn-raised btn-danger">
+                <span class="glyphicon glyphicon-send" aria-hidden="true"></span> CONSEGNATO
               </a>
-            <% }%>
           </div>
 
           <div class="ora_ordinazione">
