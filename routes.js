@@ -162,7 +162,6 @@ router.get("/orders/:uid/remove", (req, res)=> {
 });
 
 router.get("/orders/undo", (req, res)=>{
-    console.log(completedBurgerOrders)
     if(completedBurgerOrders.length !== 0){
         let uidOfOrderToUndo = completedBurgerOrders.pop();
         BurgerOrder.findOne({ uid: uidOfOrderToUndo }, (err, burgerOrder)=>{
