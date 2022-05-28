@@ -40,24 +40,32 @@ router.get("/cassa", (req,res)=>{
     }
     else{
         BurgerOrder.findOne({day: currentDay})
+        .sort({ createdAt: "descending" })
+        .exec((err, burgerOrder)=>{
+            BeveragesOrder.findOne({day: currentDay})
             .sort({ createdAt: "descending" })
-            .exec((err, burgerOrder)=>{
-                BurgerStats.findOne({day: currentDay})
+            .exec((err, beveragesOrder)=>{
+                ExtraOrder.findOne({day: currentDay})
+                .sort({ createdAt: "descending" })
+                .exec((err, extraOrder)=>{
+                    BurgerStats.findOne({day: currentDay})
                     .then(burgerStats=>{
                         BeveragesStats.findOne({day: currentDay})
-                            .then(beveragesStats=>{
-                                ExtrasStats.findOne({day: currentDay})
-                                .then(extrasStats=>{
-                                    Ingredient.find({available: false}, 'id')
-                                    .then(lockedIngredients => {
-                                        lockedIngredients = lockedIngredients.map(ingredient=>ingredient.id)
-                                        lastID =  burgerOrder ? burgerOrder.actualOrder.id : 0;
-                                        res.render("cassa", { burgerStats: burgerStats, beveragesStats: beveragesStats, extrasStats: extrasStats, lastOrderID: lastID, config: config, lockedIngredientsIDs: lockedIngredients });
-                                    })
+                        .then(beveragesStats=>{
+                            ExtrasStats.findOne({day: currentDay})
+                            .then(extrasStats=>{
+                                Ingredient.find({available: false}, 'id')
+                                .then(lockedIngredients => {
+                                    lockedIngredients = lockedIngredients.map(ingredient=>ingredient.id)
+                                    lastID =  Math.max(burgerOrder ? burgerOrder.actualOrder.id : 0, beveragesOrder ? beveragesOrder.actualOrder.id : 0, extraOrder ? extraOrder.actualOrder.id : 0);
+                                    res.render("cassa", { burgerStats: burgerStats, beveragesStats: beveragesStats, extrasStats: extrasStats, lastOrderID: lastID, config: config, lockedIngredientsIDs: lockedIngredients });
                                 })
                             })
+                        })
                     });
+                });
             });
+        });
     }
 });
 
