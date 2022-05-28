@@ -22,7 +22,7 @@ app.set("port", process.env.PORT || 8000);
 app.set("views", path.resolve(__dirname, "views"));
 app.set("view engine", "ejs");    
 
-app.use(wwwhisper());
+app.use(wwwhisper(false));
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }));
