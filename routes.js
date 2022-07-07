@@ -436,6 +436,74 @@ router.get("/admin/report/carne", (req, res)=>{
         });
 });
 
+router.get("/admin/report/beverages", (req, res)=>{
+    BeveragesOrder.find({staff: false})
+        .exec((err, barOrders)=>{
+            if(err){return next(err); }
+            totals = [];
+            barOrders.forEach(order => {
+                totals.push(countBeverages(order.actualOrder))
+            })
+            report = {}
+            totals.forEach(total => {
+                Object.entries(total).forEach((total)=>{
+                    total[0] in report ? report[total[0]] += parseInt(total[1]) : report[total[0]] = parseInt(total[1]);
+                })
+            })
+            res.send(report);
+        });
+});
+
+function countBeverages(order){
+    let total = {};
+	let beveragesIndex = 0;
+    order.beveragesQuantities.forEach(quantity=>{
+	    if (quantity != ''){
+	        if (Array.isArray(order.beverages)) {
+                total[JSON.parse(order.beverages[beveragesIndex]).name] = parseInt(quantity)
+                beveragesIndex++;
+            }else{
+                total[JSON.parse(order.beverages).name] = quantity
+            }
+        }
+    });
+    return total
+}
+
+router.get("/admin/report/extras", (req, res)=>{
+    ExtraOrder.find({staff: true})
+        .exec((err, extraOrder)=>{
+            if(err){return next(err); }
+            totals = [];
+            extraOrder.forEach(order => {
+                totals.push(countExtras(order.actualOrder))
+            })
+            report = {}
+            totals.forEach(total => {
+                Object.entries(total).forEach((total)=>{
+                    total[0] in report ? report[total[0]] += parseInt(total[1]) : report[total[0]] = parseInt(total[1]);
+                })
+            })
+            res.send(report);
+        });
+});
+
+function countExtras(order){
+    let total = {};
+	let extrasIndex = 0;
+    order.extrasQuantities.forEach(quantity=>{
+	    if (quantity != ''){
+	        if (Array.isArray(order.extras)) {
+                total[JSON.parse(order.extras[extrasIndex]).name] = parseInt(quantity)
+                extrasIndex++;
+            }else{
+                total[JSON.parse(order.extras).name] = quantity
+            }
+        }
+    });
+    return total
+}
+
 router.get("/orders/:uid/delete", (req, res, next)=>{
     BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
         burgerOrder.remove((err)=>{
