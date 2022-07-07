@@ -7,7 +7,7 @@
 
 const config = {
    "days":[
-     "2022-05-27", "2022-05-28", "2022-05-29", "2022-06-02", "2022-06-03", "2022-06-04", "2022-06-05"
+     "2022-05-27", "2022-05-28", "2022-05-29", "2022-06-02", "2022-06-03", "2022-06-04", "2022-06-05", "2022-05-22", "2022-07-06", "2022-07-09", "2022-07-13"
    ],
  
    "ingredients":[
@@ -23,12 +23,13 @@ const config = {
            "id": "salsiccia",
            "name": "Salsiccia",
            "price": "7"
-         },
-         {
-            "id": "vegetariano",
-            "name": "Hamburger vegetariano",
-            "price": "7"
          }
+         ,
+          {
+             "id": "vegetariano",
+             "name": "Hamburger vegetariano",
+             "price": "7"
+          }
        ]
      },
      {
@@ -140,24 +141,11 @@ const config = {
    ],
    "beverages": [
      {
-       "type": "Birra Artigianale",
+       "type": "Birra",
        "list": [
          {
-           "name": "Rooibos Red Spina",
+           "name": "Bionda Forst alla spina",
            "price": "4"
-         },
-         {
-           "name": "Hooper IPA Spina",
-           "price": "4"
-         }
-       ]
-     },
-     {
-       "type": "Birra Normale",
-       "list": [
-         {
-           "name": "Bionda Forst Spina",
-           "price": "3"
          }
        ]
      },
@@ -165,11 +153,7 @@ const config = {
        "type": "Bevande analcoliche",
        "list": [
          {
-           "name": "CocaCola in lattina",
-           "price": "1.5"
-         },
-         {
-           "name": "Fanta in lattina",
+           "name": "CocaCola alla spina",
            "price": "1.5"
          },
          {
@@ -179,23 +163,6 @@ const config = {
          {
            "name": "Acqua Frizzante",
            "price": "1"
-         }
-       ]
-     },
-     {
-       "type": "Vetro",
-       "list": [
-         {
-           "name": "Percy Blonde Ale Bottiglia",
-           "price": "4"
-         },
-         {
-           "name": "Rooibos Red Ale Bottiglia",
-           "price": "4.5"
-         },
-         {
-           "name": "Hooper IPA Bottiglia",
-           "price": "4.5"
          }
        ]
      }
