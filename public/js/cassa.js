@@ -51,6 +51,11 @@ const config = {
            "price": "0"
          },
          {
+           "id": "melanzane",
+           "name": "Melanzane",
+           "price": "0"
+         },
+         {
            "id": "cipolla",
            "name": "Cipolla",
            "price": "0"
@@ -69,6 +74,36 @@ const config = {
            "id": "anelli",
            "name": "Anelli di cipolla",
            "price": "0.50"
+         },
+         {
+           "id": "pomodori_secchi",
+           "name": "Pomodori secchi",
+           "price": "1"
+         },
+         {
+           "id": "grana",
+           "name": "Grana",
+           "price": "1"
+         },
+         {
+           "id": "pesto",
+           "name": "Pesto",
+           "price": "0"
+         },
+         {
+           "id": "granella_mandorle",
+           "name": "Granella di mandorle",
+           "price": "1"
+         },
+         {
+           "id": "ricotta",
+           "name": "Ricotta",
+           "price": "1"
+         },
+         {
+           "id": "miele",
+           "name": "Miele",
+           "price": "0"
          }
        ]
      },
@@ -132,11 +167,46 @@ const config = {
        "price": "9"
      },
      {
-       "name": "Baby",
+       "name": "Tricolore",
        "ingredients": [
-         "hamburger"
+         "hamburger",
+         "pomodori_secchi",
+         "grana",
+         "pesto"
+       ],
+       "price": "9"
+     },
+     {
+       "name": "Dolceamaro",
+       "ingredients": [
+         "hamburger",
+         "melanzane",
+         "granella_mandorle",
+         "ricotta",
+         "miele"
+       ],
+       "price": "9"
+     },
+     {
+       "name": "El Vodo",
+       "ingredients": [
+         "hamburger",
+         "ketchup",
+         "maionese"
        ],
        "price": "5"
+     },
+     {
+       "name": "El Soito",
+       "ingredients": [
+         "hamburger",
+         "formaggio",
+         "lattuga",
+         "pomodoro",
+         "ketchup",
+         "maionese"
+       ],
+       "price": "7"
      }
    ],
    "beverages": [
@@ -182,7 +252,8 @@ const config = {
        ]
      }
    ]
- };
+ }; 
+ 
 
 $(document).ready(function() {
     $("#danger-alert").hide();
@@ -299,7 +370,7 @@ function doubleClicked() {
 
 function primaryClicked() {
    basePrice = 0;
-   if(isCheckboxWithIdActive("Baby"))
+   if(isCheckboxWithIdActive("El Vodo"))
       return;
 
    if(isCheckboxWithIdActive("Double")){
@@ -317,8 +388,8 @@ function secondaryClicked(){
       basePrice = 5;
    }
 
-   if(isCheckboxWithIdActive("Baby")){
-      document.getElementById("Baby").checked = false;
+   if(isCheckboxWithIdActive("El Vodo")){
+      document.getElementById("El Vodo").checked = false;
    }
 
    if(isCheckboxWithIdActive("Double")){
