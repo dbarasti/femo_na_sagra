@@ -2,12 +2,14 @@
   "name": "sagrationburgers",
   "version": "2.1.3",
   "engines": {
-    "node": "14.18.1"
+    "node": "18.15.0"
   },
   "main": "app.js",
   "dependencies": {
     "body-parser": "^1.18.2",
     "connect-flash": "^0.1.1",
+    "connect-wwwhisper": "*",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.0",
     "ejs": "^2.5.5",
     "express": "^4.15.4",
@@ -17,9 +19,7 @@
     "moment": "^2.20.1",
     "mongoose": "^6.2.9",
     "nodemon": "^2.0.15",
-    "yeast": "^0.1.2",
-    "connect-wwwhisper": "*"
-
+    "yeast": "^0.1.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
