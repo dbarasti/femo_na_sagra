@@ -17,12 +17,23 @@ let config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 loadConfiguration()
 let currentDay = undefined;
 let deliveredBurgerOrders = [];
-let compeltedBurgerOrders = [];
 let deliveredBeverageOrder = [];
 let completedBurgerOrders = [];
 let deliveredExtraOrders = [];
 let completedExtraOrders = [];
 
+const authentication = process.env.PASSWORD
+
+function isAuth(req, res, next) {
+    const auth = req.cookies.password;
+    if (auth === authentication) {
+        next();
+    } else {
+        console.log("Wrong password");
+        res.status(401);
+        res.render("login");
+    }
+}
 
 router.use((req, res, next)=>{
     res.locals.errors = req.flash("error");
@@ -30,11 +41,22 @@ router.use((req, res, next)=>{
     next();
 });
 
+router.post("/login", (req,res)=>{
+    if(req.body.password === authentication){
+        res.redirect("back");
+    }
+    else{
+        req.flash("error", "Wrong password");
+        res.render("login");    
+    }
+    // res.redirect("back");
+});
+
 router.get("/", (req,res)=>{          
 	res.render("homepage");
 });
 
-router.get("/cassa", (req,res)=>{
+router.get("/cassa", isAuth, (req,res)=>{
     if(!currentDay){
         res.render("admin", {day: currentDay, config: config});
     }
@@ -69,7 +91,7 @@ router.get("/cassa", (req,res)=>{
     }
 });
 
-router.post("/cassa", (req, res)=>{
+router.post("/cassa", isAuth, (req, res)=>{
     if(!currentDay){
         res.render("admin", {day: currentDay, config: config});
         return
@@ -149,7 +171,7 @@ router.get("/deliveries", (req, res, next)=>{
     }
 });
 
-router.get("/orders/:uid/completed", (req, res)=> {
+router.get("/orders/:uid/completed", isAuth, (req, res)=> {
     BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
         burgerOrder.completed = true;
         burgerOrder.completedAt = new moment();
@@ -159,7 +181,7 @@ router.get("/orders/:uid/completed", (req, res)=> {
     }); 
 });
 
-router.get("/orders/:uid/remove", (req, res)=> {
+router.get("/orders/:uid/remove", isAuth, (req, res)=> {
     BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
         burgerOrder.visibility = false;
         burgerOrder.save();
@@ -169,7 +191,7 @@ router.get("/orders/:uid/remove", (req, res)=> {
     }); 
 });
 
-router.get("/orders/undo", (req, res)=>{
+router.get("/orders/undo", isAuth, (req, res)=>{
     if(completedBurgerOrders.length !== 0){
         let uidOfOrderToUndo = completedBurgerOrders.pop();
         BurgerOrder.findOne({ uid: uidOfOrderToUndo }, (err, burgerOrder)=>{
@@ -180,7 +202,7 @@ router.get("/orders/undo", (req, res)=>{
     setTimeout(()=>{res.redirect("/orders");}, 300);
 });
 
-router.get("/deliveries/undo", (req, res)=>{
+router.get("/deliveries/undo", isAuth, (req, res)=>{
     if(deliveredBurgerOrders.length !== 0){
         let uidOfOrderToUndo = deliveredBurgerOrders.pop();
         BurgerOrder.findOne({ uid: uidOfOrderToUndo }, (err, burgerOrder)=>{
@@ -201,7 +223,7 @@ router.get("/ingredients", (req, res, next)=>{
     })
 });
 
-router.get("/ingredient/:id/lock", (req, res, next)=>{
+router.get("/ingredient/:id/lock", isAuth, (req, res, next)=>{
     Ingredient.updateOne({id: req.params.id}, {available: false}, (err, docs) => {
         if (err){
             console.log(err)
@@ -210,7 +232,7 @@ router.get("/ingredient/:id/lock", (req, res, next)=>{
     setTimeout(()=>{res.redirect("/ingredients");}, 300);
 });
 
-router.get("/ingredient/:id/unlock", (req, res, next)=>{
+router.get("/ingredient/:id/unlock", isAuth,(req, res, next)=>{
     Ingredient.updateOne({id: req.params.id}, {available: true}, (err, docs) => {
         if (err){
             console.log(err)
@@ -252,7 +274,7 @@ router.get("/bar", (req, res, next)=>{
     }
 });
 
-router.get("/bar/:uid/remove", (req, res)=> {
+router.get("/bar/:uid/remove", isAuth, (req, res)=> {
     BeveragesOrder.findOne({ uid: req.params.uid }, (err, beveragesOrder)=>{
         beveragesOrder.visibility = false;
         beveragesOrder.completedAt = moment();
@@ -262,7 +284,7 @@ router.get("/bar/:uid/remove", (req, res)=> {
     }); 
 });
 
-router.get("/bar/undo", (req, res)=>{
+router.get("/bar/undo", isAuth, (req, res)=>{
     if(deliveredBeverageOrder.length !== 0){
         let uidOfOrderToUndo = deliveredBeverageOrder.pop();
         BeveragesOrder.findOne({ uid: uidOfOrderToUndo }, (err, beveragesOrder)=>{
@@ -288,27 +310,28 @@ router.get("/extra", (req, res, next)=>{
     }
 });
 
-router.get("/extra/:uid/completed", (req, res)=> {
+router.get("/extra/:uid/completed", isAuth, (req, res)=> {
     ExtraOrder.findOne({ uid: req.params.uid }, (err, extraOrder)=>{
         extraOrder.completed = true;
         extraOrder.completedAt = new moment();
         extraOrder.save();
-        deliveredExtraOrders.push(extraOrder.uid);
+        completedExtraOrders.push(extraOrder.uid);
         setTimeout(()=>{res.redirect("/extra");}, 300);
     });
 });
 
-router.get("/extra/:uid/remove", (req, res)=> {
+router.get("/extra/:uid/remove", isAuth, (req, res)=> {
     ExtraOrder.findOne({ uid: req.params.uid }, (err, extraOrder)=>{
         extraOrder.visibility = false;
         extraOrder.completed = false;
         extraOrder.save();
         deliveredExtraOrders.push(extraOrder.uid);
+        completedExtraOrders = completedExtraOrders.filter(order=>order != extraOrder.uid);
         setTimeout(()=>{res.redirect("/extra");}, 300);
     });
 });
 
-router.get("/extra/undo", (req, res)=>{
+router.get("/extra/undo", isAuth, (req, res)=>{
     if(deliveredExtraOrders.length !== 0){
         let uidOfOrderToUndo = deliveredExtraOrders.pop();
         ExtraOrder.findOne({ uid: uidOfOrderToUndo }, (err, extrasOrder)=>{
@@ -327,7 +350,7 @@ router.get("/admin", (req, res, next)=>{
     });
 });
 
-router.get("/admin/giorno/:giorno", (req, res)=> {
+router.get("/admin/giorno/:giorno", isAuth, (req, res)=> {
     if (currentDay != req.params.giorno) {
         currentDay = new Date(req.params.giorno).toISOString();
         deliveredBurgerOrders = [];
@@ -504,7 +527,7 @@ function countExtras(order){
     return total
 }
 
-router.get("/orders/:uid/delete", (req, res, next)=>{
+router.get("/orders/:uid/delete", isAuth, (req, res, next)=>{
     BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder)=>{
         burgerOrder.remove((err)=>{
         if(err){return next(err); }
@@ -514,7 +537,7 @@ router.get("/orders/:uid/delete", (req, res, next)=>{
     setTimeout(()=>{res.redirect('back');}, 400);
 });
 
-router.get("/drinks/:uid/delete", (req, res, next)=>{
+router.get("/drinks/:uid/delete", isAuth, (req, res, next)=>{
     BeveragesOrder.findOne({ uid: req.params.uid }, (err, beveragesOrder)=>{
         beveragesOrder.remove((err)=>{
         if(err){return next(err); }
@@ -524,7 +547,7 @@ router.get("/drinks/:uid/delete", (req, res, next)=>{
     setTimeout(()=>{res.redirect('back');}, 400);
 });
 
-router.get("/extras/:uid/delete", (req, res, next)=>{
+router.get("/extras/:uid/delete", isAuth, (req, res, next)=>{
     ExtraOrder.findOne({ uid: req.params.uid }, (err, extrasOrder)=>{
         extrasOrder.remove((err)=>{
         if(err){return next(err); }
@@ -534,7 +557,7 @@ router.get("/extras/:uid/delete", (req, res, next)=>{
     setTimeout(()=>{res.redirect('back');}, 400);
 });
 
-router.get("/orders/restore/:uid", (req, res)=>{
+router.get("/orders/restore/:uid", isAuth, (req, res)=>{
     BurgerOrder.findOne({ uid: req.params.uid },  (err, doc)=>{
         doc.visibility = true;
         doc.save();
@@ -542,7 +565,7 @@ router.get("/orders/restore/:uid", (req, res)=>{
     });
 });
 
-router.get("/drinks/restore/:uid", (req, res)=>{
+router.get("/drinks/restore/:uid", isAuth, (req, res)=>{
     BeveragesOrder.findOne({ uid: req.params.uid }, (err, doc)=>{
         doc.visibility = true;
         doc.save();
@@ -550,7 +573,7 @@ router.get("/drinks/restore/:uid", (req, res)=>{
     });
 });
 
-router.get("/extras/restore/:uid", (req, res)=>{
+router.get("/extras/restore/:uid", isAuth, (req, res)=>{
     ExtraOrder.findOne({ uid: req.params.uid }, (err, doc)=>{
         doc.visibility = true;
         doc.save();
@@ -558,7 +581,7 @@ router.get("/extras/restore/:uid", (req, res)=>{
     });
 });
 
-router.get("/admin/deleteall/:what", (req, res, next)=>{
+router.get("/admin/deleteall/:what", isAuth, (req, res, next)=>{
 
     if(req.params.what === "all" || req.params.what ==="panini"){
         BurgerOrder.deleteMany({}, (err)=>{

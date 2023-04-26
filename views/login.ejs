@@ -1,0 +1,14 @@
+<% include _header %>
+<script src="/js/authentication.js"></script>
+<h1>Login</h1>
+<form method="post" action="/login/" onsubmit="storePassword();">
+  <p>
+    <label for="password">Password:</label>
+    <input type="text" name="password" id="password">
+  </p>
+  <p>
+    <input type="submit" value="Login">
+  </p>
+</form>
+
+<% include _footer %>

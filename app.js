@@ -1,6 +1,7 @@
 var express = require("express");
 require('dotenv').config()
 var bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
 var mongoose = require("mongoose");
 var session = require("express-session");
 var flash = require("connect-flash");
@@ -25,7 +26,9 @@ app.set("view engine", "ejs");
 app.use(wwwhisper(false));
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 
 app.use(session({
     secret: "TKRv0IJs=HYqrvagQ#&!F!%V]Ww/4KiVs$s,<<MX",
