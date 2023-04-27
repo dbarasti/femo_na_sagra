@@ -29,7 +29,6 @@ function isAuth(req, res, next) {
     if (auth === authentication) {
         next();
     } else {
-        console.log("Wrong password");
         res.status(401);
         res.render("login");
     }
@@ -720,7 +719,7 @@ function loadIngredientsToDB(){
                 name: ingredient.name,
                 price: ingredient.price
             }, {upsert:true}, (err, doc) => {
-                if (err) return res.send(500, {error: err});
+                if (err) console.log(err);
                 return;
             })
         })

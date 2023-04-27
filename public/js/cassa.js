@@ -266,15 +266,22 @@ function printOrder(){
    let time = new Date();
    time = time.toLocaleTimeString();
    print.document.writeln(`<h1>Ordine ${orderId}</h1>`);
-   print.document.writeln(`<h2>Ora ordinazione: ${time}</h2>`);
+   print.document.writeln(`<h3>Ora ordinazione: ${time}</h3>`);
+   print.document.writeln(`<div style="line-height:4px; margin-left:60px">`);
    config.ingredients.forEach((ingredientType)=>{
       print.document.writeln(`<h3>${ingredientType.type}</h3>`);
-      ingredientType.list.forEach((ingredient)=>{
+      
+       ingredientType.list.forEach((ingredient)=>{
          if(document.getElementById(ingredient.id).checked){
-            print.document.writeln(`<p>${ingredient.name}</p>`);
+            if(ingredientType.type === "Principale" && document.getElementById("Double").checked){
+               print.document.writeln(`<p><b>Double</b> ${ingredient.name}</p>`);
+            }else{
+               print.document.writeln(`<p>${ingredient.name}</p>`);
+            }
          }
       })
    });
+   print.document.writeln(`</div>`);
    print.window.print();
    print.window.close();
 }
