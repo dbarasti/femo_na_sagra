@@ -259,6 +259,26 @@ $(document).ready(function() {
     $("#danger-alert").hide();
 });
 
+function printOrder(){
+   let orderId = document.getElementById('id').value;
+   let print = window.open('../html/print_order.html', "Stampa Ordine", "popup=1,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
+   // current time in short readable format
+   let time = new Date();
+   time = time.toLocaleTimeString();
+   print.document.writeln(`<h1>Ordine ${orderId}</h1>`);
+   print.document.writeln(`<h2>Ora ordinazione: ${time}</h2>`);
+   config.ingredients.forEach((ingredientType)=>{
+      print.document.writeln(`<h3>${ingredientType.type}</h3>`);
+      ingredientType.list.forEach((ingredient)=>{
+         if(document.getElementById(ingredient.id).checked){
+            print.document.writeln(`<p>${ingredient.name}</p>`);
+         }
+      })
+   });
+   print.window.print();
+   print.window.close();
+}
+
 function clearAllIngredients() {
    setBurgerTotalDivHTML(0);
    document.getElementById("Double").checked = false;
