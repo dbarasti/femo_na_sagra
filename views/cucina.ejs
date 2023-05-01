@@ -1,97 +1,99 @@
 <% include _header %>
 
-<div class="page-header">
-  <h1>Cucina</h1>
-</div>
+  <div class="page-header">
+    <h1>Cucina</h1>
+    <h2>Tempo medio attesa: <%= moment(averageWaitingTime).utc().format('HH:mm:ss') %>
+    </h2>
+  </div>
 
-<div class="pull-right">
-  <a href='/orders/undo' class="btn btn-raised btn-warning">
-    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> UNDO
-  </a>
-</div>
-<br/>
+  <div class="pull-right">
+    <a href='/orders/undo' class="btn btn-raised btn-warning">
+      <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> UNDO
+    </a>
+  </div>
+  <br />
 
-<div class="row orders-block">
-  <% orders.forEach((order)=>{ %>
-    <div class="col-md-6">
-      <% if(order.actualOrder.id % 2 != 0) { %>
-        <div class="panel panel-primary">
-      <% } else { %>
-        <div class="panel panel-info">
-      <% } %>
-        <div class="panel-heading">
-          <div class="pull-right">
-            <% if(!order.completed) { %>
-              <a href='/orders/<%= order.uid %>/completed' class="btn btn-raised btn-info">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                COMPLETATO
-              </a>
-            <% }%>
-          </div>
-
-          <div class="ora_ordinazione">
-            <p>
-              ordinato alle
-              <%=moment(order.createdAt).format('HH:mm')%>
-            </p>
-          </div>
-          <div class="numero-ordine">
-            <p>
-              ORDINE
-              <% if(order.actualOrder.takeaway) { %>
-                <span class="asporto">
-                ASPORTO
-              </span>
-              <% } %>
-              :
-              <%= order.actualOrder.id %>
-            </p>
-          </div>
-          <div class="text priorità">
-            <p>
-              <% if (order.priority) { %>
-                PRIORITÀ
-              <% } %>
-              <span class="staff">
-                <% if (order.staff === true) { %>
-                  PER STAFF
+  <div class="row orders-block">
+    <% orders.forEach((order)=>{ %>
+      <div class="col-md-6">
+        <% if(order.actualOrder.id % 2 !=0) { %>
+          <div class="panel panel-primary">
+            <% } else { %>
+              <div class="panel panel-info">
                 <% } %>
-              </span>
-              
-            </p>
-          </div>
-          <div class="ora_ordinazione">
-            <%=order.actualOrder.orderNote.toUpperCase()%>
-          </div>
-        </div>
+                  <div class="panel-heading">
+                    <div class="pull-right">
+                      <% if(!order.completed) { %>
+                        <a href='/orders/<%= order.uid %>/completed' class="btn btn-raised btn-info">
+                          <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                          COMPLETATO
+                        </a>
+                        <% }%>
+                    </div>
 
-        <div class="panel-body ingredienti">
-          <span class="carne">
-            <%=order.actualOrder.double%>
-            <%= order.actualOrder.Principale %>
-          </span>
-          <span class="verdura">
-            <%if (Array.isArray(order.actualOrder.Farcitura)){ %>
-              <% order.actualOrder.Farcitura.forEach((farcitura)=>{ %>
-                <%=farcitura%>
-              <% }) %>
-            <%}else{%>
-                <%= order.actualOrder.Farcitura %>
-            <%}%>
-          </span>
-          <span class="salsa">
-            <%if (Array.isArray(order.actualOrder.Salse)){ %>
-              <% order.actualOrder.Salse.forEach((sauce)=>{ %>
-              <%= sauce%>
-              <% }) %>
-            <%}else{%>
-              <%= order.actualOrder.Salse %>
-            <%}%>
-          </span>
-        </div>
+                    <div class="ora_ordinazione">
+                      <p>
+                        ordinato alle
+                        <%=moment(order.createdAt).format('HH:mm')%>
+                      </p>
+                    </div>
+                    <div class="numero-ordine">
+                      <p>
+                        ORDINE
+                        <% if(order.actualOrder.takeaway) { %>
+                          <span class="asporto">
+                            ASPORTO
+                          </span>
+                          <% } %>
+                            :
+                            <%= order.actualOrder.id %>
+                      </p>
+                    </div>
+                    <div class="text priorità">
+                      <p>
+                        <% if (order.priority) { %>
+                          PRIORITÀ
+                          <% } %>
+                            <span class="staff">
+                              <% if (order.staff===true) { %>
+                                PER STAFF
+                                <% } %>
+                            </span>
+
+                      </p>
+                    </div>
+                    <div class="ora_ordinazione">
+                      <%=order.actualOrder.orderNote.toUpperCase()%>
+                    </div>
+                  </div>
+
+                  <div class="panel-body ingredienti">
+                    <span class="carne">
+                      <%=order.actualOrder.double%>
+                        <%= order.actualOrder.Principale %>
+                    </span>
+                    <span class="verdura">
+                      <%if (Array.isArray(order.actualOrder.Farcitura)){ %>
+                        <% order.actualOrder.Farcitura.forEach((farcitura)=>{ %>
+                          <%=farcitura%>
+                            <% }) %>
+                              <%}else{%>
+                                <%= order.actualOrder.Farcitura %>
+                                  <%}%>
+                    </span>
+                    <span class="salsa">
+                      <%if (Array.isArray(order.actualOrder.Salse)){ %>
+                        <% order.actualOrder.Salse.forEach((sauce)=>{ %>
+                          <%= sauce%>
+                            <% }) %>
+                              <%}else{%>
+                                <%= order.actualOrder.Salse %>
+                                  <%}%>
+                    </span>
+                  </div>
+              </div>
+          </div>
+          <% }) %>
       </div>
-    </div>
-  <% }) %>
-</div>
-<% include _footer %>
-<meta http-equiv="refresh" content="15">
+      <% include _footer %>
+        <meta http-equiv="refresh" content="15">

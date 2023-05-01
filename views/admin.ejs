@@ -1,51 +1,65 @@
 <% include _header %>
 
-<div class="page-header">
-    <h1>Gestione Ordini <small>Visualizza e elimina le ordinazioni</small></h1>
-</div>
-
-<% if (!day) { %>
-    <div class="alert alert-danger" role="alert">
-        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-        <span class="sr-only">Error:</span>
-        Seleziona un giorno prima di iniziare
+    <div class="page-header">
+        <h1>Gestione Ordini <small>Visualizza e elimina le ordinazioni</small></h1>
     </div>
-<% } else{ %>  
-<br/>
+
+    <% if (!day) { %>
+        <div class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            Seleziona un giorno prima di iniziare
+        </div>
+        <% } else{ %>
+            <br />
 
 
-<% }%>  
-<div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">mostra/elimina:
-    <span class="caret"></span></button>
-    <ul class="dropdown-menu">
-    	<li class="disabled"><a href="/admin/orders/">mostra tutti gli ordini</a></li>
-    	<li class="divider"></li>
-        <% config.days.forEach(function(day) { %>
-        <li><a href="/admin/orders/<%= day %>">mostra ordini <%= day %></a></li>
-        <% }) %>
-    	<li class="divider"></li>
-        <li><a href="/admin/report">mostra report giornate</a></li>
-        <li><a href="/admin/report/carne">mostra report carne</a></li>
-        <li class="divider"></li>
-    	<li><a href="/admin/deleteall/all"onclick="return confirm('Sicuro di voler eliminare tutte le ordinazioni?');"><font color="red">ELIMINA tutti gli ORDINI</font></a></li>
-        <li><a href="/admin/deleteall/panini"onclick="return confirm('Sicuro di voler eliminare le ordinazioni di panini?');"><font color="red">ELIMINA ordini PANINI</font></a></li>
-        <li><a href="/admin/deleteall/bevande"onclick="return confirm('Sicuro di voler eliminare le ordinazioni di bevande?');"><font color="red">ELIMINA ordini BEVANDE</font></a></li>
-        <li><a href="/admin/deleteall/extra"onclick="return confirm('Sicuro di voler eliminare le ordinazioni extra?');"><font color="red">ELIMINA ordini EXTRA</font></a></li>
-    </ul>
-</div>
-<br/>
+            <% }%>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">mostra/elimina:
+                        <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li class="disabled"><a href="/admin/orders/">mostra tutti gli ordini</a></li>
+                        <li class="divider"></li>
+                        <% config.days.forEach(function(day) { %>
+                            <li><a href="/admin/orders/<%= day %>">mostra ordini <%= day %></a></li>
+                            <% }) %>
+                                <li class="divider"></li>
+                                <li><a href="/admin/report">mostra report giornate</a></li>
+                                <li><a href="/admin/report/panini">mostra report panini</a></li>
+                                <li><a href="/admin/report/beverages">mostra report bevande</a></li>
+                                <li class="divider"></li>
+                                <li><a href="/admin/deleteall/all"
+                                        onclick="return confirm('Sicuro di voler eliminare tutte le ordinazioni?');">
+                                        <font color="red">ELIMINA tutti gli ORDINI</font>
+                                    </a></li>
+                                <li><a href="/admin/deleteall/panini"
+                                        onclick="return confirm('Sicuro di voler eliminare le ordinazioni di panini?');">
+                                        <font color="red">ELIMINA ordini PANINI</font>
+                                    </a></li>
+                                <li><a href="/admin/deleteall/bevande"
+                                        onclick="return confirm('Sicuro di voler eliminare le ordinazioni di bevande?');">
+                                        <font color="red">ELIMINA ordini BEVANDE</font>
+                                    </a></li>
+                                <li><a href="/admin/deleteall/extra"
+                                        onclick="return confirm('Sicuro di voler eliminare le ordinazioni extra?');">
+                                        <font color="red">ELIMINA ordini EXTRA</font>
+                                    </a></li>
+                    </ul>
+                </div>
+                <br />
 
-<div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Selezione giorno:
-    <span class="caret"></span></button>
-    <ul class="dropdown-menu">
-        <% config.days.forEach(function(day) { %>
-            <li><a href="/admin/giorno/<%= day %>"><%= day %></a></li>
-        <% }) %>
-    </ul>
-</div>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Selezione
+                        giorno:
+                        <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <% config.days.forEach(function(day) { %>
+                            <li><a href="/admin/giorno/<%= day %>">
+                                    <%= day %>
+                                </a></li>
+                            <% }) %>
+                    </ul>
+                </div>
 
-<% include _footer %>
-
-
+                <% include _footer %>

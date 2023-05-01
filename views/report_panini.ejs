@@ -1,0 +1,19 @@
+<% include _header %>
+  <h1><small class="text-muted">Report panini</small></h1>
+  <div class="row">
+    <div class="col-sm">
+      <% for (let [day, stats] of Object.entries(totals)) { %>
+        <h3>Giorno <%=day%>
+        </h3>
+        <% for (let [ingredient, sold] of Object.entries(stats)) { %>
+          <h4>
+            <%=ingredient%> : <%=sold%>
+          </h4>
+          <% } %>
+
+            <% } %>
+    </div>
+  </div>
+
+
+  <% include _footer %>
