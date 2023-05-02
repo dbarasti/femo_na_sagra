@@ -19,7 +19,6 @@ let currentDay = undefined;
 let deliveredBurgerOrders = [];
 let deliveredBeverageOrder = [];
 let completedBurgerOrders = [];
-let deliveredExtraOrders = [];
 let completedExtraOrders = [];
 let averageWaitingTime = 0;
 
@@ -318,6 +317,7 @@ router.get("/extra", (req, res, next) => {
 router.get("/extra/:uid/completed", isAuth, (req, res) => {
     ExtraOrder.findOne({ uid: req.params.uid }, (err, extraOrder) => {
         extraOrder.completed = true;
+        extraOrder.visibility = false;
         extraOrder.completedAt = new moment();
         extraOrder.save();
         completedExtraOrders.push(extraOrder.uid);
@@ -325,22 +325,12 @@ router.get("/extra/:uid/completed", isAuth, (req, res) => {
     });
 });
 
-router.get("/extra/:uid/remove", isAuth, (req, res) => {
-    ExtraOrder.findOne({ uid: req.params.uid }, (err, extraOrder) => {
-        extraOrder.visibility = false;
-        extraOrder.completed = false;
-        extraOrder.save();
-        deliveredExtraOrders.push(extraOrder.uid);
-        completedExtraOrders = completedExtraOrders.filter(order => order != extraOrder.uid);
-        setTimeout(() => { res.redirect("/extra"); }, 300);
-    });
-});
-
 router.get("/extra/undo", isAuth, (req, res) => {
-    if (deliveredExtraOrders.length !== 0) {
-        let uidOfOrderToUndo = deliveredExtraOrders.pop();
+    if (completedExtraOrders.length !== 0) {
+        let uidOfOrderToUndo = completedExtraOrders.pop();
         ExtraOrder.findOne({ uid: uidOfOrderToUndo }, (err, extrasOrder) => {
             extrasOrder.visibility = true;
+            extrasOrder.completed = false;
             extrasOrder.save();
         })
     }
@@ -360,7 +350,6 @@ router.get("/admin/giorno/:giorno", isAuth, async (req, res) => {
         currentDay = new Date(req.params.giorno).toISOString();
         deliveredBurgerOrders = [];
         deliveredBeverageOrder = [];
-        deliveredExtraOrders = [];
         completedExtraOrders = [];
         completedBurgerOrders = [];
         averageWaitingTime = await computeAverageWaitTimeForCurrentDay();
@@ -665,7 +654,7 @@ router.get("/admin/deleteall/:what", isAuth, (req, res, next) => {
         ExtraOrder.deleteMany({}, (err) => {
             if (err) { return next(err) }
         })
-        deliveredExtraOrders = [];
+        completedExtraOrders = [];
     }
     res.render("deletedeverything");
 });
