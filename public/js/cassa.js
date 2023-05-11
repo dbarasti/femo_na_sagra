@@ -7,8 +7,12 @@
 
 const config = {
    "days":[
-     "2022-05-27", "2022-05-28", "2022-05-29", "2022-06-02", "2022-06-03", "2022-06-04", "2022-06-05", "2022-05-22", "2022-07-06", "2022-07-09", "2022-07-13"
+     "2023-05-13"
    ],
+ 
+   "options": {
+     "print": false
+   },
  
    "ingredients":[
      {
@@ -17,18 +21,18 @@ const config = {
          {
            "id": "hamburger",
            "name": "Hamburger",
-           "price": "7"
+           "price": "8"
          },
          {
            "id": "salsiccia",
            "name": "Salsiccia",
-           "price": "7"
+           "price": "8"
          }
          ,
           {
              "id": "vegetariano",
              "name": "Hamburger vegetariano",
-             "price": "7"
+             "price": "8"
           }
        ]
      },
@@ -76,34 +80,9 @@ const config = {
            "price": "0.50"
          },
          {
-           "id": "pomodori_secchi",
-           "name": "Pomodori secchi",
-           "price": "1"
-         },
-         {
-           "id": "grana",
-           "name": "Grana",
-           "price": "1"
-         },
-         {
-           "id": "pesto",
-           "name": "Pesto",
-           "price": "0"
-         },
-         {
-           "id": "granella_mandorle",
-           "name": "Granella di mandorle",
-           "price": "1"
-         },
-         {
-           "id": "ricotta",
-           "name": "Ricotta",
-           "price": "1"
-         },
-         {
-           "id": "miele",
-           "name": "Miele",
-           "price": "0"
+           "id": "bacon",
+           "name": "Bacon",
+           "price": "0.50"
          }
        ]
      },
@@ -139,7 +118,7 @@ const config = {
          "ketchup",
          "maionese"
        ],
-       "price": "7.5"
+       "price": "8.5"
      },
      {
        "name": "Borghese",
@@ -151,7 +130,7 @@ const config = {
          "zucchine",
          "bbq"
        ],
-       "price": "7"
+       "price": "8"
      },
      {
        "name": "Ramsay",
@@ -164,49 +143,7 @@ const config = {
          "pomodoro",
          "ketchup"
        ],
-       "price": "9"
-     },
-     {
-       "name": "Tricolore",
-       "ingredients": [
-         "hamburger",
-         "pomodori_secchi",
-         "grana",
-         "pesto"
-       ],
-       "price": "9"
-     },
-     {
-       "name": "Dolceamaro",
-       "ingredients": [
-         "hamburger",
-         "melanzane",
-         "granella_mandorle",
-         "ricotta",
-         "miele"
-       ],
-       "price": "9"
-     },
-     {
-       "name": "El Vodo",
-       "ingredients": [
-         "hamburger",
-         "ketchup",
-         "maionese"
-       ],
-       "price": "5"
-     },
-     {
-       "name": "El Soito",
-       "ingredients": [
-         "hamburger",
-         "formaggio",
-         "lattuga",
-         "pomodoro",
-         "ketchup",
-         "maionese"
-       ],
-       "price": "7"
+       "price": "9.5"
      }
    ],
    "beverages": [
@@ -252,7 +189,8 @@ const config = {
        ]
      }
    ]
- }; 
+ };
+ 
  
 
 $(document).ready(function() {
@@ -387,7 +325,7 @@ function doubleClicked() {
          return
       }
       else{
-         basePrice = 2;
+         basePrice = 1.5;
       }
    }
    burgerPrice = basePrice + computeIngredientsPrice();
@@ -397,11 +335,8 @@ function doubleClicked() {
 
 function primaryClicked() {
    basePrice = 0;
-   if(isCheckboxWithIdActive("El Vodo"))
-      return;
-
    if(isCheckboxWithIdActive("Double")){
-      basePrice = 2;
+      basePrice = 1.5;
    }
    
    burgerPrice = basePrice + computeIngredientsPrice();
@@ -415,12 +350,8 @@ function secondaryClicked(){
       basePrice = 5;
    }
 
-   if(isCheckboxWithIdActive("El Vodo")){
-      document.getElementById("El Vodo").checked = false;
-   }
-
    if(isCheckboxWithIdActive("Double")){
-      basePrice = 2;
+      basePrice = 1.5;
    }
 
    burgerPrice = basePrice + computeIngredientsPrice();

@@ -10,7 +10,7 @@ function calculateBurgerPrice(order) {
     }
 
     if (order.Principale && order.double){
-        basePrice = 2;
+        basePrice = 1.5;
     }
     if (order.Principale && !order.double){
         if (!order.Farcitura) {
