@@ -14,7 +14,7 @@ let Ingredient = require("./models/ingredient");
 let Calculator = require("./modules/Calculator");
 
 let config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
-loadConfiguration()
+loadConfiguration();
 let currentDay = undefined;
 let deliveredBurgerOrders = [];
 let deliveredBeverageOrder = [];

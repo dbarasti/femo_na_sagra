@@ -24,7 +24,7 @@
     </li>
     <%}%>
 </ul>
-<form method="post" role="form" onsubmit="printOrder();">
+<form method="post" role="form" <% if(config.options.print == true){%> onsubmit="printOrder(); <%}%>">
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="form-group">
