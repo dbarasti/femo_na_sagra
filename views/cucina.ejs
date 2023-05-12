@@ -1,4 +1,5 @@
 <% include _header %>
+<script src="/js/cucina.js"></script>
 
   <div class="page-header">
     <h1>Cucina</h1>
@@ -17,9 +18,9 @@
     <% orders.forEach((order)=>{ %>
       <div class="col-md-6">
         <% if(order.actualOrder.id % 2 !=0) { %>
-          <div class="panel panel-primary">
+          <div class="panel panel-primary" id="<%= order.actualOrder.id %>">
             <% } else { %>
-              <div class="panel panel-info">
+              <div class="panel panel-info" id="<%= order.actualOrder.id %>">
                 <% } %>
                   <div class="panel-heading">
                     <div class="pull-right">
@@ -29,6 +30,9 @@
                           COMPLETATO
                         </a>
                         <% }%>
+                        <a onclick="printOrder(<%=order.actualOrder.id%>);" class="btn btn-raised btn-info">
+                          <span class="glyphicon glyphicon-print"></span>
+                        </a>
                     </div>
 
                     <div class="ora_ordinazione">
@@ -69,25 +73,35 @@
 
                   <div class="panel-body ingredienti">
                     <span class="carne">
-                      <%=order.actualOrder.double%>
+                      <span class="ingredient"> 
+                        <%=order.actualOrder.double%>
                         <%= order.actualOrder.Principale %>
+                      </span>
                     </span>
                     <span class="verdura">
                       <%if (Array.isArray(order.actualOrder.Farcitura)){ %>
                         <% order.actualOrder.Farcitura.forEach((farcitura)=>{ %>
+                          <span class="ingredient"> 
                           <%=farcitura%>
+                          </span>
                             <% }) %>
                               <%}else{%>
+                                <span class="ingredient"> 
                                 <%= order.actualOrder.Farcitura %>
-                                  <%}%>
+                                </span>
+                              <%}%>
                     </span>
                     <span class="salsa">
                       <%if (Array.isArray(order.actualOrder.Salse)){ %>
                         <% order.actualOrder.Salse.forEach((sauce)=>{ %>
+                          <span class="ingredient"> 
                           <%= sauce%>
+                          </span>
                             <% }) %>
                               <%}else{%>
+                                <span class="ingredient"> 
                                 <%= order.actualOrder.Salse %>
+                                </span>
                                   <%}%>
                     </span>
                   </div>
