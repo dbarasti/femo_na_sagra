@@ -7,7 +7,7 @@
 
 const config = {
    "days":[
-     "2023-05-13"
+     "2023-05-13", "2023-05-26", "2023-05-27", "2023-05-28", "2023-06-01", "2023-06-02", "2023-06-03", "2023-06-04"
    ],
  
    "options": {
@@ -23,12 +23,6 @@ const config = {
            "name": "Hamburger",
            "price": "8"
          },
-         {
-           "id": "salsiccia",
-           "name": "Salsiccia",
-           "price": "8"
-         }
-         ,
           {
              "id": "vegetariano",
              "name": "Hamburger vegetariano",
@@ -40,9 +34,14 @@ const config = {
        "type": "Farcitura",
        "list": [
          {
-           "id": "formaggio",
-           "name": "Formaggio",
+           "id": "cheddar",
+           "name": "Cheddar",
            "price": "0"
+         },
+         {
+           "id": "bacon",
+           "name": "Bacon",
+           "price": "0.50"
          },
          {
            "id": "zucchine",
@@ -52,11 +51,6 @@ const config = {
          {
            "id": "peperoni",
            "name": "Peperoni",
-           "price": "0"
-         },
-         {
-           "id": "melanzane",
-           "name": "Melanzane",
            "price": "0"
          },
          {
@@ -77,11 +71,6 @@ const config = {
          {
            "id": "anelli",
            "name": "Anelli di cipolla",
-           "price": "0.50"
-         },
-         {
-           "id": "bacon",
-           "name": "Bacon",
            "price": "0.50"
          }
        ]
@@ -109,41 +98,50 @@ const config = {
    ],
    "defaultBurgers": [
      {
-       "name": "Cannavacciuolo",
+       "name": "Classico",
        "ingredients": [
          "hamburger",
-         "formaggio",
-         "cipolla",
-         "anelli",
+         "cheddar",
+         "lattuga",
+         "pomodoro",
          "ketchup",
          "maionese"
-       ],
-       "price": "8.5"
-     },
-     {
-       "name": "Borghese",
-       "ingredients": [
-         "hamburger",
-         "formaggio",
-         "peperoni",
-         "cipolla",
-         "zucchine",
-         "bbq"
        ],
        "price": "8"
      },
      {
-       "name": "Ramsay",
+       "name": "BBQ Burger",
+       "ingredients": [
+         "hamburger",
+         "cheddar",
+         "bacon",
+         "cipolla",
+         "bbq"
+       ],
+       "price": "8.5"
+     },
+     {
+       "name": "Sgionfo",
        "ingredients": [
          "hamburger",
          "Double",
-         "formaggio",
-         "cipolla",
+         "cheddar",
+         "anelli",
          "lattuga",
+         "maionese"
+       ],
+       "price": "10"
+     },
+     {
+       "name": "Plant-based",
+       "ingredients": [
+         "vegetariano",
+         "anelli",
+         "zucchine",
          "pomodoro",
          "ketchup"
        ],
-       "price": "9.5"
+       "price": "8.5"
      }
    ],
    "beverages": [
@@ -151,8 +149,16 @@ const config = {
        "type": "Birra",
        "list": [
          {
-           "name": "Bionda Forst alla spina",
-           "price": "4"
+           "name": "12°",
+           "price": "4.5"
+         },
+         {
+           "name": "Brauch",
+           "price": "4.5"
+         },
+         {
+           "name": "BirrettIPA",
+           "price": "4.5"
          }
        ]
      },
@@ -161,7 +167,7 @@ const config = {
        "list": [
          {
            "name": "CocaCola alla spina",
-           "price": "2.5"
+           "price": "3"
          },
          {
            "name": "Acqua Naturale",
