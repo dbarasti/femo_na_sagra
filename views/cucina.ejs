@@ -3,8 +3,7 @@
 
   <div class="page-header">
     <h1>Cucina</h1>
-    <h2>Tempo medio attesa: <%= moment(averageWaitingTime).utc().format('HH:mm:ss') %>
-    </h2>
+    
   </div>
 
   <div class="pull-right">
@@ -66,7 +65,7 @@
 
                       </p>
                     </div>
-                    <div class="ora_ordinazione">
+                    <div class="ora_ordinazione order_note">
                       <%=order.actualOrder.orderNote.toUpperCase()%>
                     </div>
                   </div>
