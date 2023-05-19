@@ -52,58 +52,42 @@ router.get("/", (req, res) => {
   res.render("homepage");
 });
 
-router.get("/cassa", isAuth, (req, res) => {
+router.get("/cassa", isAuth, async (req, res) => {
   if (!currentDay) {
-    res.render("admin", { day: currentDay, config: config });
-  } else {
-    BurgerOrder.findOne({ day: currentDay })
-      .sort({ createdAt: "descending" })
-      .exec((err, burgerOrder) => {
-        BeveragesOrder.findOne({ day: currentDay })
-          .sort({ createdAt: "descending" })
-          .exec((err, beveragesOrder) => {
-            ExtraOrder.findOne({ day: currentDay })
-              .sort({ createdAt: "descending" })
-              .exec((err, extraOrder) => {
-                BurgerStats.findOne({ day: currentDay }).then((burgerStats) => {
-                  BeveragesStats.findOne({ day: currentDay }).then(
-                    (beveragesStats) => {
-                      ExtrasStats.findOne({ day: currentDay }).then(
-                        (extrasStats) => {
-                          Ingredient.find({ available: false }, "id").then(
-                            (lockedIngredients) => {
-                              lockedIngredients = lockedIngredients.map(
-                                (ingredient) => ingredient.id
-                              );
-                              lastID = Math.max(
-                                burgerOrder ? burgerOrder.actualOrder.id : 0,
-                                beveragesOrder
-                                  ? beveragesOrder.actualOrder.id
-                                  : 0,
-                                extraOrder ? extraOrder.actualOrder.id : 0
-                              );
-                              res.render("cassa", {
-                                burgerStats: burgerStats,
-                                beveragesStats: beveragesStats,
-                                extrasStats: extrasStats,
-                                lastOrderID: lastID,
-                                config: config,
-                                lockedIngredientsIDs: lockedIngredients,
-                              });
-                            }
-                          );
-                        }
-                      );
-                    }
-                  );
-                });
-              });
-          });
-      });
+    return res.render("admin", { day: currentDay, config: config });
   }
+  const burgerOrders = await BurgerOrder.findOne({ day: currentDay }).sort({
+    createdAt: "descending",
+  });
+  const beveragesOrders = await BeveragesOrder.findOne({
+    day: currentDay,
+  }).sort({ createdAt: "descending" });
+  const extraOrders = await ExtraOrder.findOne({ day: currentDay }).sort({
+    createdAt: "descending",
+  });
+  const burgerStats = await BurgerStats.findOne({ day: currentDay });
+  const beveragesStats = await BeveragesStats.findOne({ day: currentDay });
+  const extrasStats = await ExtrasStats.findOne({ day: currentDay });
+  const lockedIngredients = await Ingredient.find({ available: false }, "id");
+  const lockedIngredientsIDs = lockedIngredients.map(
+    (ingredient) => ingredient.id
+  );
+  const lastID = Math.max(
+    burgerOrders ? burgerOrders.actualOrder.id : 0,
+    beveragesOrders ? beveragesOrders.actualOrder.id : 0,
+    extraOrders ? extraOrders.actualOrder.id : 0
+  );
+  res.render("cassa", {
+    burgerStats: burgerStats,
+    beveragesStats: beveragesStats,
+    extrasStats: extrasStats,
+    lastOrderID: lastID,
+    config: config,
+    lockedIngredientsIDs: lockedIngredientsIDs,
+  });
 });
 
-router.post("/cassa", isAuth, (req, res) => {
+router.post("/cassa", isAuth, async (req, res) => {
   if (!currentDay) {
     res.render("admin", { day: currentDay, config: config });
     return;
@@ -124,7 +108,7 @@ router.post("/cassa", isAuth, (req, res) => {
       priority: isPriorityOrder,
       staff: isStaffOrder,
     });
-    newBurgerOrder.save();
+    await newBurgerOrder.save();
     updateBurgersStats(newBurgerOrder);
   }
 
@@ -137,7 +121,7 @@ router.post("/cassa", isAuth, (req, res) => {
       priority: isPriorityOrder,
       staff: isStaffOrder,
     });
-    newBeveragesOrder.save();
+    await newBeveragesOrder.save();
     updateBeveragesStats(newBeveragesOrder);
   }
 
@@ -150,7 +134,7 @@ router.post("/cassa", isAuth, (req, res) => {
       priority: isPriorityOrder,
       staff: isStaffOrder,
     });
-    newExtrasOrder.save();
+    await newExtrasOrder.save();
     updateExtrasStats(newExtrasOrder);
   }
 
