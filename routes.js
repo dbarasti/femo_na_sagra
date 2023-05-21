@@ -341,11 +341,19 @@ router.get("/extra", (req, res, next) => {
   } else {
     ExtraOrder.find({ day: currentDay, visibility: true })
       .sort({ priority: "descending", createdAt: "ascending" })
-      .exec((err, extraOrders) => {
+      .exec(async (err, extraOrders) => {
         if (err) {
           return next(err);
         }
-        res.render("extra", { orders: extraOrders, moment: moment });
+        let nRings = await numberOfOnionRingsInNextNOrders(
+          config.options.finestraAnelliExtra
+        );
+        res.render("extra", {
+          orders: extraOrders,
+          moment: moment,
+          nRings: nRings,
+          nOrders: config.options.finestraAnelliExtra,
+        });
       });
   }
 });
@@ -782,6 +790,26 @@ router.get("/admin/deleteall/:what", isAuth, (req, res, next) => {
 router.use((request, response) => {
   response.status(404).render("404");
 });
+
+async function numberOfOnionRingsInNextNOrders(n) {
+  let lastNOrders = await BurgerOrder.find({
+    day: currentDay,
+    completed: false,
+  })
+    .sort({ createdAt: "ascending" })
+    .limit(n);
+  let anelli = lastNOrders
+    .map((order) => {
+      order = order.actualOrder;
+      if (Array.isArray(order.Farcitura)) {
+        return order.Farcitura.filter((el) => el == "Anelli di cipolla").length;
+      } else {
+        return order.Farcitura == "Anelli di cipolla" ? 1 : 0;
+      }
+    })
+    .reduce((a, b) => a + b, 0);
+  return anelli;
+}
 
 function updateBurgersStats(order) {
   if (!order.staff) {

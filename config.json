@@ -4,7 +4,8 @@
   ],
 
   "options": {
-    "print": false
+    "print": false,
+    "finestraAnelliExtra": 10
   },
 
   "ingredients":[
