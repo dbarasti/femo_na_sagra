@@ -43,6 +43,11 @@
                           <% } %>
                             :
                             <%= order.actualOrder.id %>
+                          <% if(order.actualOrder.Principale || order.actualOrder.Farcitura) { %>
+                            <span class="asporto">
+                              P
+                            </span>
+                          <% } %>
                       </p>
                     </div>
                     <div class="text priorità">
