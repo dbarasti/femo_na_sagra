@@ -13,7 +13,12 @@ var app = express();
 
 mongoose.Promise = global.Promise;
 
-const uri = `mongodb://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@${process.env.MONGODB_CLUSTER}/${process.env.MONGODB_NAME}?authSource=admin&retryWrites=true&w=majority`;
+let uri = "";
+if (process.env.MONGODB_CLUSTER == null) {
+  uri = `mongodb://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@${process.env.MONGODB_SERVER}/${process.env.MONGODB_NAME}?authSource=admin&retryWrites=true&w=majority`;
+} else {
+  uri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@${process.env.MONGODB_CLUSTER}/${process.env.MONGODB_NAME}?retryWrites=true&w=majority`;
+}
 mongoose.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true });
 
 app.set("port", process.env.PORT || 8000);
