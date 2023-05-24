@@ -32,6 +32,14 @@
                         <a onclick="printOrder(<%=order.actualOrder.id%>);" class="btn btn-raised btn-info">
                           <span class="glyphicon glyphicon-print"></span>
                         </a>
+                        <br />
+                        <br />
+                        <a id="taken_alice_<%=order.uid%>" onclick="taken_alice();" class="btn btn-raised btn-info">
+                          Alice <span class="glyphicon glyphicon-user"></span>
+                        </a>
+                        <a id="taken_bob_<%=order.uid%>" onclick="taken_bob();" class="btn btn-raised btn-info">
+                          Bob <span class="glyphicon glyphicon-user"></span>
+                        </a>
                     </div>
 
                     <div class="ora_ordinazione">
@@ -50,6 +58,11 @@
                           <% } %>
                             :
                             <%= order.actualOrder.id %>
+                            <% if(order.actualOrder.extrasQuantities.reduce((partialSum, a) => partialSum + (parseInt(a) || 0), 0) > 0) { %>
+                              <span class="asporto">
+                                E
+                              </span>
+                            <% } %>
                       </p>
                     </div>
                     <div class="text priorità">
