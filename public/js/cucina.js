@@ -26,6 +26,11 @@ function printOrder(id) {
     print.document.writeln(`<p>${ingredient.innerText}</p>`);
   }
   print.document.writeln(`</div>`);
+  if (
+    document.getElementById(id).getElementsByClassName("has-extra").length > 0
+  ) {
+    print.document.writeln(`<h4>Ordine con Extra</h4>`);
+  }
   print.window.print();
   print.window.close();
 }
