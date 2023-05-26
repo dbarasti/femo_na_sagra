@@ -25,7 +25,7 @@ const authentication = process.env.PASSWORD;
 
 function isAuth(req, res, next) {
   const auth = req.cookies.password;
-  if (auth === authentication) {
+  if (!authentication || auth === authentication) {
     next();
   } else {
     res.status(401);
