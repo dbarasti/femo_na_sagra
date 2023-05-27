@@ -174,7 +174,7 @@ router.get("/deliveries", (req, res, next) => {
   }
 });
 
-router.get("/orders/:uid/completed", isAuth, async (req, res) => {
+router.get("/orders/:uid/completed", isAuth, async (req, res, next) => {
   const completedAt = new moment();
 
   try {
@@ -190,9 +190,13 @@ router.get("/orders/:uid/completed", isAuth, async (req, res) => {
   res.redirect("/orders");
 });
 
-router.get("/orders/:uid/remove", isAuth, async (req, res) => {
+router.get("/orders/:uid/remove", isAuth, async (req, res, next) => {
   try {
     const burgerOrder = await BurgerOrder.findOne({ uid: req.params.uid });
+    if (!burgerOrder) {
+      console.log(`order ${req.params.uid} not found while removing`);
+      return res.redirect("/orders");
+    }
     burgerOrder.visibility = false;
     await burgerOrder.save();
     deliveredBurgerOrders.push(burgerOrder.uid);
@@ -206,11 +210,15 @@ router.get("/orders/:uid/remove", isAuth, async (req, res) => {
   res.redirect("/deliveries");
 });
 
-router.get("/orders/undo", isAuth, async (req, res) => {
+router.get("/orders/undo", isAuth, async (req, res, next) => {
   if (completedBurgerOrders.length == 0) return res.redirect("/orders");
   try {
     let uidOfOrderToUndo = completedBurgerOrders.pop();
     const burgerOrder = await BurgerOrder.findOne({ uid: uidOfOrderToUndo });
+    if (!burgerOrder) {
+      console.log(`order ${uidOfOrderToUndo} not found while undoing`);
+      return res.redirect("/orders");
+    }
     burgerOrder.completed = false;
     await burgerOrder.save();
     res.redirect("/orders");
@@ -220,11 +228,15 @@ router.get("/orders/undo", isAuth, async (req, res) => {
   }
 });
 
-router.get("/deliveries/undo", isAuth, async (req, res) => {
+router.get("/deliveries/undo", isAuth, async (req, res, next) => {
   if (deliveredBurgerOrders.length == 0) return res.redirect("/deliveries");
   try {
     let uidOfOrderToUndo = deliveredBurgerOrders.pop();
     const burgerOrder = await BurgerOrder.findOne({ uid: uidOfOrderToUndo });
+    if (!burgerOrder) {
+      console.log(`order ${uidOfOrderToUndo} not found while undoing`);
+      return res.redirect("/deliveries");
+    }
     burgerOrder.visibility = true;
     await burgerOrder.save();
     res.redirect("/deliveries");
@@ -234,7 +246,7 @@ router.get("/deliveries/undo", isAuth, async (req, res) => {
   }
 });
 
-router.get("/ingredients", (req, res, next) => {
+router.get("/ingredients", (req, res) => {
   Ingredient.find()
     .sort({ name: "ascending" })
     .exec((err, ingredients) => {
@@ -267,7 +279,7 @@ router.get("/ingredient/:id/unlock", isAuth, async (req, res, next) => {
 });
 
 // gestione status page
-router.get("/status", (_, res) => {
+router.get("/status", (_, res, next) => {
   if (!currentDay) {
     res.render("admin", { day: currentDay, config: config });
   } else {
@@ -311,6 +323,10 @@ router.get("/bar", (req, res, next) => {
 
 router.get("/bar/:uid/remove", isAuth, async (req, res) => {
   const beveragesOrder = await BeveragesOrder.findOne({ uid: req.params.uid });
+  if (!beveragesOrder) {
+    console.log(`bar order ${req.params.uid} not found while removing`);
+    return res.redirect("/bar");
+  }
   beveragesOrder.visibility = false;
   beveragesOrder.completedAt = moment();
   await beveragesOrder.save();
@@ -318,13 +334,19 @@ router.get("/bar/:uid/remove", isAuth, async (req, res) => {
   res.redirect("/bar");
 });
 
-router.get("/bar/undo", isAuth, async (req, res) => {
+router.get("/bar/undo", isAuth, async (req, res, next) => {
   try {
     if (deliveredBeverageOrder.length == 0) return res.redirect("/bar");
     const uidOfOrderToUndo = deliveredBeverageOrder.pop();
     const beveragesOrder = await BeveragesOrder.findOne({
       uid: uidOfOrderToUndo,
     });
+    if (!beveragesOrder) {
+      console.log(
+        `bar order ${uidOfOrderToUndo} not found while trying to undo`
+      );
+      return res.redirect("/bar");
+    }
     beveragesOrder.visibility = true;
     await beveragesOrder.save();
     res.redirect("/bar");
@@ -358,7 +380,7 @@ router.get("/extra", (req, res, next) => {
   }
 });
 
-router.get("/extra/:uid/completed", isAuth, async (req, res) => {
+router.get("/extra/:uid/completed", isAuth, async (req, res, next) => {
   try {
     const extraOrder = await ExtraOrder.findOne({ uid: req.params.uid });
     extraOrder.completed = true;
@@ -373,11 +395,17 @@ router.get("/extra/:uid/completed", isAuth, async (req, res) => {
   }
 });
 
-router.get("/extra/undo", isAuth, async (req, res) => {
+router.get("/extra/undo", isAuth, async (req, res, next) => {
   if (completedExtraOrders.length == 0) return res.redirect("/extra");
   try {
     let uidOfOrderToUndo = completedExtraOrders.pop();
     const extraOrder = await ExtraOrder.findOne({ uid: uidOfOrderToUndo });
+    if (!extraOrder) {
+      console.log(
+        `extra order ${uidOfOrderToUndo} not found while trying to undo`
+      );
+      return res.redirect("/extra");
+    }
     extraOrder.completed = false;
     extraOrder.visibility = true;
     await extraOrder.save();
@@ -528,82 +556,105 @@ router.get("/admin/report", (req, res, next) => {
     });
 });
 
-router.get("/admin/report/panini", (req, res) => {
-  BurgerOrder.find({ staff: false }).exec((err, burgerOrder) => {
-    if (err) {
-      return next(err);
+router.get("/admin/report/panini/json", async (req, res, next) => {
+  let report = await burgerStatsJson();
+  res.json(report);
+});
+
+router.get("/admin/report/panini", async (req, res) => {
+  let totals = await burgerStatsJson();
+  res.render("report_panini", { totals: totals, moment: moment });
+});
+
+router.get("/admin/report/beverages", async (req, res, next) => {
+  let report = await beveragesStatsJson();
+  res.render("report_beverages", { totals: report, moment: moment });
+});
+
+router.get("/admin/report/beverages/json", async (req, res, next) => {
+  let report = await beveragesStatsJson();
+  res.json(report);
+});
+
+async function burgerStatsJson() {
+  let burgerOrder = await BurgerOrder.find({ staff: false });
+  if (!burgerOrder) {
+    return {};
+  }
+  totals = {};
+  burgerOrder.forEach((order) => {
+    if (!(order.day in totals)) totals[order.day] = {};
+    let key = order.actualOrder.Principale || "no_principale";
+    if (key in totals[order.day]) {
+      totals[order.day][key] += order.actualOrder.double ? 2 : 1;
+    } else {
+      totals[order.day][key] = {};
+      totals[order.day][key] = order.actualOrder.double ? 2 : 1;
     }
-    totals = {};
-    burgerOrder.forEach((order) => {
-      if (!(order.day in totals)) totals[order.day] = {};
-      let key = order.actualOrder.Principale || "no_principale";
-      if (key in totals[order.day]) {
-        totals[order.day][key] += order.actualOrder.double ? 2 : 1;
+
+    if (order.actualOrder.Farcitura) {
+      if (Array.isArray(order.actualOrder.Farcitura)) {
+        order.actualOrder.Farcitura.forEach((farcitura) => {
+          if (farcitura in totals[order.day]) {
+            totals[order.day][farcitura] += 1;
+          } else {
+            totals[order.day][farcitura] = 1;
+          }
+        });
       } else {
-        totals[order.day][key] = {};
-        totals[order.day][key] = order.actualOrder.double ? 2 : 1;
-      }
-
-      if (order.actualOrder.Farcitura) {
-        if (Array.isArray(order.actualOrder.Farcitura)) {
-          order.actualOrder.Farcitura.forEach((farcitura) => {
-            if (farcitura in totals[order.day]) {
-              totals[order.day][farcitura] += 1;
-            } else {
-              totals[order.day][farcitura] = 1;
-            }
-          });
+        if (order.actualOrder.Farcitura in totals[order.day]) {
+          totals[order.day][order.actualOrder.Farcitura] += 1;
         } else {
-          if (order.actualOrder.Farcitura in totals[order.day]) {
-            totals[order.day][order.actualOrder.Farcitura] += 1;
-          } else {
-            totals[order.day][order.actualOrder.Farcitura] = 1;
-          }
+          totals[order.day][order.actualOrder.Farcitura] = 1;
         }
       }
-
-      if (order.actualOrder.Salsa) {
-        if (Array.isArray(order.actualOrder.Salsa)) {
-          order.actualOrder.Salsa.forEach((salsa) => {
-            if (salsa in totals[order.day]) {
-              totals[order.day][salsa] += 1;
-            } else {
-              totals[order.day][salsa] = 1;
-            }
-          });
-        } else {
-          if (order.actualOrder.Salsa in totals[order.day]) {
-            totals[order.day][order.actualOrder.Salsa] += 1;
-          } else {
-            totals[order.day][order.actualOrder.Salsa] = 1;
-          }
-        }
-      }
-    });
-    res.render("report_panini", { totals: totals, moment: moment });
-  });
-});
-
-router.get("/admin/report/beverages", (req, res) => {
-  BeveragesOrder.find({ staff: false }).exec((err, barOrders) => {
-    if (err) {
-      return next(err);
     }
-    totals = [];
-    barOrders.forEach((order) => {
-      totals.push(countBeverages(order.actualOrder));
-    });
-    report = {};
-    totals.forEach((total) => {
-      Object.entries(total).forEach((total) => {
-        total[0] in report
-          ? (report[total[0]] += parseInt(total[1]))
-          : (report[total[0]] = parseInt(total[1]));
-      });
-    });
-    res.send(report);
+
+    if (order.actualOrder.Salsa) {
+      if (Array.isArray(order.actualOrder.Salsa)) {
+        order.actualOrder.Salsa.forEach((salsa) => {
+          if (salsa in totals[order.day]) {
+            totals[order.day][salsa] += 1;
+          } else {
+            totals[order.day][salsa] = 1;
+          }
+        });
+      } else {
+        if (order.actualOrder.Salsa in totals[order.day]) {
+          totals[order.day][order.actualOrder.Salsa] += 1;
+        } else {
+          totals[order.day][order.actualOrder.Salsa] = 1;
+        }
+      }
+    }
   });
-});
+  return totals;
+}
+
+async function beveragesStatsJson() {
+  let barOrders = await BeveragesOrder.find({ staff: false });
+  if (!barOrders) {
+    return {};
+  }
+  totals = {};
+  barOrders.forEach((order) => {
+    if (!(order.day in totals)) totals[order.day] = {};
+    totals[order.day] = accumulateBeverages(
+      totals[order.day],
+      countBeverages(order.actualOrder)
+    );
+  });
+  return totals;
+}
+
+function accumulateBeverages(total, order) {
+  Object.entries(order).forEach((order) => {
+    order[0] in total
+      ? (total[order[0]] += parseInt(order[1]))
+      : (total[order[0]] = parseInt(order[1]));
+  });
+  return total;
+}
 
 function countBeverages(order) {
   let total = {};
@@ -663,6 +714,7 @@ router.get("/orders/:uid/delete", isAuth, (req, res, next) => {
   BurgerOrder.findOne({ uid: req.params.uid }, (err, burgerOrder) => {
     burgerOrder.remove((err) => {
       if (err) {
+        console.log(err);
         return next(err);
       }
     });
@@ -677,6 +729,7 @@ router.get("/drinks/:uid/delete", isAuth, (req, res, next) => {
   BeveragesOrder.findOne({ uid: req.params.uid }, (err, beveragesOrder) => {
     beveragesOrder.remove((err) => {
       if (err) {
+        console.log(err);
         return next(err);
       }
     });
@@ -691,6 +744,7 @@ router.get("/extras/:uid/delete", isAuth, (req, res, next) => {
   ExtraOrder.findOne({ uid: req.params.uid }, (err, extrasOrder) => {
     extrasOrder.remove((err) => {
       if (err) {
+        console.log(err);
         return next(err);
       }
     });
@@ -785,6 +839,15 @@ router.get("/admin/deleteall/:what", isAuth, (req, res, next) => {
     completedExtraOrders = [];
   }
   res.render("deletedeverything");
+});
+
+router.get("/averageWaitingTime", async (req, res, next) => {
+  let averageWaitingTime = await computeAverageWaitTimeForCurrentDay();
+  res.send({
+    avgWaitTime: moment(Math.round(averageWaitingTime))
+      .utc()
+      .format("HH:mm:ss"),
+  });
 });
 
 router.use((request, response) => {
@@ -911,6 +974,23 @@ function loadIngredientsToDB() {
       );
     });
   });
+}
+
+async function computeAverageWaitTimeForCurrentDay() {
+  if (!currentDay) return 0;
+  let totalWaitTime = 0;
+  let totalOrders = 0;
+  try {
+    const orders = await BurgerOrder.find({ day: currentDay, completed: true });
+    orders.forEach((order) => {
+      totalWaitTime += order.completedAt - order.createdAt;
+      totalOrders++;
+    });
+    if (totalOrders === 0) return 0;
+    return totalWaitTime / totalOrders;
+  } catch (error) {
+    return 0;
+  }
 }
 
 module.exports = router;
