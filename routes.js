@@ -48,7 +48,7 @@ router.post("/login", (req, res) => {
   }
 });
 
-router.get("/", (req, res) => {
+router.get("/", isAuth, (req, res) => {
   res.render("homepage");
 });
 
