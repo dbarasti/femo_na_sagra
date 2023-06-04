@@ -99,6 +99,8 @@ router.post("/cassa", isAuth, async (req, res) => {
   let beveragesPrice = Calculator.calculateBeveragesPrice(requestBody);
   let extrasPrice = Calculator.calculateExtrasPrice(requestBody);
 
+  requestBody.id = requestBody.id.trim();
+
   if (burgerPrice != 0) {
     let newBurgerOrder = new BurgerOrder({
       uid: yeast(),
