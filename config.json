@@ -1,6 +1,6 @@
 {
   "days":[
-    "2023-05-13", "2023-05-26", "2023-05-27", "2023-05-28", "2023-06-01", "2023-06-02", "2023-06-03", "2023-06-04"
+    "2023-07-05"
   ],
 
   "options": {
@@ -31,6 +31,21 @@
           "id": "cheddar",
           "name": "Cheddar",
           "price": "0"
+        },
+        {
+          "id": "provola",
+          "name": "Provola",
+          "price": "0"
+        },
+        {
+          "id": "speck",
+          "name": "Speck",
+          "price": "1"
+        },
+        {
+          "id": "crema_funghi",
+          "name": "Crema di Funghi",
+          "price": "0.50"
         },
         {
           "id": "bacon",
@@ -91,6 +106,16 @@
     }
   ],
   "defaultBurgers": [
+    {
+      "name": "Il Montanaro",
+      "ingredients": [
+        "hamburger",
+        "provola",
+        "speck",
+        "crema_funghi"
+      ],
+      "price": "9.5"
+    },
     {
       "name": "Classico",
       "ingredients": [
