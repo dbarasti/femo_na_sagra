@@ -156,15 +156,11 @@ const config = {
       type: "Birra",
       list: [
         {
-          name: "12°",
+          name: "ss46 keller",
           price: "4.5",
         },
         {
-          name: "Brauch",
-          price: "4.5",
-        },
-        {
-          name: "BirrettIPA",
+          name: "Punto G",
           price: "4.5",
         },
       ],
