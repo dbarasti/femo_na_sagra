@@ -594,6 +594,15 @@ async function burgerStatsJson() {
       totals[order.day][key] = order.actualOrder.double ? 2 : 1;
     }
 
+    // TODO fix to count different kinds of double burgers
+    if (order.actualOrder.double) {
+      if ("double" in totals[order.day]) {
+        totals[order.day]["double"] += 1;
+      } else {
+        totals[order.day]["double"] = 1;
+      }
+    }
+
     if (order.actualOrder.Farcitura) {
       if (Array.isArray(order.actualOrder.Farcitura)) {
         order.actualOrder.Farcitura.forEach((farcitura) => {
