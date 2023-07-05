@@ -166,6 +166,23 @@ const config = {
       ],
     },
     {
+      type: "Birra in bottiglia",
+      list: [
+        {
+          name: "Brusca 50cl",
+          price: "5",
+        },
+        {
+          name: "Punto G 50cl",
+          price: "5",
+        },
+        {
+          name: "Heaven 50cl",
+          price: "5",
+        },
+      ],
+    },
+    {
       type: "Bevande analcoliche",
       list: [
         {
