@@ -9,7 +9,9 @@ let beveragesOrderSchema = mongoose.Schema({
   visibility: {type: Boolean, default: true},
   actualOrder: JSON,
   priority: {type: Boolean, default: false},
-  staff: {type: Boolean, default: false}
+  staff: {type: Boolean, default: false},
+  paymentMethod: {type: String, enum: ['cash', 'card', 'other'], default: 'cash'}
+
 });
 
 let Beverages_order = mongoose.model("Beverages_order", beveragesOrderSchema);

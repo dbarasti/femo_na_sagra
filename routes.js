@@ -56,6 +56,8 @@ router.get("/cassa", isAuth, async (req, res) => {
   if (!currentDay) {
     return res.render("admin", { day: currentDay, config: config });
   }
+  stats = await computeCurrentDaysTotals();
+
   const burgerOrders = await BurgerOrder.findOne({ day: currentDay }).sort({
     createdAt: "descending",
   });
@@ -65,9 +67,7 @@ router.get("/cassa", isAuth, async (req, res) => {
   const extraOrders = await ExtraOrder.findOne({ day: currentDay }).sort({
     createdAt: "descending",
   });
-  const burgerStats = await BurgerStats.findOne({ day: currentDay });
-  const beveragesStats = await BeveragesStats.findOne({ day: currentDay });
-  const extrasStats = await ExtrasStats.findOne({ day: currentDay });
+
   const lockedIngredients = await Ingredient.find({ available: false }, "id");
   const lockedIngredientsIDs = lockedIngredients.map(
     (ingredient) => ingredient.id
@@ -78,9 +78,8 @@ router.get("/cassa", isAuth, async (req, res) => {
     extraOrders ? extraOrders.actualOrder.id : 0
   );
   res.render("cassa", {
-    burgerStats: burgerStats,
-    beveragesStats: beveragesStats,
-    extrasStats: extrasStats,
+    currentDay: currentDay,
+    stats: stats,
     lastOrderID: lastID,
     config: config,
     lockedIngredientsIDs: lockedIngredientsIDs,
@@ -98,6 +97,7 @@ router.post("/cassa", isAuth, async (req, res) => {
   let burgerPrice = Calculator.calculateBurgerPrice(requestBody);
   let beveragesPrice = Calculator.calculateBeveragesPrice(requestBody);
   let extrasPrice = Calculator.calculateExtrasPrice(requestBody);
+  let paymentMethod = requestBody.paymentMethod;
 
   requestBody.id = requestBody.id.trim();
 
@@ -109,6 +109,7 @@ router.post("/cassa", isAuth, async (req, res) => {
       actualOrder: requestBody,
       priority: isPriorityOrder,
       staff: isStaffOrder,
+      paymentMethod: paymentMethod,
     });
     await newBurgerOrder.save();
     updateBurgersStats(newBurgerOrder);
@@ -122,6 +123,7 @@ router.post("/cassa", isAuth, async (req, res) => {
       actualOrder: requestBody,
       priority: isPriorityOrder,
       staff: isStaffOrder,
+      paymentMethod: paymentMethod,
     });
     await newBeveragesOrder.save();
     updateBeveragesStats(newBeveragesOrder);
@@ -135,6 +137,7 @@ router.post("/cassa", isAuth, async (req, res) => {
       actualOrder: requestBody,
       priority: isPriorityOrder,
       staff: isStaffOrder,
+      paymentMethod: paymentMethod,
     });
     await newExtrasOrder.save();
     updateExtrasStats(newExtrasOrder);
@@ -884,6 +887,83 @@ async function numberOfOnionRingsInNextNOrders(n) {
     .reduce((a, b) => a + b, 0);
   return anelli;
 }
+  
+
+router.post("/orders/:uid/payment", isAuth, async (req, res) => {
+  const paymentMethod = req.body.paymentMethod;
+  const order = await BurgerOrder.findOne({ uid: req.params.uid });
+  if (order) {
+    order.paymentMethod = paymentMethod;
+    await order.save();
+  }
+  order = await BeveragesOrder.findOne({ uid: req.params.uid });
+  if (order) {
+    order.paymentMethod = paymentMethod;
+    await order.save();
+  }
+  res.redirect("back");
+}); 
+
+async function computeCurrentDaysTotals() {
+  let totals = {"burgersTotals": {}, "beveragesTotals": {}, "extrasTotals": {}}; 
+  // convert currentDay to Date object
+  day = new Date(currentDay);
+  let burgersTotals = await BurgerOrder.aggregate([
+    {
+      $match: { day: day },
+    },
+    {
+      $group: {
+        _id: { paymentMethod: "$paymentMethod" },
+        total: { $sum: "$prezzo" },
+      },
+    },
+    {
+      $sort: { "_id.paymentMethod": 1 },
+    },
+  ]);
+  burgersTotals.forEach((total) => {
+    totals["burgersTotals"][total._id.paymentMethod] = total.total;
+  });
+  let beveragesTotals = await BeveragesOrder.aggregate([
+    {
+      $match: { day: day },
+    },
+    {
+      $group: {
+        _id: { paymentMethod: "$paymentMethod" },
+        total: { $sum: "$prezzo" },
+      },
+    },
+    {
+      $sort: { "_id.paymentMethod": 1 },
+    },
+  ]);
+  beveragesTotals.forEach((total) => {
+    totals["beveragesTotals"][total._id.paymentMethod] = total.total;
+  });
+  let extrasTotals = await ExtraOrder.aggregate([
+    {
+      $match: { day: day },
+    },
+    {
+      $group: {
+        _id: { paymentMethod: "$paymentMethod" },
+        total: { $sum: "$prezzo" },
+      },
+    },
+    {
+      $sort: { "_id.paymentMethod": 1 },
+    },
+  ]);
+  extrasTotals.forEach((total) => {
+    totals["extrasTotals"][total._id.paymentMethod] = total.total;
+  }
+  );
+  return totals;
+}
+
+
 
 function updateBurgersStats(order) {
   if (!order.staff) {

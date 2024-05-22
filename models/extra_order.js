@@ -10,7 +10,8 @@ let extraOrderSchema = mongoose.Schema({
     completed: {type: Boolean, default: false},
     actualOrder: JSON,
     priority: {type: Boolean, default: false},
-    staff: {type: Boolean, default: false}
+    staff: {type: Boolean, default: false},
+    paymentMethod: {type: String, enum: ['cash', 'card', 'other'], default: 'cash'}
 });
 
 let Extra_order = mongoose.model("Extra_order", extraOrderSchema);

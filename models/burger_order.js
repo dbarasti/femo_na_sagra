@@ -10,7 +10,8 @@ let burgerOrderSchema = mongoose.Schema({
   completed: {type: Boolean, default: false},
   actualOrder: JSON,
   priority: {type: Boolean, default: false},
-  staff: {type: Boolean, default: false}
+  staff: {type: Boolean, default: false},
+  paymentMethod: {type: String, enum: ['cash', 'card', 'other'], default: 'cash'}
 });
 
 var Burger_order = mongoose.model("Burger_order", burgerOrderSchema);

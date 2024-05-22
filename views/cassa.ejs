@@ -5,22 +5,25 @@
 </div>
 
 <ul class="list-group">
-    <%if(burgerStats){%>
+    <%if(Object.keys(stats.burgersTotals).length > 0){%>
         <li class="list-group-item">
-            <span class="badge"><%= burgerStats.total %>€</span>
-            Totale parziale giorno <%= burgerStats.day.toLocaleDateString('it-IT') %> PANINI
+            Totale parziale giorno <%= (new Date(currentDay)).toLocaleDateString('it-IT') %> PANINI
+            <span class="label label-primary"><%= stats.burgersTotals.cash %>€</span>
+            <span class="label label-success"><%= stats.burgersTotals.card %>€</span>
         </li>
     <%}%>
-    <%if(beveragesStats){%>
+    <%if(Object.keys(stats.beveragesTotals).length>0){%>
     <li class="list-group-item">
-        <span class="badge"><%= beveragesStats.total %>€</span>
-        Totale parziale giorno <%= beveragesStats.day.toLocaleDateString('it-IT') %> BEVANDE
+        Totale parziale giorno <%= (new Date(currentDay)).toLocaleDateString('it-IT') %> BEVANDE
+        <span class="label label-primary"><%= stats.beveragesTotals.cash %>€</span>
+        <span class="label label-success"><%= stats.beveragesTotals.card %>€</span>
     </li>
     <%}%>
-    <%if(extrasStats){%>
+    <%if(Object.keys(stats.extrasTotals).length){%>
     <li class="list-group-item">
-        <span class="badge"><%= extrasStats.total %>€</span>
-        Totale parziale giorno <%= extrasStats.day.toLocaleDateString('it-IT') %> EXTRA
+        Totale parziale giorno <%= (new Date(currentDay)).toLocaleDateString('it-IT') %> EXTRA
+        <span class="label label-primary"><%= stats.extrasTotals.cash %>€</span>
+        <span class="label label-success"><%= stats.extrasTotals.card %>€</span>
     </li>
     <%}%>
 </ul>
@@ -209,6 +212,18 @@
         <div class="panel-body">
             <div id="totale">
                 0 €
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="radio">
+                <label>
+                    <input type="radio" name="paymentMethod" id="paymentMethod" value="cash" checked="checked"> Contanti
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="paymentMethod" id="paymentMethod" value="card"> Carta
+                </label>
             </div>
         </div>
     </div>
