@@ -910,7 +910,8 @@ async function computeCurrentDaysTotals() {
   day = new Date(currentDay);
   let burgersTotals = await BurgerOrder.aggregate([
     {
-      $match: { day: day },
+      $match: { day: day, staff: false},
+      // filter out staff orders
     },
     {
       $group: {
@@ -927,7 +928,7 @@ async function computeCurrentDaysTotals() {
   });
   let beveragesTotals = await BeveragesOrder.aggregate([
     {
-      $match: { day: day },
+      $match: { day: day, staff: false},
     },
     {
       $group: {
@@ -944,7 +945,7 @@ async function computeCurrentDaysTotals() {
   });
   let extrasTotals = await ExtraOrder.aggregate([
     {
-      $match: { day: day },
+      $match: { day: day, staff: false},
     },
     {
       $group: {
